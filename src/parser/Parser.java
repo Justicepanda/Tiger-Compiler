@@ -62,6 +62,7 @@ public class Parser
 			else
 			{
 				//Record the error (syntactical Error)
+				System.out.println("Error on line ");
 			}
 		}
 	}
