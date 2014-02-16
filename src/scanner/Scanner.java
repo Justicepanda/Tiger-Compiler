@@ -2,7 +2,7 @@ package scanner;
 
 public class Scanner 
 {
-
+	
   private final TokenDfa dfa;
   private LinesHandler handler;
 
@@ -42,6 +42,28 @@ public class Scanner
     TokenTuple token = findToken();
     prepareToFindNextToken();
     return token;
+  }
+  
+  public TokenTuple peekAtNextToken()
+  {
+	  TokenTuple token = peekToken();
+	  dfa.reset();
+	  return token;
+  }
+  
+  private TokenTuple peekToken()
+  {
+	  int countToMoveBack = 0;
+	  while(!dfa.isInAcceptState())
+	  {
+		  countToMoveBack++;
+		  processNextChar();
+	  }
+	  for(int i = 0; i < countToMoveBack; i++)
+	  {
+		  handler.moveBackward();
+	  }
+	  return dfa.getToken();
   }
 
   private TokenTuple findToken() 

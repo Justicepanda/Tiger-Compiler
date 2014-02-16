@@ -1,6 +1,6 @@
 package dfabuilder;
 
-class SvReader {
+public class SvReader {
   private final StringSplitter ss;
   private String[] lines;
   private int currLine;
