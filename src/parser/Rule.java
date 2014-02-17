@@ -65,8 +65,7 @@ public class Rule
     this.tokens = tokens;
   }
 	
-	public int getLength()
-	{
+  public int getLength() {
 		return tokenBuilder.length;
 	}
 }
