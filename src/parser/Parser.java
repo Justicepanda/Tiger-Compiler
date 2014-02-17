@@ -3,7 +3,6 @@ package parser;
 import scanner.Scanner;
 import scanner.TokenTuple;
 import java.util.Stack;
-import parser.Rule;
 
 public class Parser 
 {
@@ -82,6 +81,6 @@ public class Parser
 	
 	private void populateRuleTable()
 	{
-		ruleTable[0] = new Rule("");
+		ruleTable[0] = Rule.determineFrom("");
 	}
 }

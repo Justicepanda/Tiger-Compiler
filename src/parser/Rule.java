@@ -2,215 +2,71 @@ package parser;
 
 import scanner.TokenTuple;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Rule 
 {
-	TokenTuple[] tokens;
-	
-	public Rule(String rule)
-	{
-		String[] tokenStrings = rule.split(" ");
-		tokens = new TokenTuple[tokenStrings.length];
-		
-		for(int i = 0; i < tokens.length; i++)
-		{
-			if(tokenStrings[i].equals(","))
-			{
-				tokens[i] = new TokenTuple("COMMA", ",");
-			}
-			else if(tokenStrings[i].equals("COLON"))
-			{
-				tokens[i] = new TokenTuple("COLON", ":");
-			}
-			else if(tokenStrings[i].equals(";"))
-			{
-				tokens[i] = new TokenTuple("SEMI", ";");
-			}
-			else if(tokenStrings[i].equals("("))
-			{
-				tokens[i] = new TokenTuple("LPAREN", "(");
-			}
-			else if(tokenStrings[i].equals(")"))
-			{
-				tokens[i] = new TokenTuple("RPAREN", ")");
-			}
-			else if(tokenStrings[i].equals("["))
-			{
-				tokens[i] = new TokenTuple("LBRACK", "[");
-			}
-			else if(tokenStrings[i].equals("]"))
-			{
-				tokens[i] = new TokenTuple("RBRACK", "]");
-			}
-			else if(tokenStrings[i].equals("{"))
-			{
-				tokens[i] = new TokenTuple("LBRACE", "{");
-			}
-			else if(tokenStrings[i].equals("}"))
-			{
-				tokens[i] = new TokenTuple("RBRACE", "}");
-			}
-			else if(tokenStrings[i].equals("."))
-			{
-				tokens[i] = new TokenTuple("PERIOD", ".");
-			}
-			else if(tokenStrings[i].equals("+"))
-			{
-				tokens[i] = new TokenTuple("PLUS", "+");
-			}
-			else if(tokenStrings[i].equals("-"))
-			{
-				tokens[i] = new TokenTuple("MINUS", "-");
-			}
-			else if(tokenStrings[i].equals("*"))
-			{
-				tokens[i] = new TokenTuple("MULT", "*");
-			}
-			else if(tokenStrings[i].equals("/"))
-			{
-				tokens[i] = new TokenTuple("DIV", "/");
-			}
-			else if(tokenStrings[i].equals("="))
-			{
-				tokens[i] = new TokenTuple("EQ", "=");
-			}
-			else if(tokenStrings[i].equals("!="))
-			{
-				tokens[i] = new TokenTuple("NEQ", "!=");
-			}
-			else if(tokenStrings[i].equals("<"))
-			{
-				tokens[i] = new TokenTuple("LESSER", "<");
-			}
-			else if(tokenStrings[i].equals(">"))
-			{
-				tokens[i] = new TokenTuple("GREATER", ">");
-			}
-			else if(tokenStrings[i].equals("<="))
-			{
-				tokens[i] = new TokenTuple("LESSEREQ", "<=");
-			}
-			else if(tokenStrings[i].equals(">="))
-			{
-				tokens[i] = new TokenTuple("GREATEREQ", ">=");
-			}
-			else if(tokenStrings[i].equals("&"))
-			{
-				tokens[i] = new TokenTuple("AND", "&");
-			}
-			else if(tokenStrings[i].equals("|"))
-			{
-				tokens[i] = new TokenTuple("OR", "|");
-			}
-			else if(tokenStrings[i].equals(":="))
-			{
-				tokens[i] = new TokenTuple("ASSIGN", ":=");
-			}
-			else if(tokenStrings[i].equals("array"))
-			{
-				tokens[i] = new TokenTuple("ARRAY", "array");
-			}
-			else if(tokenStrings[i].equals("break"))
-			{
-				tokens[i] = new TokenTuple("BREAK", "break");
-			}
-			else if(tokenStrings[i].equals("do"))
-			{
-				tokens[i] = new TokenTuple("DO", "do");
-			}
-			else if(tokenStrings[i].equals("else"))
-			{
-				tokens[i] = new TokenTuple("ELSE", "else");
-			}
-			else if(tokenStrings[i].equals("end"))
-			{
-				tokens[i] = new TokenTuple("END", "end");
-			}
-			else if(tokenStrings[i].equals("for"))
-			{
-				tokens[i] = new TokenTuple("FOR", "for");
-			}
-			else if(tokenStrings[i].equals("function"))
-			{
-				tokens[i] = new TokenTuple("FUNC", "function");
-			}
-			else if(tokenStrings[i].equals("if"))
-			{
-				tokens[i] = new TokenTuple("IF", "if");
-			}
-			else if(tokenStrings[i].equals("in"))
-			{
-				tokens[i] = new TokenTuple("IN", "in");
-			}
-			else if(tokenStrings[i].equals("let"))
-			{
-				tokens[i] = new TokenTuple("LET", "let");
-			}
-			else if(tokenStrings[i].equals("nil"))
-			{
-				tokens[i] = new TokenTuple("NIL", "nil");
-			}
-			else if(tokenStrings[i].equals("of"))
-			{
-				tokens[i] = new TokenTuple("OF", "of");
-			}
-			else if(tokenStrings[i].equals("then"))
-			{
-				tokens[i] = new TokenTuple("THEN", "then");
-			}
-			else if(tokenStrings[i].equals("to"))
-			{
-				tokens[i] = new TokenTuple("TO", "to");
-			}
-			else if(tokenStrings[i].equals("type"))
-			{
-				tokens[i] = new TokenTuple("TYPE", "type");
-			}
-			else if(tokenStrings[i].equals("var"))
-			{
-				tokens[i] = new TokenTuple("VAR", "var");
-			}
-			else if(tokenStrings[i].equals("while"))
-			{
-				tokens[i] = new TokenTuple("WHILE", "while");
-			}
-			else if(tokenStrings[i].equals("endif"))
-			{
-				tokens[i] = new TokenTuple("ENDIF", "endif");
-			}
-			else if(tokenStrings[i].equals("begin"))
-			{
-				tokens[i] = new TokenTuple("BEGIN", "begin");
-			}
-			else if(tokenStrings[i].equals("enddo"))
-			{
-				tokens[i] = new TokenTuple("ENDDO", "enddo");
-			}
-			else if(tokenStrings[i].equals("enddo"))
-			{
-				tokens[i] = new TokenTuple("ENDDO", "enddo");
-			}
-			else if(tokenStrings[i].contains("<"))
-			{
-				//This must be a non-terminal
-				tokens[i] = new TokenTuple("NONTERM", tokenStrings[i]);
-			}
-			else if(tokenStrings[i].substring(1).equals("1") || tokenStrings[i].substring(1).equals("2") || tokenStrings[i].substring(1).equals("3")
-					|| tokenStrings[i].substring(1).equals("4") || tokenStrings[i].substring(1).equals("5") || tokenStrings[i].substring(1).equals("6")
-					|| tokenStrings[i].substring(1).equals("7") || tokenStrings[i].substring(1).equals("8") || tokenStrings[i].substring(1).equals("9")
-					|| tokenStrings[i].substring(1).equals("0"))
-			{
-				tokens[i] = new TokenTuple("INTLIT", tokenStrings[i]);
-			}
-			else
-			{
-				//It's a string literal!
-				tokens[i] = new TokenTuple("STRLIT", tokenStrings[i]);
-			}
-		}
-	}
+  private static Map<String, TokenTuple> tokenMap = new HashMap<String, TokenTuple>();
+  static {
+    tokenMap.put(",", new TokenTuple("COMMA", ","));
+    tokenMap.put(":", new TokenTuple("COLON", ":"));
+    tokenMap.put(";", new TokenTuple("SEMI", ";"));
+    tokenMap.put("(", new TokenTuple("LPAREN", "("));
+    tokenMap.put(")", new TokenTuple("RPAREN", ")"));
+    tokenMap.put("[", new TokenTuple("LBRACK", "["));
+    tokenMap.put("]", new TokenTuple("RBRACK", "]"));
+    tokenMap.put("{", new TokenTuple("LBRACE", "{"));
+    tokenMap.put("}", new TokenTuple("RBRACE", "}"));
+    tokenMap.put(".", new TokenTuple("PERIOD", "."));
+    tokenMap.put("+", new TokenTuple("PLUS", "+"));
+    tokenMap.put("-", new TokenTuple("MINUS", "-"));
+    tokenMap.put("*", new TokenTuple("MULT", "*"));
+    tokenMap.put("/", new TokenTuple("DIV", "/"));
+    tokenMap.put("=", new TokenTuple("EQ", "="));
+    tokenMap.put("!=", new TokenTuple("NEQ", "!="));
+    tokenMap.put("<", new TokenTuple("LESSER", "<"));
+    tokenMap.put(">", new TokenTuple("GREATER", ">"));
+    tokenMap.put("<=", new TokenTuple("LESSEREQ", "<="));
+    tokenMap.put(">=", new TokenTuple("GREATEREQ", ">="));
+    tokenMap.put("&", new TokenTuple("AND", "&"));
+    tokenMap.put("|", new TokenTuple("OR", "|"));
+    tokenMap.put(":=", new TokenTuple("ASSIGN", ":="));
+  }
+  private static String[] tokenStrings;
+  private static TokenTuple[] tokenBuilder;
+
+  TokenTuple[] tokens;
+
+  public static Rule determineFrom(String rule) {
+    tokenStrings = rule.split(" ");
+    tokenBuilder = new TokenTuple[tokenStrings.length];
+    interpretTokens();
+    return new Rule(tokenBuilder);
+  }
+
+  public static void interpretTokens() {
+    for(int i = 0; i < tokenBuilder.length; i++)
+      interpretToken(i);
+  }
+
+  private static void interpretToken(int i) {
+    if (tokenMap.containsKey(tokenStrings[i]))
+      tokenBuilder[i] = tokenMap.get(tokenStrings[i]);
+    else if(tokenStrings[i].contains("<"))
+      tokenBuilder[i] = new TokenTuple("NONTERM", tokenStrings[i]); // non-terminal
+    else if ("0123456789".contains(tokenStrings[i].substring(1)))
+      tokenBuilder[i] = new TokenTuple("INTLIT", tokenStrings[i]);
+    else
+      tokenBuilder[i] = new TokenTuple(tokenStrings[i].toUpperCase(), tokenStrings[i]);
+  }
+
+  private Rule(TokenTuple[] tokens) {
+    this.tokens = tokens;
+  }
 	
 	public int getLength()
 	{
-		return tokens.length;
+		return tokenBuilder.length;
 	}
 }
