@@ -34,8 +34,6 @@ public class Rule
   private static String[] ruleTokenTypes;
   private static String[] tokenTypesBuilder;
 
-  String[] tokenTypes;
-
   public static Rule determineFrom(String rule) {
     ruleTokenTypes = rule.split(" ");
     tokenTypesBuilder = new String[ruleTokenTypes.length];
@@ -57,12 +55,13 @@ public class Rule
       tokenTypesBuilder[index] = ruleTokenTypes[index].toUpperCase();
   }
 
+  String[] tokenTypes;
+
   private Rule(String[] tokens) {
     this.tokenTypes = tokens;
   }
 	
-	public int getLength()
-	{
-		return tokenTypesBuilder.length;
+	public int getLength() {
+		return tokenTypes.length;
 	}
 }
