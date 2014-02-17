@@ -50,15 +50,15 @@ public class Rule
       interpretToken(i);
   }
 
-  private static void interpretToken(int i) {
-    if (tokenMap.containsKey(tokenStrings[i]))
-      tokenBuilder[i] = tokenMap.get(tokenStrings[i]);
-    else if(tokenStrings[i].contains("<"))
-      tokenBuilder[i] = new TokenTuple("NONTERM", tokenStrings[i]); // non-terminal
-    else if ("0123456789".contains(tokenStrings[i].substring(1)))
-      tokenBuilder[i] = new TokenTuple("INTLIT", tokenStrings[i]);
+  private static void interpretToken(int index) {
+    if (tokenMap.containsKey(tokenStrings[index]))
+      tokenBuilder[index] = tokenMap.get(tokenStrings[index]);
+    else if(tokenStrings[index].contains("<"))
+      tokenBuilder[index] = new TokenTuple("NONTERM", tokenStrings[index]); // non-terminal
+    else if ("0123456789".contains(tokenStrings[index].substring(1)))
+      tokenBuilder[index] = new TokenTuple("INTLIT", tokenStrings[index]);
     else
-      tokenBuilder[i] = new TokenTuple(tokenStrings[i].toUpperCase(), tokenStrings[i]);
+      tokenBuilder[index] = new TokenTuple(tokenStrings[index].toUpperCase(), tokenStrings[index]);
   }
 
   private Rule(TokenTuple[] tokens) {
