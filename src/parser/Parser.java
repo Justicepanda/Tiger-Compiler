@@ -75,7 +75,7 @@ public class Parser
 	{
 		for(int i = 0; i < rule.getLength(); i++)
 		{
-			parsingStack.push(rule.tokenTypes[i]);
+			parsingStack.push(rule.tokens[i]);
 		}
 	}
 	

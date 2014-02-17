@@ -56,8 +56,6 @@ public class Rule
       tokenBuilder[index] = tokenMap.get(tokenStrings[index]);
     else if(tokenStrings[index].contains("<"))
       tokenBuilder[index] = new TokenTuple("NONTERM", tokenStrings[index]); // non-terminal
-    else if ("0123456789".contains(tokenStrings[index].substring(1)))
-      tokenBuilder[index] = new TokenTuple("INTLIT", tokenStrings[index]);
     else
       tokenBuilder[index] = new TokenTuple(tokenStrings[index].toUpperCase(), tokenStrings[index]);
   }
