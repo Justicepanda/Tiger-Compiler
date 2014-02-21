@@ -4,6 +4,7 @@ import dfabuilder.FileScraper;
 import parser.Parser;
 import scanner.Scanner;
 import scanner.TokenTuple;
+import scanner.LexicalException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,18 @@ public class FrontEnd
 	String[] lines = scraper.read(filename);
     scanner.scan(lines);
     while (scanner.hasMoreTokens())
-      parser.parse(scanner.getNextToken());
+    {
+    	TokenTuple t = null;
+    	try
+    	{
+    		t = scanner.getNextToken();
+    		parser.parse(t);
+    	}
+    	catch(LexicalException e)
+    	{
+    		System.err.println(e.toString());
+    	}
+    }
     return parser.isLegal();
   }
 }

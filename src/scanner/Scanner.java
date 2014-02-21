@@ -74,7 +74,7 @@ public class Scanner {
 
   private void handleNonAcceptState() {
     if (dfa.isInErrorState())
-      throw new LexicalException(handler.getLineNo() + 1, handler.getCharNo() + 1);
+      throw new LexicalException(handler.getLineNo() + 1, handler.getCharNo() + 1, handler.getCurrentChar());
     else if (dfa.isInSpaceState())
       dfa.reset();
   }
