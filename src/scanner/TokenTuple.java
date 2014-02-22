@@ -17,6 +17,11 @@ public class TokenTuple {
     return tokenType.equals(t.tokenType) && token.equals(t.token);
   }
 
+  public String getToken()
+  {
+	  return token;
+  }
+  
   public String getType() {
     return tokenType;
   }

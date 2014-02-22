@@ -12,24 +12,37 @@ public class ParsingTable
 	
 	public ParsingTable(String fileName)
 	{
+		terminals = new String[49];
+		nonterminals = new String[47];
+		table = new int[47][49];
+		
 		fileReader = new SvReader(',');
 		fileReader.read(fileName);
 		int currentLine = 0;
 		
 		while(fileReader.hasLine())
 		{
-			terminals = fileReader.getHeader();
+			String[] tempterminals = fileReader.getHeader();
+			
+			//Quick hack.. couldn't figure out why it was adding quotation marks into the mix
+			terminals = new String[49];
+			for(int i = 0; i < 49; i++)
+			{
+				terminals[i] = tempterminals[i + 2];
+			}
+			terminals[0] = ",";
+			
 			String[] cells = fileReader.getLine();
-			for(int i = 0; i < cells.length - 1; i++)
+			for(int i = 0; i < 49; i++)
 			{
 				try
 				{
 					nonterminals[currentLine] = cells[0];
 					table[currentLine][i] = Integer.parseInt(cells[i + 1]);
 				}
-				catch(Exception e)
+				catch(Exception ex)
 				{
-					System.out.println("Incorrect input into parsing table");
+					//It was an empty cell, don't do anything
 				}
 			}
 			currentLine++;
@@ -40,7 +53,7 @@ public class ParsingTable
 	{
 		for(int i = 0; i < terminals.length; i++)
 		{
-			if(terminals[i].equals(terminal))
+			if(terminals[i].equals(terminal.getToken()) || terminals[i].toLowerCase().equals(terminal.toString().toLowerCase()))
 			{
 				return i;
 			}
@@ -51,9 +64,9 @@ public class ParsingTable
 	
 	public int getNonTerminalIndex(TokenTuple nonterminal)
 	{
-		for(int i = 0; i < terminals.length; i++)
+		for(int i = 0; i < nonterminals.length; i++)
 		{
-			if(nonterminals[i].equals(nonterminal))
+			if(nonterminals[i].equals(nonterminal.getToken()))
 			{
 				return i;
 			}
@@ -68,7 +81,7 @@ public class ParsingTable
 		int nonterm = getNonTerminalIndex(nonterminal);
 		
 		if(term != -1 && nonterm != -1)
-			return table[term][nonterm];
+			return table[nonterm][term];
 		else
 			return -1;
 	}
@@ -80,6 +93,6 @@ public class ParsingTable
 	
 	public int getHeight()
 	{
-		return nonterminals.length;
+		return nonterminals.length - 1;
 	}
 }

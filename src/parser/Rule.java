@@ -66,6 +66,6 @@ public class Rule
 	
 	public int getLength()
 	{
-		return tokenBuilder.length;
+		return tokens.length;
 	}
 }

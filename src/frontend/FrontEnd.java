@@ -3,11 +3,7 @@ package frontend;
 import dfabuilder.FileScraper;
 import parser.Parser;
 import scanner.Scanner;
-import scanner.TokenTuple;
 import scanner.LexicalException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FrontEnd 
 {
@@ -28,11 +24,9 @@ public class FrontEnd
     scanner.scan(lines);
     while (scanner.hasMoreTokens())
     {
-    	TokenTuple t = null;
     	try
     	{
-    		t = scanner.getNextToken();
-    		parser.parse(t);
+    		parser.parse();
     	}
     	catch(LexicalException e)
     	{
