@@ -86,6 +86,12 @@ public class ParsingTable
 			return -1;
 	}
 	
+	public int getCell(int x, TokenTuple t)
+	{
+		int y = getNonTerminalIndex(t);
+		return table[y][x];
+	}
+	
 	public int getWidth()
 	{
 		return terminals.length - 1;
@@ -94,5 +100,10 @@ public class ParsingTable
 	public int getHeight()
 	{
 		return nonterminals.length - 1;
+	}
+	
+	public String[] getTerminals()
+	{
+		return terminals;
 	}
 }

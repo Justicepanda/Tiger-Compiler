@@ -4,10 +4,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileScraper {
-  private BufferedReader br;
+public abstract class FileScraper {
+  protected BufferedReader br;
   private List<String> lineList;
-  private String filename;
+  protected String filename;
 
   public String[] read(String filename) {
     this.filename = filename;
@@ -26,13 +26,7 @@ public class FileScraper {
     return lineList.toArray(lines);
   }
 
-  private void initBufferedReader() {
-    try {
-      br = new BufferedReader((new FileReader(new File(filename))));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-  }
+  protected abstract void initBufferedReader();
 
   private void populateLineList() {
     String line;

@@ -34,12 +34,20 @@ public class Scanner {
   public TokenTuple getNextToken() {
     TokenTuple token = findToken();
     prepareToFindNextToken();
+    
+    if(token.getType().equals("COMMENT"))
+    	return getNextToken();
+    
     return token;
   }
 
   public TokenTuple peekAtNextToken() {
     TokenTuple token = peekToken();
     dfa.reset();
+    
+    if(token.getType().equals("COMMENT"))
+    	return peekAtNextToken();
+    
     return token;
   }
 
@@ -52,6 +60,7 @@ public class Scanner {
     for (int i = 0; i < countToMoveBack; i++) {
       handler.moveBackward();
     }
+    
     return dfa.getToken();
   }
 
@@ -82,5 +91,10 @@ public class Scanner {
   private void changeDfaState() {
     dfa.changeState(handler.getCurrentChar());
     handler.moveForward();
+  }
+  
+  public LinesHandler getLineHandler()
+  {
+	  return handler;
   }
 }

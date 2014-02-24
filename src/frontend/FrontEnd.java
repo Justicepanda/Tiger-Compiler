@@ -1,6 +1,6 @@
 package frontend;
 
-import dfabuilder.FileScraper;
+import dfabuilder.NormalFileScraper;
 import parser.Parser;
 import scanner.Scanner;
 import scanner.LexicalException;
@@ -9,30 +9,20 @@ public class FrontEnd
 {
   private final Scanner scanner;
   private final Parser parser;
-  private final FileScraper scraper;
+  private final NormalFileScraper scraper;
 
   public FrontEnd(Scanner scanner, Parser parser) 
   {
     this.scanner = scanner;
     this.parser = parser;
-    scraper = new FileScraper();
+    scraper = new NormalFileScraper();
   }
 
-  public boolean compile(String filename) 
+  public boolean compile(String filename, boolean debugFlag) 
   {
 	String[] lines = scraper.read(filename);
     scanner.scan(lines);
-    while (scanner.hasMoreTokens())
-    {
-    	try
-    	{
-    		parser.parse();
-    	}
-    	catch(LexicalException e)
-    	{
-    		System.err.println(e.toString());
-    	}
-    }
+    parser.parse(debugFlag);
     return parser.isLegal();
   }
 }

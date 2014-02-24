@@ -11,7 +11,7 @@ public class SvReader {
   }
 
   public void read(String filename) {
-    lines = new FileScraper().read(filename);
+    lines = new ResourceFileScraper().read(filename);
   }
 
   public String[] getHeader() {

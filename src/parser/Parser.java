@@ -15,12 +15,16 @@ public class Parser
 	private Scanner scanner;
 	private boolean debugFlag;
 	private boolean isLegal;
+	private String currentLine;
+	private int currentLineNo;
 	
 	public Parser(Scanner scanner, String tableFileName)
 	{
 		//(DEBUG ONLY)
 		debugFlag = true;
 		
+		currentLine = "";
+		currentLineNo = 0;
 		isLegal = true;
 		this.scanner = scanner;
 		parsingTable = new ParsingTable(tableFileName);
@@ -31,8 +35,9 @@ public class Parser
 		populateRuleTable();
 	}
 	
-	public void parse()
+	public void parse(boolean debugFlag)
 	{
+		this.debugFlag = debugFlag;
 		while (scanner.hasMoreTokens())
 	    {
 	    	try
@@ -40,13 +45,13 @@ public class Parser
 	    		TokenTuple t = scanner.getNextToken();
 	    		//Print out the token type to the console (DEBUG ONLY)
 	    		if(debugFlag && t != null)
-	    			System.out.println(t.getType());
+	    			System.out.print(t.getType() + " ");
 	    		
 	    		//Check if the top of the stack is a nonterminal and if so, find the best fit rule for recursive descent
-    			while(parsingStack.peek().getType().equals("NONTERM"))
-    			{
-	    			int rule = -1;
-	    			if((rule = parsingTable.getCell(t, parsingStack.peek())) != -1)
+				while(parsingStack.peek().getType().equals("NONTERM"))
+				{
+	    			int rule = 0;
+	    			if((rule = parsingTable.getCell(t, parsingStack.peek())) != 0)
 	    			{
 	    				//Replace the nonterminal with its recursive alternative
 	    				parsingStack.pop();
@@ -58,9 +63,13 @@ public class Parser
 	    			else
 	    			{
 	    				//Record the error (syntactical error)
-	    				System.out.println("Error on line ");
+	    				System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <--");
+	    				System.out.println("			 " + HandleError(parsingStack.peek()));
+	    				
+	    				isLegal = false;
+	    				return;
 	    			}
-    			}
+				}
 	    		
 	    		if(parsingStack.peek().getType().equals("EXIT"))
 	    		{
@@ -68,9 +77,9 @@ public class Parser
 	    			isLegal = true;
 	    		}
 	    		else if(t.getType().equals(parsingStack.peek().getType()))
-    			{
-    				parsingStack.pop();
-    			}
+				{
+					parsingStack.pop();
+				}
 	    		
 	    		
 	    	}
@@ -92,6 +101,21 @@ public class Parser
 		{
 			parsingStack.push(rule.tokens[i]);
 		}
+	}
+	
+	public String HandleError(TokenTuple expected)
+	{
+		String returnValue = "expected ";
+		
+		for(int i = 0; i < parsingTable.getWidth(); i++)
+		{
+			if(parsingTable.getCell(i, expected) != 0)
+			{
+				returnValue += "'" + parsingTable.getTerminals()[i] + "' or ";
+			}
+		}
+		
+		return returnValue.substring(0, returnValue.length() - 3);
 	}
 	
 	private void populateRuleTable()

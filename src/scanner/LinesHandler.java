@@ -1,6 +1,6 @@
 package scanner;
 
-class LinesHandler {
+public class LinesHandler {
   private int lineInd;
   private int charInd;
   private final String[] lines;
@@ -60,5 +60,10 @@ class LinesHandler {
 
   private boolean noCharsLeftInLine() {
     return charInd >= lines[lineInd].length();
+  }
+  
+  public String getLineUpToCurrChar(int length)
+  {
+	  return lines[lineInd].substring(0, charInd - length - 1);
   }
 }
