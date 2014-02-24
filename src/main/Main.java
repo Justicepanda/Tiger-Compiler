@@ -31,16 +31,13 @@ public class Main
 			System.err.println("Tiger-Compiler: Invalid arguments.");
 					
 		
-		try
+		if(frontend.compile(filename, debugFlag))
 		{
-			if(frontend.compile(filename, debugFlag))
-			{
-				System.out.println("\nTiger-Compiler: Parse Successful!");
-			}
+			System.out.println("\nTiger-Compiler: Parse Successful!");
 		}
-		catch(Exception e)
+		else
 		{
-			System.err.println("Tiger-Compiler: Invalid filename.");
+			System.out.println("\nTiger-Compiler: Parse Unsuccessful.");
 		}
 	}
 }

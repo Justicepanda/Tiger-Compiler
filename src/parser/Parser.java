@@ -29,7 +29,7 @@ public class Parser
 		this.scanner = scanner;
 		parsingTable = new ParsingTable(tableFileName);
 		parsingStack = new Stack<TokenTuple>();
-		ruleTable = new Rule[90];
+		ruleTable = new Rule[92];
 		parsingStack.push(new TokenTuple("EXIT", "$"));
 		parsingStack.push(new TokenTuple("NONTERM", "<tiger-program>"));
 		populateRuleTable();
@@ -38,7 +38,7 @@ public class Parser
 	public void parse(boolean debugFlag)
 	{
 		this.debugFlag = debugFlag;
-		while (scanner.hasMoreTokens())
+		while (scanner.hasMoreTokens() && isLegal)
 	    {
 	    	try
 	    	{
@@ -47,41 +47,46 @@ public class Parser
 	    		if(debugFlag && t != null)
 	    			System.out.print(t.getType() + " ");
 	    		
-	    		//Check if the top of the stack is a nonterminal and if so, find the best fit rule for recursive descent
-				while(parsingStack.peek().getType().equals("NONTERM"))
-				{
-	    			int rule = 0;
-	    			if((rule = parsingTable.getCell(t, parsingStack.peek())) != 0)
-	    			{
-	    				//Replace the nonterminal with its recursive alternative
-	    				parsingStack.pop();
-	    				push(ruleTable[rule - 1]);
-	    				
-	    				if(parsingStack.peek().getToken().equals("NULL"))
-	    					parsingStack.pop();
-	    			}
-	    			else
-	    			{
-	    				//Record the error (syntactical error)
-	    				System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <--");
-	    				System.out.println("			 " + HandleError(parsingStack.peek()));
-	    				
-	    				isLegal = false;
-	    				return;
-	    			}
-				}
-	    		
-	    		if(parsingStack.peek().getType().equals("EXIT"))
+	    		if(scanner.isValid())
 	    		{
-	    			//Reached the end of the file
-	    			isLegal = true;
+		    		//Check if the top of the stack is a nonterminal and if so, find the best fit rule for recursive descent
+					while(parsingStack.peek().getType().equals("NONTERM"))
+					{
+		    			int rule = 0;
+		    			if((rule = parsingTable.getCell(t, parsingStack.peek())) != 0)
+		    			{
+		    				//Replace the nonterminal with its recursive alternative
+		    				TokenTuple x = parsingStack.pop();
+		    				push(ruleTable[rule - 1]);
+		    				
+		    				if(parsingStack.peek().getToken().equals("NULL"))
+		    					parsingStack.pop();
+		    			}
+		    			else
+		    			{
+		    				//Record the error (syntactical error)
+		    				System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- " + HandleError(parsingStack.peek()));
+		    				
+		    				isLegal = false;
+		    				return;
+		    			}
+					}
+		    		
+		    		if(parsingStack.peek().getType().equals("EXIT"))
+		    		{
+		    			//Reached the end of the file
+		    			isLegal = true;
+		    		}
+		    		else if(t.getType().equals(parsingStack.peek().getType()))
+					{
+						parsingStack.pop();
+					}
+		    		else
+		    		{
+		    			System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- \"" + t.getToken() + "\" is not a valid token. Expected \"" + parsingStack.peek().getToken() + "\".");
+	    				isLegal = false;
+		    		}
 	    		}
-	    		else if(t.getType().equals(parsingStack.peek().getType()))
-				{
-					parsingStack.pop();
-				}
-	    		
-	    		
 	    	}
 	    	catch(LexicalException e)
 	    	{
@@ -92,7 +97,7 @@ public class Parser
 	
 	public boolean isLegal()
 	{
-		return isLegal;
+		return isLegal && scanner.isValid();
 	}
 	
 	private void push(Rule rule)
@@ -107,7 +112,7 @@ public class Parser
 	{
 		String returnValue = "expected ";
 		
-		for(int i = 0; i < parsingTable.getWidth(); i++)
+		for(int i = 0; i < parsingTable.getWidth() - 1; i++)
 		{
 			if(parsingTable.getCell(i, expected) != 0)
 			{
@@ -210,6 +215,7 @@ public class Parser
 		ruleTable[87] = Rule.determineFrom("<multterm-tail> <addterm2>");
 		ruleTable[88] = Rule.determineFrom("<factor-tail> <multterm2>");
 		ruleTable[89] = Rule.determineFrom("id <factor-tail>");
-		
+		ruleTable[90] = Rule.determineFrom("- INTLIT");
+		ruleTable[91] = Rule.determineFrom("return <expr> ;");
 	}
 }

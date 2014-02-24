@@ -12,9 +12,9 @@ public class ParsingTable
 	
 	public ParsingTable(String fileName)
 	{
-		terminals = new String[49];
+		terminals = new String[50];
 		nonterminals = new String[47];
-		table = new int[47][49];
+		table = new int[47][50];
 		
 		fileReader = new SvReader(',');
 		fileReader.read(fileName);
@@ -25,15 +25,15 @@ public class ParsingTable
 			String[] tempterminals = fileReader.getHeader();
 			
 			//Quick hack.. couldn't figure out why it was adding quotation marks into the mix
-			terminals = new String[49];
-			for(int i = 0; i < 49; i++)
+			terminals = new String[50];
+			for(int i = 0; i < 50; i++)
 			{
 				terminals[i] = tempterminals[i + 2];
 			}
 			terminals[0] = ",";
 			
 			String[] cells = fileReader.getLine();
-			for(int i = 0; i < 49; i++)
+			for(int i = 0; i < 50; i++)
 			{
 				try
 				{

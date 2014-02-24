@@ -4,9 +4,15 @@ public class Scanner {
 
   private final TokenDfa dfa;
   private LinesHandler handler;
+  private boolean isValid;
 
   public Scanner(TokenDfa dfa) {
     this.dfa = dfa;
+    isValid = true;
+  }
+  
+  public boolean isValid() {
+	  return isValid;
   }
 
   public void scan(String[] toScan) {
@@ -83,9 +89,18 @@ public class Scanner {
 
   private void handleNonAcceptState() {
     if (dfa.isInErrorState())
-      throw new LexicalException(handler.getLineNo() + 1, handler.getCharNo() + 1, handler.getCurrentChar());
+    {
+    	handler.moveBackward();
+    	System.err.println("\nLexical error (line: " + (handler.getLineNo() + 1) + "): \"" + handler.getCurrentChar() + "\" does not begin a valid token.");
+    	handler.moveForward();
+    	isValid = false;
+    	
+    	dfa.reset();
+    }
     else if (dfa.isInSpaceState())
-      dfa.reset();
+    {
+    	dfa.reset();
+    }
   }
 
   private void changeDfaState() {

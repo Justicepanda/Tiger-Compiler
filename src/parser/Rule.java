@@ -24,7 +24,7 @@ public class Rule
     tokenMap.put("*", new TokenTuple("MULT", "*"));
     tokenMap.put("/", new TokenTuple("DIV", "/"));
     tokenMap.put("=", new TokenTuple("EQ", "="));
-    tokenMap.put("!=", new TokenTuple("NEQ", "!="));
+    tokenMap.put("<>", new TokenTuple("NEQ", "<>"));
     tokenMap.put("<", new TokenTuple("LESSER", "<"));
     tokenMap.put(">", new TokenTuple("GREATER", ">"));
     tokenMap.put("<=", new TokenTuple("LESSEREQ", "<="));
@@ -32,6 +32,8 @@ public class Rule
     tokenMap.put("&", new TokenTuple("AND", "&"));
     tokenMap.put("|", new TokenTuple("OR", "|"));
     tokenMap.put(":=", new TokenTuple("ASSIGN", ":="));
+    tokenMap.put("function", new TokenTuple("FUNC", "function"));
+    tokenMap.put("return", new TokenTuple("RETURN", "return"));
   }
 
   private static String[] tokenStrings;

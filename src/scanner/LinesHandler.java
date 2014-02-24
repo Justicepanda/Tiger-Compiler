@@ -64,6 +64,6 @@ public class LinesHandler {
   
   public String getLineUpToCurrChar(int length)
   {
-	  return lines[lineInd].substring(0, charInd - length - 1);
+	  return lines[lineInd].substring(0, charInd);
   }
 }
