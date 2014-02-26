@@ -3,7 +3,6 @@ package frontend;
 import dfabuilder.NormalFileScraper;
 import parser.Parser;
 import scanner.Scanner;
-import scanner.LexicalException;
 
 public class FrontEnd 
 {
@@ -18,9 +17,8 @@ public class FrontEnd
     scraper = new NormalFileScraper();
   }
 
-  public boolean compile(String filename, boolean debugFlag) 
-  {
-	String[] lines = scraper.read(filename);
+  public boolean compile(String filename, boolean debugFlag)  {
+    String[] lines = scraper.read(filename);
     scanner.scan(lines);
     parser.parse(debugFlag);
     return parser.isLegal();

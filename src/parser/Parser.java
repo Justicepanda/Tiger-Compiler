@@ -3,7 +3,6 @@ package parser;
 import scanner.LexicalException;
 import scanner.Scanner;
 import scanner.TokenTuple;
-import dfabuilder.FileScraper;
 
 import java.util.Stack;
 
@@ -13,18 +12,11 @@ public class Parser
 	private ParsingTable parsingTable;
 	private Rule[] ruleTable;
 	private Scanner scanner;
-	private boolean debugFlag;
 	private boolean isLegal;
-	private String currentLine;
-	private int currentLineNo;
-	
+
 	public Parser(Scanner scanner, String tableFileName)
 	{
 		//(DEBUG ONLY)
-		debugFlag = true;
-		
-		currentLine = "";
-		currentLineNo = 0;
 		isLegal = true;
 		this.scanner = scanner;
 		parsingTable = new ParsingTable(tableFileName);
@@ -52,11 +44,10 @@ public class Parser
 		    		//Check if the top of the stack is a nonterminal and if so, find the best fit rule for recursive descent
 					while(parsingStack.peek().getType().equals("NONTERM"))
 					{
-		    			int rule = 0;
+		    			int rule;
 		    			if((rule = parsingTable.getCell(t, parsingStack.peek())) != 0)
 		    			{
 		    				//Replace the nonterminal with its recursive alternative
-		    				TokenTuple x = parsingStack.pop();
 		    				push(ruleTable[rule - 1]);
 		    				
 		    				if(parsingStack.peek().getToken().equals("NULL"))
@@ -65,10 +56,10 @@ public class Parser
 		    			else
 		    			{
 		    				//Record the error (syntactical error)
-		    				System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- " + HandleError(parsingStack.peek()));
+		    				System.err.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- " + HandleError(parsingStack.peek()));
 		    				
 		    				isLegal = false;
-		    				return;
+                return;
 		    			}
 					}
 		    		
@@ -83,7 +74,7 @@ public class Parser
 					}
 		    		else
 		    		{
-		    			System.out.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- \"" + t.getToken() + "\" is not a valid token. Expected \"" + parsingStack.peek().getToken() + "\".");
+		    			System.err.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar(t.getToken().length()) + " <-- \"" + t.getToken() + "\" is not a valid token. Expected \"" + parsingStack.peek().getToken() + "\".");
 	    				isLegal = false;
 		    		}
 	    		}
