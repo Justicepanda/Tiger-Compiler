@@ -28,7 +28,7 @@ public class Phase1Tests {
     System.setErr(new PrintStream(errStream));
 
     Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    Parser parser = new DebugParser(scanner, "ParsingTable.csv");
+    Parser parser = new DebugParser(scanner, "ParsingTable.csv", "GrammarRules");
     frontend = new FrontEnd(scanner, parser);
 
   }

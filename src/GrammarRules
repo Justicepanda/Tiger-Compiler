@@ -1,0 +1,92 @@
+let <declaration-segment> in <stat-seq> end
+<type-declaration-list> <var-declaration-list> <funct-declaration-list>
+NULL
+<type-declaration> <type-declaration-list>
+NULL
+<var-declaration> <var-declaration-list>
+NULL
+<funct-declaration> <funct-declaration-list>
+type id = <type> ;
+<type-id>
+array [ INTLIT ] of <type-id>
+int
+string
+id
+var <id-list> : <type-id> <optional-init> ;
+id <id-list-tail>
+, id <id-list-tail>
+NULL
+NULL
+:= <const>
+function id ( <param-list> ) <ret-type> begin <stat-seq> end ;
+NULL
+<param> <param-list-tail>
+NULL
+, <param> <param-list-tail>
+NULL
+: <type-id>
+id : <type-id>
+
+<stat> <stat-seq>
+NULL
+id <stat-id> ;
+( <expr-list> )
+<lvalue> := <stat-id-tail>
+if <expr> then <stat-seq> <stat-tail>
+endif ;
+else <stat-seq> endif ;
+while <expr> do <stat-seq> enddo ;
+for id := <expr> to <expr> do <stat-seq> enddo ;
+break ;
+- <expr>
+<andorterm>
+<ineqterm> <andorterm2>
+<andorop> <ineqterm> <andorterm2>
+NULL
+|
+&
+<addterm> <ineqterm2>
+<ineq> <addterm> <ineqterm2>
+NULL
+<>
+=
+<
+>
+<=
+<multterm> <addterm2>
+<addop> <multterm> <addterm2>
+NULL
++
+-
+<factor> <multterm2>
+<multop> <factor> <multterm2>
+NULL
+/
+*
+( <expr> )
+<const>
+<lvalue>
+INTLIT
+STRLIT
+nil
+NULL
+<expr> <expr-list-tail>
+, <expr> <expr-list-tail>
+NULL
+[ <expr> ] <lvalue>
+NULL
+>=
+!=
+
+id <stat-id-tail-tail>
+<expr>
+( <expr-list> )
+<expr-tail>
+<andorterm-tail>
+<ineqterm-tail> <andorterm2>
+<addterm-tail> <ineqterm2>
+<multterm-tail> <addterm2>
+<factor-tail> <multterm2>
+id <factor-tail>
+- INTLIT
+return <expr> ;

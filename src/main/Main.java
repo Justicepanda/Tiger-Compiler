@@ -25,9 +25,9 @@ class Main
     Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
     Parser parser;
     if (debugFlag)
-      parser = new DebugParser(scanner, "ParsingTable.csv");
+      parser = new DebugParser(scanner, "ParsingTable.csv", "GrammarRules");
     else
-      parser = new Parser(scanner, "ParsingTable.csv");
+      parser = new Parser(scanner, "ParsingTable.csv", "GrammarRules");
 
     FrontEnd frontend = new FrontEnd(scanner, parser);
 

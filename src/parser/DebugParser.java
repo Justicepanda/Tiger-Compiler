@@ -4,8 +4,8 @@ import frontend.TokenTuple;
 import scanner.Scanner;
 
 public class DebugParser extends Parser {
-  public DebugParser(Scanner scanner, String tableFileName) {
-    super(scanner, tableFileName);
+  public DebugParser(Scanner scanner, String tableFilename, String rulesFilename) {
+    super(scanner, tableFilename, rulesFilename);
   }
 
   @Override
