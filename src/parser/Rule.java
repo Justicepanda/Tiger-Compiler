@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Rule {
-  private static Map<String, TokenTuple> tokenMap = new HashMap<String, TokenTuple>();
+  private static final Map<String, TokenTuple> tokenMap = new HashMap<String, TokenTuple>();
 
   static {
     tokenMap.put(",", new TokenTuple("COMMA", ","));
@@ -39,7 +39,7 @@ public class Rule {
   private static String[] tokenStrings;
   private static TokenTuple[] tokenBuilder;
 
-  TokenTuple[] tokens;
+  final TokenTuple[] tokens;
 
   public static Rule determineFrom(String rule) {
     tokenStrings = rule.split(" ");
@@ -48,7 +48,7 @@ public class Rule {
     return new Rule(tokenBuilder);
   }
 
-  public static void interpretTokens() {
+  private static void interpretTokens() {
     for (int i = 0; i < tokenBuilder.length; i++)
       interpretToken(i);
   }

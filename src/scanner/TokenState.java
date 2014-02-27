@@ -24,8 +24,8 @@ public class TokenState implements State {
     numDestination = Integer.MAX_VALUE;
   }
 
-  public boolean isAcceptState() {
-    return isAcceptState;
+  public boolean isNotAcceptState() {
+    return !isAcceptState;
   }
 
   public String getName() {

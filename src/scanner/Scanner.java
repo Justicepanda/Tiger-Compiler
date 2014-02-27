@@ -45,14 +45,14 @@ public class Scanner {
   }
 
   private TokenTuple findToken() {
-    while (!dfa.isInAcceptState())
+    while (dfa.isNotInAcceptState())
       processNextChar();
     return dfa.getToken();
   }
 
   private void processNextChar() {
     changeDfaState();
-    if (!dfa.isInAcceptState())
+    if (dfa.isNotInAcceptState())
       handleNonAcceptState();
   }
 
@@ -82,9 +82,8 @@ public class Scanner {
     dfa.changeState(handler.getCurrentChar());
     handler.moveForward();
   }
-  
-  public LinesHandler getLineHandler()
-  {
-	  return handler;
+
+  public String getLineInfo() {
+    return handler.getLineInfo();
   }
 }

@@ -18,7 +18,7 @@ public class TokenDfa extends Dfa {
   /**
    * Returns the current token with any trailing characters removed.
    */
-  public String getStateValue() {
+  String getStateValue() {
     return currValue.substring(0, currValue.length() - 1);
   }
 
@@ -38,10 +38,10 @@ public class TokenDfa extends Dfa {
     currValue = "";
   }
 
-  public boolean isInAcceptState() {
-    return getState() >= 0 &&
-            getCurrState().isAcceptState() &&
-            !isInSpaceState() &&
-            !isInErrorState();
+  public boolean isNotInAcceptState() {
+    return getState() < 0 ||
+            getCurrState().isNotAcceptState() ||
+            isInSpaceState() ||
+            isInErrorState();
   }
 }

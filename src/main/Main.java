@@ -1,16 +1,12 @@
 package main;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import frontend.FrontEnd;
 import scanner.TokenDfa;
 import scanner.TokenDfaBuilder;
 import scanner.Scanner;
 import parser.Parser;
 
-public class Main 
+class Main
 {	
 	public static void main(String[] args)
 	{	
@@ -20,13 +16,13 @@ public class Main
 		
 		boolean debugFlag = false;
 		String filename = "";
-		
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-d"))
-				debugFlag = true;
-			else
-				filename = args[i];
-		}
+
+    for (String arg : args) {
+      if (arg.equals("-d"))
+        debugFlag = true;
+      else
+        filename = arg;
+    }
 		if (args.length > 2 || (args.length > 1 && !debugFlag))
 			System.err.println("Tiger-Compiler: Invalid arguments.");
 					

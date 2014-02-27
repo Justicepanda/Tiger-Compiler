@@ -8,67 +8,114 @@ import java.util.Stack;
 
 public class Parser {
   private Stack<TokenTuple> parsingStack;
-  private ParsingTable parsingTable;
-  private Rule[] ruleTable;
-  private Scanner scanner;
+  private final ParsingTable parsingTable;
+  private final Rule[] ruleTable;
+  private final Scanner scanner;
   private boolean isLegal;
 
   public Parser(Scanner scanner, String tableFileName) {
     isLegal = true;
     this.scanner = scanner;
     parsingTable = new ParsingTable(tableFileName);
-    parsingStack = new Stack<TokenTuple>();
     ruleTable = new Rule[92];
-    parsingStack.push(new TokenTuple("EXIT", "$"));
-    parsingStack.push(new TokenTuple("NONTERM", "<tiger-program>"));
+    initParsingStack();
     populateRuleTable();
   }
 
+  private void initParsingStack() {
+    parsingStack = new Stack<TokenTuple>();
+    parsingStack.push(new TokenTuple("EXIT", "$"));
+    parsingStack.push(new TokenTuple("NONTERM", "<tiger-program>"));
+  }
+
   public void parse(boolean debugFlag) {
-    while (scanner.hasMoreTokens() && isLegal) {
-      try {
-        TokenTuple t = scanner.getNextToken();
-        //Print out the token type to the console (DEBUG ONLY)
-        if (debugFlag && t != null)
-          System.out.print(t.getType() + " ");
+    while (scanner.hasMoreTokens() && isLegal)
+      tryNextToken(debugFlag, scanner.getNextToken());
+  }
 
-        if (scanner.isValid()) {
-          //Check if the top of the stack is a nonterminal and if so, find the best fit rule for recursive descent
-          while (parsingStack.peek().getType().equals("NONTERM")) {
-            int rule;
-            if ((rule = parsingTable.getCell(t, parsingStack.peek())) != 0) {
-              //Replace the nonterminal with its recursive alternative
-              parsingStack.pop();
-              push(ruleTable[rule - 1]);
-
-              if (parsingStack.peek().getToken().equals("NULL"))
-                parsingStack.pop();
-            } else {
-              //Record the error (syntactical error)
-              System.err.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar() + " <-- " + HandleError(parsingStack.peek()));
-
-              isLegal = false;
-              return;
-            }
-          }
-
-          if (parsingStack.peek().getType().equals("EXIT")) {
-            //Reached the end of the file
-            isLegal = true;
-          } else if (t.getType().equals(parsingStack.peek().getType())) {
-            parsingStack.pop();
-          } else {
-            System.err.println("\nParsing error (line " + (scanner.getLineHandler().getLineNo() + 1) + "): " + scanner.getLineHandler().getLineUpToCurrChar() + " <-- \"" + t.getToken() + "\" is not a valid token. Expected \"" + parsingStack.peek().getToken() + "\".");
-            isLegal = false;
-          }
-        }
-      } catch (LexicalException e) {
-        System.err.println(e.toString());
-      }
+  private void tryNextToken(boolean debugFlag, TokenTuple token) {
+    try {
+      handleNextToken(debugFlag, token);
+    } catch (LexicalException e) {
+      System.err.println(e.toString());
     }
   }
 
-  public boolean isLegal() {
+  private void handleNextToken(boolean debugFlag, TokenTuple token) {
+    if (debugFlag)
+      System.out.print(token.getType() + " ");
+    while (topOfStackIsNonTerminal() && noErrorsEncountered())
+      handleNonTerminal(token);
+    handleTerminal(token);
+  }
+
+  private void handleNonTerminal(TokenTuple token) {
+    int rule = findTopOfStackInTable(token);
+    if (ruleIsLegal(rule))
+      replaceNonTerminalWithContent(rule);
+    else {
+      handleNonTerminalError();
+    }
+  }
+
+  private void replaceNonTerminalWithContent(int rule) {
+    parsingStack.pop();
+    push(ruleTable[rule - 1]);
+    if (parsingStack.peek().getToken().equals("NULL"))
+      parsingStack.pop();
+  }
+
+  private void handleNonTerminalError() {
+    System.err.println("\nParsing error " +
+            scanner.getLineInfo() +
+            " <-- " +
+            printExpectedTokens(parsingStack.peek()));
+    isLegal = false;
+  }
+
+  String printExpectedTokens(TokenTuple expected) {
+    String returnValue = "expected ";
+    for (int i = 0; i < parsingTable.getWidth() - 1; i++)
+      if (ruleIsLegal(parsingTable.getCell(i, expected)))
+        returnValue += "'" + parsingTable.getTerminal(i) + "' or ";
+    return returnValue.substring(0, returnValue.length() - 3);
+  }
+
+  private void handleTerminal(TokenTuple token) {
+    if (tokenMatchesStack(token))
+      parsingStack.pop();
+    else if (noErrorsEncountered())
+      handleTerminalError(token);
+  }
+
+  private boolean tokenMatchesStack(TokenTuple token) {
+    return token.getType().equals(parsingStack.peek().getType());
+  }
+
+  private void handleTerminalError(TokenTuple token) {
+    System.err.println("\nParsing error " +
+            scanner.getLineInfo() +
+            " <-- \"" +
+            token.getToken() +
+            "\" is not a valid token. Expected \"" +
+            parsingStack.peek().getToken() +
+            "\".");
+    isLegal = false;
+  }
+
+  private int findTopOfStackInTable(TokenTuple t) {
+    return parsingTable.getCell(t, parsingStack.peek());
+  }
+
+  private boolean topOfStackIsNonTerminal() {
+    return parsingStack.peek().getType().equals("NONTERM");
+  }
+
+  private boolean ruleIsLegal(int rule) {
+    return rule != 0;
+  }
+
+  public boolean noErrorsEncountered() {
     return isLegal && scanner.isValid();
   }
 
@@ -76,18 +123,6 @@ public class Parser {
     for (int i = rule.getLength() - 1; i >= 0; i--) {
       parsingStack.push(rule.tokens[i]);
     }
-  }
-
-  public String HandleError(TokenTuple expected) {
-    String returnValue = "expected ";
-
-    for (int i = 0; i < parsingTable.getWidth() - 1; i++) {
-      if (parsingTable.getCell(i, expected) != 0) {
-        returnValue += "'" + parsingTable.getTerminal(i) + "' or ";
-      }
-    }
-
-    return returnValue.substring(0, returnValue.length() - 3);
   }
 
   private void populateRuleTable() {

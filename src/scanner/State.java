@@ -1,7 +1,7 @@
 package scanner;
 
 public interface State {
-  public boolean isAcceptState();
+  public boolean isNotAcceptState();
   public int getDestination(String input);
   public String getName();
 }

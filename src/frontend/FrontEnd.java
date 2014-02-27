@@ -21,6 +21,6 @@ public class FrontEnd
     String[] lines = scraper.read(filename);
     scanner.scan(lines);
     parser.parse(debugFlag);
-    return parser.isLegal();
+    return parser.noErrorsEncountered();
   }
 }

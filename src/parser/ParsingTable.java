@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ParsingTable {
+class ParsingTable {
   private List<List<Integer>> table;
   private final SvReader fileReader;
   private final List<String> nonTerminals;

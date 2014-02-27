@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FileScraper {
-  protected BufferedReader br;
+  BufferedReader br;
   private List<String> lineList;
-  protected String filename;
+  String filename;
 
   public String[] read(String filename) {
     this.filename = filename;

@@ -3,15 +3,15 @@ package scanner;
 import java.util.List;
 
 public abstract class Dfa {
-  protected final List<State> states;
+  private final List<State> states;
   private int currState;
 
-  protected Dfa(List<State> states) {
+  Dfa(List<State> states) {
     this.states = states;
     reset();
   }
 
-  public String getStateName() {
+  String getStateName() {
     return states.get(currState).getName();
   }
 
@@ -30,17 +30,17 @@ public abstract class Dfa {
     adjustValue(input);
   }
 
-  protected void adjustState(String input) {
+  void adjustState(String input) {
     currState = getCurrState().getDestination(input);
   }
 
   protected abstract void adjustValue(String input);
 
-  protected State getCurrState() {
+  State getCurrState() {
     return states.get(currState);
   }
 
-  protected int getState() {
+  int getState() {
     return currState;
   }
 

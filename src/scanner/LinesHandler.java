@@ -1,6 +1,6 @@
 package scanner;
 
-public class LinesHandler {
+class LinesHandler {
   private int lineInd;
   private int charInd;
   private final String[] lines;
@@ -43,7 +43,7 @@ public class LinesHandler {
     moveForward();
   }
 
-  public int getLineNo() {
+  int getLineNo() {
     return lineInd;
   }
 
@@ -64,7 +64,12 @@ public class LinesHandler {
     return charInd >= lines[lineInd].length();
   }
   
-  public String getLineUpToCurrChar() {
+  String getLineUpToCurrChar() {
 	  return lines[lineInd].substring(0, charInd);
   }
+
+  public String getLineInfo() {
+    return "(line " + (lineInd + 1) + "): " + getLineUpToCurrChar();
+  }
+
 }
