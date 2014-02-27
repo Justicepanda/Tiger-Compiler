@@ -1,4 +1,4 @@
-import frontend.FrontEnd;
+import compiler.Compiler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import static junit.framework.Assert.*;
 
 public class Phase1Tests {
 
-  private FrontEnd frontend;
+  private Compiler frontend;
   private ByteArrayOutputStream outStream;
   private ByteArrayOutputStream errStream;
 
@@ -29,7 +29,7 @@ public class Phase1Tests {
 
     Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
     Parser parser = new DebugParser(scanner, "ParsingTable.csv", "GrammarRules");
-    frontend = new FrontEnd(scanner, parser);
+    frontend = new compiler.Compiler(scanner, parser);
 
   }
 

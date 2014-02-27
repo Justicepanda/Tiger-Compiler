@@ -1,6 +1,6 @@
 package parser;
 
-import frontend.TokenTuple;
+import compiler.TokenTuple;
 
 import java.util.HashMap;
 import java.util.Map;

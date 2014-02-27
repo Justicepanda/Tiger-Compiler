@@ -1,6 +1,6 @@
 package parser;
 
-import frontend.TokenTuple;
+import compiler.TokenTuple;
 import scanner.Scanner;
 
 public class DebugParser extends Parser {

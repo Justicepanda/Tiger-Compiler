@@ -1,6 +1,6 @@
 package scanner;
 
-import frontend.TokenTuple;
+import compiler.TokenTuple;
 
 public class Scanner {
 
@@ -28,7 +28,7 @@ public class Scanner {
 
   private void removeSpaces() {
     while (handler.hasChars() && dfa.isInSpaceState())
-      processNextChar();
+      processNextChar(handler.getCurrentChar());
   }
 
   /**
@@ -46,12 +46,12 @@ public class Scanner {
 
   private TokenTuple findToken() {
     while (dfa.isNotInAcceptState())
-      processNextChar();
+      processNextChar(handler.getCurrentChar());
     return dfa.getToken();
   }
 
-  private void processNextChar() {
-    changeDfaState();
+  private void processNextChar(char c) {
+    changeDfaState(c);
     if (dfa.isNotInAcceptState())
       handleNonAcceptState();
   }
@@ -78,8 +78,8 @@ public class Scanner {
     return token.getType().equals("COMMENT");
   }
 
-  private void changeDfaState() {
-    dfa.changeState(handler.getCurrentChar());
+  private void changeDfaState(char c) {
+    dfa.changeState(c);
     handler.moveForward();
   }
 

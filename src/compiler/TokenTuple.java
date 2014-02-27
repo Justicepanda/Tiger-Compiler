@@ -1,4 +1,4 @@
-package frontend;
+package compiler;
 
 public class TokenTuple {
   private final String tokenType;

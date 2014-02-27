@@ -1,16 +1,16 @@
-package frontend;
+package compiler;
 
 import utilities.NormalFileScraper;
 import parser.Parser;
 import scanner.Scanner;
 
-public class FrontEnd 
+public class Compiler
 {
   private final Scanner scanner;
   private final Parser parser;
   private final NormalFileScraper scraper;
 
-  public FrontEnd(Scanner scanner, Parser parser) 
+  public Compiler(Scanner scanner, Parser parser)
   {
     this.scanner = scanner;
     this.parser = parser;

@@ -1,7 +1,7 @@
 package scanner;
 
-public class LexicalException extends RuntimeException {
-  public LexicalException(int lineNo, int charNo, String text) {
-    super("Lexical Error! Line: " + lineNo + ", character: " + charNo + ", " + "text: " + text);
+class LexicalException extends RuntimeException {
+  public LexicalException(int lineNo, char c) {
+    super("\nLexical error (line: " + (lineNo + 1) + "): \"" + c + "\" does not begin a valid token.");
   }
 }

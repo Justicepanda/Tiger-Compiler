@@ -1,8 +1,7 @@
 package parser;
 
-import scanner.LexicalException;
 import scanner.Scanner;
-import frontend.TokenTuple;
+import compiler.TokenTuple;
 
 import java.util.List;
 import java.util.Stack;
@@ -31,15 +30,7 @@ public class Parser {
 
   public void parse() {
     while (scanner.hasMoreTokens() && isLegal)
-      tryNextToken(scanner.getNextToken());
-  }
-
-  private void tryNextToken(TokenTuple token) {
-    try {
-      handleNextToken(token);
-    } catch (LexicalException e) {
-      System.err.println(e.toString());
-    }
+      handleNextToken(scanner.getNextToken());
   }
 
   void handleNextToken(TokenTuple token) {

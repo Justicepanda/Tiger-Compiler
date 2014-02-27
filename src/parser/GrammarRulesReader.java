@@ -5,9 +5,8 @@ import utilities.ResourceFileScraper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrammarRulesReader {
-  private ResourceFileScraper scraper;
-  private List<Rule> rules;
+class GrammarRulesReader {
+  private final ResourceFileScraper scraper;
 
   public GrammarRulesReader() {
     scraper = new ResourceFileScraper();
@@ -15,7 +14,7 @@ public class GrammarRulesReader {
 
   public List<Rule> determineFrom(String filename) {
     String[] lines = scraper.read(filename);
-    rules = new ArrayList<Rule>();
+    List<Rule> rules = new ArrayList<Rule>();
     for (String line: lines) {
       rules.add(Rule.determineFrom(line));
     }

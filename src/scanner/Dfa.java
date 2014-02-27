@@ -25,9 +25,10 @@ public abstract class Dfa {
    * of the user to query tokens, token types, and accept states. If the
    * current state becomes -1 it represents a lexical error.
    */
-  public void changeState(String input) {
-    adjustState(input);
-    adjustValue(input);
+  public void changeState(char input) {
+
+    adjustState("" + input);
+    adjustValue("" + input);
   }
 
   void adjustState(String input) {

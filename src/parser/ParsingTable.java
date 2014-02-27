@@ -1,7 +1,7 @@
 package parser;
 
 import utilities.SvReader;
-import frontend.TokenTuple;
+import compiler.TokenTuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;

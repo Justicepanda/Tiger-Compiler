@@ -17,8 +17,8 @@ class LinesHandler {
     charInd = 0;
   }
 
-  public String getCurrentChar() {
-    return "" + lines[lineInd].charAt(charInd);
+  public char getCurrentChar() {
+    return lines[lineInd].charAt(charInd);
   }
 
   public boolean hasChars() {
@@ -40,6 +40,7 @@ class LinesHandler {
   void generateLexicalException() {
     moveBackward();
     System.err.println("\nLexical error (line: " + (getLineNo() + 1) + "): \"" + getCurrentChar() + "\" does not begin a valid token.");
+    //LexicalException e = new LexicalException(lineInd, getCurrentChar());
     moveForward();
   }
 
