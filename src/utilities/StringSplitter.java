@@ -21,11 +21,24 @@ public class StringSplitter {
 
   private List<String> splitToList() {
     List<String> split = new ArrayList<String>();
-    for (currChar = 0; currChar < toSplit.length(); currChar++)
+    currChar = -1;
+    while (currChar < toSplit.length()-1) {
+      currChar++;
       if (toSplit.charAt(currChar) == splitAbout)
         return nextIteration(split);
+      else if (nextTwoCharsAre('\\', splitAbout) || nextTwoCharsAre('\\', '\\'))
+        removeCurrChar();
+    }
     split.add(toSplit);
     return split;
+  }
+
+  boolean nextTwoCharsAre(char first, char second) {
+    return toSplit.charAt(currChar) == first && toSplit.charAt(currChar+1) == second;
+  }
+
+  private void removeCurrChar() {
+    toSplit = toSplit.substring(0, currChar) + toSplit.substring(currChar+1);
   }
 
   private List<String> nextIteration(List<String> split) {

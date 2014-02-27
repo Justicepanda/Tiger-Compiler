@@ -45,7 +45,6 @@ public class TokenState implements State {
     else if (tag.equals("~`!@#$%?")) otherPunctuationDestination = destination;
     else if (tag.equals("SPACE")) spaceDestination = destination;
     else if (tag.equals("0-9")) numDestination = destination;
-    else if (tag.equals("comma")) destinations.put(",", destination);
     else destinations.put(tag, destination);
   }
 
@@ -55,6 +54,7 @@ public class TokenState implements State {
     if (spaceDestination == Integer.MAX_VALUE) spaceDestination = destination;
     if (numDestination == Integer.MAX_VALUE) numDestination = destination;
   }
+
 
   private boolean isOtherPunctuation(String str) {
     char ch = str.charAt(0);

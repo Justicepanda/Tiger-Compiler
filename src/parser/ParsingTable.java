@@ -26,12 +26,8 @@ public class ParsingTable {
       String[] tempTerminals = fileReader.getHeader();
 
       //Quick hack.. couldn't figure out why it was adding quotation marks into the mix
-      for (int i = 0; i < 50; i++) {
-        if (tempTerminals[i+2].equals("COMMA"))
-          terms.add(i, ",");
-        else
-          terms.add(i, tempTerminals[i+2]);
-      }
+      for (int i = 0; i < 50; i++)
+        terms.add(i, tempTerminals[i+2]);
 
       String[] cells = fileReader.getLine();
       for (int i = 0; i < 50; i++) {
