@@ -1,6 +1,7 @@
 package main;
 
 import frontend.FrontEnd;
+import parser.DebugParser;
 import scanner.TokenDfa;
 import scanner.TokenDfaBuilder;
 import scanner.Scanner;
@@ -10,10 +11,7 @@ class Main
 {	
 	public static void main(String[] args)
 	{	
-		Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-		Parser parser = new Parser(scanner, "ParsingTable.csv");
-		FrontEnd frontend = new FrontEnd(scanner, parser);
-		
+
 		boolean debugFlag = false;
 		String filename = "";
 
@@ -23,11 +21,21 @@ class Main
       else
         filename = arg;
     }
+
+    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    Parser parser;
+    if (debugFlag)
+      parser = new DebugParser(scanner, "ParsingTable.csv");
+    else
+      parser = new Parser(scanner, "ParsingTable.csv");
+
+    FrontEnd frontend = new FrontEnd(scanner, parser);
+
 		if (args.length > 2 || (args.length > 1 && !debugFlag))
 			System.err.println("Tiger-Compiler: Invalid arguments.");
 					
 		
-		if(frontend.compile(filename, debugFlag))
+		if(frontend.compile(filename))
 		{
 			System.out.println("\nTiger-Compiler: Parse Successful!");
 		}

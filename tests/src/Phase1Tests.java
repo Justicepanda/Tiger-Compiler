@@ -2,6 +2,7 @@ import frontend.FrontEnd;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import parser.DebugParser;
 import parser.Parser;
 import scanner.Scanner;
 import scanner.TokenDfa;
@@ -27,7 +28,7 @@ public class Phase1Tests {
     System.setErr(new PrintStream(errStream));
 
     Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    Parser parser = new Parser(scanner, "ParsingTable.csv");
+    Parser parser = new DebugParser(scanner, "ParsingTable.csv");
     frontend = new FrontEnd(scanner, parser);
 
   }
@@ -40,7 +41,7 @@ public class Phase1Tests {
 
   @Test
   public void ex1() {
-    assertTrue(frontend.compile("./tests/ex1.tiger", true));
+    assertTrue(frontend.compile("./tests/ex1.tiger"));
     String ex1Tokens = "LET TYPE ID EQ ARRAY LBRACK INTLIT RBRACK OF ID SEMI VAR ID COMMA ID COLON ID ASSIGN INTLIT SEMI VAR ID " +
             "COMMA ID COLON ID ASSIGN INTLIT SEMI IN FOR ID ASSIGN INTLIT TO INTLIT DO ID ASSIGN ID PLUS ID " +
             "LBRACK ID RBRACK MULT ID LBRACK ID RBRACK SEMI ENDDO SEMI ID LPAREN ID RPAREN SEMI END ";
@@ -49,7 +50,7 @@ public class Phase1Tests {
 
   @Test
   public void ex2() {
-    assertTrue(frontend.compile("./tests/ex2.tiger", true));
+    assertTrue(frontend.compile("./tests/ex2.tiger"));
     String ex2Tokens = "LET FUNC ID LPAREN ID COLON ID RPAREN BEGIN ID LPAREN ID RPAREN SEMI END SEMI IN ID LPAREN INTLIT RPAREN " +
             "SEMI END ";
     assertEquals(ex2Tokens, outStream.toString());
@@ -57,7 +58,7 @@ public class Phase1Tests {
 
   @Test
   public void ex3() {
-    assertTrue(frontend.compile("./tests/ex3.tiger", true));
+    assertTrue(frontend.compile("./tests/ex3.tiger"));
     String ex3Tokens = "LET FUNC ID LPAREN ID COLON ID RPAREN COLON ID BEGIN RETURN LPAREN ID RPAREN SEMI END SEMI IN ID LPAREN " +
             "INTLIT RPAREN SEMI END ";
     assertEquals(ex3Tokens, outStream.toString());
@@ -65,7 +66,7 @@ public class Phase1Tests {
 
   @Test
   public void ex4() {
-    assertFalse(frontend.compile("./tests/ex4.tiger", true));
+    assertFalse(frontend.compile("./tests/ex4.tiger"));
     String ex4Tokens = "LET VAR ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI ID LPAREN ID RPAREN SEMI END ";
     assertEquals(ex4Tokens, outStream.toString());
     String ex4ErrorMessage = "\nLexical error (line: 2): \"_\" does not begin a valid token.\n";
@@ -74,7 +75,7 @@ public class Phase1Tests {
 
   @Test
   public void ex5() {
-    assertFalse(frontend.compile("./tests/ex5.tiger", true));
+    assertFalse(frontend.compile("./tests/ex5.tiger"));
     String ex5Tokens = "LET VAR ID COMMA ID COLON ID ASSIGN INTLIT SEMI IN IF LPAREN ID EQ ID RPAREN THEN ID ASSIGN ID INTLIT " +
             "SEMI ENDIF SEMI ID LPAREN ID RPAREN SEMI END ";
     assertEquals(ex5Tokens, outStream.toString());
@@ -84,7 +85,7 @@ public class Phase1Tests {
 
   @Test
   public void ex6() {
-    assertFalse(frontend.compile("./tests/ex6.tiger", true));
+    assertFalse(frontend.compile("./tests/ex6.tiger"));
     String ex6Tokens = "LET VAR ID COMMA ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI WHILE LPAREN ID LESSER INTLIT RPAREN DO ID PLUS ";
     assertEquals(ex6Tokens, outStream.toString());
     String ex6ErrorMessage = "\nParsing error (line 6):                a+ <-- expected '(' or '[' or ':=' \n";
@@ -93,7 +94,7 @@ public class Phase1Tests {
 
   @Test
   public void ex7() {
-    assertFalse(frontend.compile("./tests/ex7.tiger", true));
+    assertFalse(frontend.compile("./tests/ex7.tiger"));
     String ex7Tokens = "LET TYPE ID ASSIGN ";
     assertEquals(ex7Tokens, outStream.toString());
     String ex7ErrorMessage = "\nParsing error (line 2):         type int_arr := <-- \":=\" is not a valid token. Expected \"=\".\n";
@@ -102,7 +103,7 @@ public class Phase1Tests {
 
   @Test
   public void tictactoe() {
-    assertTrue(frontend.compile("./tests/tictactoe.tiger", true));
+    assertTrue(frontend.compile("./tests/tictactoe.tiger"));
     String tictactoeTokens = "LET TYPE ID EQ ARRAY LBRACK INTLIT RBRACK OF ID SEMI TYPE ID EQ ARRAY LBRACK INTLIT RBRACK OF ID SEMI VAR" +
             " ID COLON ID SEMI VAR ID COLON ID SEMI VAR ID COLON ID ASSIGN STRLIT SEMI VAR ID COLON ID SEMI VAR" +
             " ID COLON ID SEMI VAR ID COMMA ID COMMA ID COMMA ID COLON ID SEMI VAR ID COLON ID ASSIGN INTLIT" +

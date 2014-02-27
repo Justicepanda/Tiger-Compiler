@@ -17,10 +17,10 @@ public class FrontEnd
     scraper = new NormalFileScraper();
   }
 
-  public boolean compile(String filename, boolean debugFlag)  {
+  public boolean compile(String filename)  {
     String[] lines = scraper.read(filename);
     scanner.scan(lines);
-    parser.parse(debugFlag);
+    parser.parse();
     return parser.noErrorsEncountered();
   }
 }

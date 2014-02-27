@@ -28,22 +28,20 @@ public class Parser {
     parsingStack.push(new TokenTuple("NONTERM", "<tiger-program>"));
   }
 
-  public void parse(boolean debugFlag) {
+  public void parse() {
     while (scanner.hasMoreTokens() && isLegal)
-      tryNextToken(debugFlag, scanner.getNextToken());
+      tryNextToken(scanner.getNextToken());
   }
 
-  private void tryNextToken(boolean debugFlag, TokenTuple token) {
+  private void tryNextToken(TokenTuple token) {
     try {
-      handleNextToken(debugFlag, token);
+      handleNextToken(token);
     } catch (LexicalException e) {
       System.err.println(e.toString());
     }
   }
 
-  private void handleNextToken(boolean debugFlag, TokenTuple token) {
-    if (debugFlag)
-      System.out.print(token.getType() + " ");
+  void handleNextToken(TokenTuple token) {
     while (topOfStackIsNonTerminal() && noErrorsEncountered())
       handleNonTerminal(token);
     handleTerminal(token);
