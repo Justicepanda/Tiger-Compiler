@@ -1,5 +1,6 @@
 package parser;
 
+import scanner.LexicalException;
 import scanner.Scanner;
 import compiler.TokenTuple;
 
@@ -29,8 +30,13 @@ public class Parser {
   }
 
   public void parse() {
-    while (scanner.hasMoreTokens() && isLegal)
-      handleNextToken(scanner.getNextToken());
+    while (scanner.hasMoreTokens() && isLegal) {
+      try {
+        handleNextToken(scanner.getNextToken());
+      } catch (LexicalException e) {
+        System.err.println(e.getMessage());
+      }
+    }
   }
 
   void handleNextToken(TokenTuple token) {
@@ -56,10 +62,8 @@ public class Parser {
   }
 
   private void handleNonTerminalError() {
-    System.err.println("\nParsing error " +
-            scanner.getLineInfo() +
-            " <-- " +
-            printExpectedTokens(parsingStack.peek()));
+    NonTerminalException e = new NonTerminalException(scanner.getLineInfo(), printExpectedTokens(parsingStack.peek()));
+    System.err.println(e.getMessage());
     isLegal = false;
   }
 
@@ -83,13 +87,8 @@ public class Parser {
   }
 
   private void handleTerminalError(TokenTuple token) {
-    System.err.println("\nParsing error " +
-            scanner.getLineInfo() +
-            " <-- \"" +
-            token.getToken() +
-            "\" is not a valid token. Expected \"" +
-            parsingStack.peek().getToken() +
-            "\".");
+    TerminalException e = new TerminalException(scanner.getLineInfo(), token, parsingStack.peek());
+    System.err.println(e.getMessage());
     isLegal = false;
   }
 

@@ -25,6 +25,11 @@ class LinesHandler {
     return lineInd < lines.length;
   }
 
+  boolean isAtSpaceChar() {
+    char c = getCurrentChar();
+    return c == ' ' || c == '\t' || c == '\n';
+  }
+
   public void moveForward() {
     charInd++;
     if (noCharsLeftInLine())
@@ -37,15 +42,12 @@ class LinesHandler {
       moveToPrevLine();
   }
 
-  void generateLexicalException() {
+  LexicalException generateLexicalException() {
     moveBackward();
-    System.err.println("\nLexical error (line: " + (getLineNo() + 1) + "): \"" + getCurrentChar() + "\" does not begin a valid token.");
-    //LexicalException e = new LexicalException(lineInd, getCurrentChar());
+    //System.err.println("\nLexical error (line: " + (getLineNo() + 1) + "): \"" + getCurrentChar() + "\" does not begin a valid token.");
+    LexicalException e = new LexicalException(lineInd, getCurrentChar());
     moveForward();
-  }
-
-  int getLineNo() {
-    return lineInd;
+    return e;
   }
 
   private void moveToPrevLine() {

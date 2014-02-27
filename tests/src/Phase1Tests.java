@@ -88,7 +88,7 @@ public class Phase1Tests {
     assertFalse(frontend.compile("./tests/ex6.tiger"));
     String ex6Tokens = "LET VAR ID COMMA ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI WHILE LPAREN ID LESSER INTLIT RPAREN DO ID PLUS ";
     assertEquals(ex6Tokens, outStream.toString());
-    String ex6ErrorMessage = "\nParsing error (line 6):                a+ <-- expected '(' or '[' or ':=' \n";
+    String ex6ErrorMessage = "Parsing error (line 6):                a+ <-- expected '(' or '[' or ':=' \n";
     assertEquals(ex6ErrorMessage, errStream.toString());
   }
 
@@ -97,7 +97,7 @@ public class Phase1Tests {
     assertFalse(frontend.compile("./tests/ex7.tiger"));
     String ex7Tokens = "LET TYPE ID ASSIGN ";
     assertEquals(ex7Tokens, outStream.toString());
-    String ex7ErrorMessage = "\nParsing error (line 2):         type int_arr := <-- \":=\" is not a valid token. Expected \"=\".\n";
+    String ex7ErrorMessage = "Parsing error (line 2):         type int_arr := <-- \":=\" is not a valid token. Expected \"=\".\n";
     assertEquals(ex7ErrorMessage, errStream.toString());
   }
 

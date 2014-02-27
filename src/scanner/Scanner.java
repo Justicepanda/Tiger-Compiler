@@ -22,12 +22,11 @@ public class Scanner {
   }
 
   public boolean hasMoreTokens() {
-    removeSpaces();
     return handler.hasChars();
   }
 
   private void removeSpaces() {
-    while (handler.hasChars() && dfa.isInSpaceState())
+    while (handler.hasChars() && handler.isAtSpaceChar() && dfa.isInSpaceState())
       processNextChar(handler.getCurrentChar());
   }
 
@@ -64,14 +63,15 @@ public class Scanner {
   }
 
   private void handleErrorState() {
-    handler.generateLexicalException();
     isValid = false;
     dfa.reset();
+    throw handler.generateLexicalException();
   }
 
   private void prepareToFindNextToken() {
     dfa.reset();
     handler.moveBackward();
+    removeSpaces();
   }
 
   private boolean isComment(TokenTuple token) {
