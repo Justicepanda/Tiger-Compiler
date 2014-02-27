@@ -1,4 +1,4 @@
-package dfa;
+package scanner;
 
 public interface State {
   public boolean isAcceptState();

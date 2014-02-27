@@ -1,13 +1,13 @@
 package parser;
 
-import scanner.TokenTuple;
+import frontend.TokenTuple;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Rule 
-{
+public class Rule {
   private static Map<String, TokenTuple> tokenMap = new HashMap<String, TokenTuple>();
+
   static {
     tokenMap.put(",", new TokenTuple("COMMA", ","));
     tokenMap.put(":", new TokenTuple("COLON", ":"));
@@ -49,14 +49,14 @@ public class Rule
   }
 
   public static void interpretTokens() {
-    for(int i = 0; i < tokenBuilder.length; i++)
+    for (int i = 0; i < tokenBuilder.length; i++)
       interpretToken(i);
   }
 
   private static void interpretToken(int index) {
     if (tokenMap.containsKey(tokenStrings[index]))
       tokenBuilder[index] = tokenMap.get(tokenStrings[index]);
-    else if(tokenStrings[index].contains("<"))
+    else if (tokenStrings[index].contains("<"))
       tokenBuilder[index] = new TokenTuple("NONTERM", tokenStrings[index]); // non-terminal
     else
       tokenBuilder[index] = new TokenTuple(tokenStrings[index].toUpperCase(), tokenStrings[index]);
@@ -65,9 +65,8 @@ public class Rule
   private Rule(TokenTuple[] tokens) {
     this.tokens = tokens;
   }
-	
-	public int getLength()
-	{
-		return tokens.length;
-	}
+
+  public int getLength() {
+    return tokens.length;
+  }
 }

@@ -1,4 +1,4 @@
-,",",:,;,(,),[,],.,{,},+,-,*,/,=,!=,<,>,<>,<=,>=,&,|,:=,let,in,end,type,id,int,string,of,var,function,begin,if,then,endif,else,while,do,enddo,for,to,break,INTLIT,STRLIT,nil,array,return
+,",COMMA,:,;,(,),[,],.,{,},+,-,*,/,=,!=,<,>,<>,<=,>=,&,|,:=,let,in,end,type,id,int,string,of,var,function,begin,if,then,endif,else,while,do,enddo,for,to,break,INTLIT,STRLIT,nil,array,return
 <tiger-program>,,,,,,,,,,,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,,,,,,,,,,,,
 <declaration-segment>,,,,,,,,,,,,,,,,,,,,,,,,,,2,,2,,,,,2,2,,,,,,,,,,,,,,,,
 <type-declaration-list>,,,,,,,,,,,,,,,,,,,,,,,,,,3,,4,,,,,3,3,,,,,,,,,,,,,,,,

@@ -1,6 +1,6 @@
 package frontend;
 
-import dfabuilder.NormalFileScraper;
+import utilities.NormalFileScraper;
 import parser.Parser;
 import scanner.Scanner;
 

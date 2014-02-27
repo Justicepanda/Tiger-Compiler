@@ -37,12 +37,14 @@ public class LinesHandler {
       moveToPrevLine();
   }
 
-  public int getLineNo() {
-    return lineInd;
+  void generateLexicalException() {
+    moveBackward();
+    System.err.println("\nLexical error (line: " + (getLineNo() + 1) + "): \"" + getCurrentChar() + "\" does not begin a valid token.");
+    moveForward();
   }
 
-  public int getCharNo() {
-    return charInd;
+  public int getLineNo() {
+    return lineInd;
   }
 
   private void moveToPrevLine() {
@@ -62,8 +64,7 @@ public class LinesHandler {
     return charInd >= lines[lineInd].length();
   }
   
-  public String getLineUpToCurrChar(int length)
-  {
+  public String getLineUpToCurrChar() {
 	  return lines[lineInd].substring(0, charInd);
   }
 }

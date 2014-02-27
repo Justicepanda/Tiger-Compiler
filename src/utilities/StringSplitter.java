@@ -1,4 +1,4 @@
-package dfabuilder;
+package utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class StringSplitter {
 
   private List<String> nextIteration(List<String> split) {
     split.add(toSplit.substring(0, currChar));
-    toSplit = toSplit.substring(currChar+1, toSplit.length());
+    toSplit = toSplit.substring(currChar + 1, toSplit.length());
     split.addAll(splitToList());
     return split;
   }

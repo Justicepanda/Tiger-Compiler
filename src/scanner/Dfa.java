@@ -1,4 +1,4 @@
-package dfa;
+package scanner;
 
 import java.util.List;
 
@@ -45,8 +45,4 @@ public abstract class Dfa {
   }
 
   protected abstract void resetValue();
-
-  protected void setState(int state) {
-    this.currState = state;
-  }
 }

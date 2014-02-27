@@ -1,7 +1,7 @@
-package dfabuilder;
+package utilities;
 
-import dfa.Dfa;
-import dfa.State;
+import scanner.Dfa;
+import scanner.State;
 
 import java.util.ArrayList;
 import java.util.List;

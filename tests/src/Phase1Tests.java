@@ -20,15 +20,16 @@ public class Phase1Tests {
 
   @Before
   public void setUp() {
-    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    Parser parser = new Parser(scanner, "ParsingTable.csv");
-    frontend = new FrontEnd(scanner, parser);
-
     outStream = new ByteArrayOutputStream();
     errStream = new ByteArrayOutputStream();
 
     System.setOut(new PrintStream(outStream));
     System.setErr(new PrintStream(errStream));
+
+    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    Parser parser = new Parser(scanner, "ParsingTable.csv");
+    frontend = new FrontEnd(scanner, parser);
+
   }
 
   @After

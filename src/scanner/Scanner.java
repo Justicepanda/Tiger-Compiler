@@ -1,5 +1,7 @@
 package scanner;
 
+import frontend.TokenTuple;
+
 public class Scanner {
 
   private final TokenDfa dfa;
@@ -19,10 +21,6 @@ public class Scanner {
     handler = new LinesHandler(toScan);
   }
 
-  public void scan(String toScan) {
-    scan(new String[]{toScan});
-  }
-
   public boolean hasMoreTokens() {
     removeSpaces();
     return handler.hasChars();
@@ -40,34 +38,10 @@ public class Scanner {
   public TokenTuple getNextToken() {
     TokenTuple token = findToken();
     prepareToFindNextToken();
-    
-    if(token.getType().equals("COMMENT"))
-    	return getNextToken();
-    
-    return token;
-  }
-
-  public TokenTuple peekAtNextToken() {
-    TokenTuple token = peekToken();
-    dfa.reset();
-    
-    if(token.getType().equals("COMMENT"))
-    	return peekAtNextToken();
-    
-    return token;
-  }
-
-  private TokenTuple peekToken() {
-    int countToMoveBack = 0;
-    while (!dfa.isInAcceptState()) {
-      countToMoveBack++;
-      processNextChar();
-    }
-    for (int i = 0; i < countToMoveBack; i++) {
-      handler.moveBackward();
-    }
-    
-    return dfa.getToken();
+    if (isComment(token))
+      return getNextToken();
+    else
+      return token;
   }
 
   private TokenTuple findToken() {
@@ -82,25 +56,26 @@ public class Scanner {
       handleNonAcceptState();
   }
 
+  private void handleNonAcceptState() {
+    if (dfa.isInErrorState())
+      handleErrorState();
+    else if (dfa.isInSpaceState())
+      dfa.reset();
+  }
+
+  private void handleErrorState() {
+    handler.generateLexicalException();
+    isValid = false;
+    dfa.reset();
+  }
+
   private void prepareToFindNextToken() {
     dfa.reset();
     handler.moveBackward();
   }
 
-  private void handleNonAcceptState() {
-    if (dfa.isInErrorState())
-    {
-    	handler.moveBackward();
-    	System.err.println("\nLexical error (line: " + (handler.getLineNo() + 1) + "): \"" + handler.getCurrentChar() + "\" does not begin a valid token.");
-    	handler.moveForward();
-    	isValid = false;
-    	
-    	dfa.reset();
-    }
-    else if (dfa.isInSpaceState())
-    {
-    	dfa.reset();
-    }
+  private boolean isComment(TokenTuple token) {
+    return token.getType().equals("COMMENT");
   }
 
   private void changeDfaState() {

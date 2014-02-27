@@ -1,4 +1,4 @@
-package scanner;
+package frontend;
 
 public class TokenTuple {
   private final String tokenType;

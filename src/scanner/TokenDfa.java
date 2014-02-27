@@ -1,7 +1,6 @@
 package scanner;
 
-import dfa.Dfa;
-import dfa.State;
+import frontend.TokenTuple;
 
 import java.util.List;
 

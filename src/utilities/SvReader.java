@@ -1,4 +1,4 @@
-package dfabuilder;
+package utilities;
 
 public class SvReader {
   private final StringSplitter ss;
@@ -20,7 +20,7 @@ public class SvReader {
 
   public String[] getLine() {
     currLine++;
-    return ss.split(lines[currLine-1]);
+    return ss.split(lines[currLine - 1]);
   }
 
   public boolean hasLine() {

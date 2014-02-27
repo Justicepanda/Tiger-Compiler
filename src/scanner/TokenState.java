@@ -1,7 +1,5 @@
 package scanner;
 
-import dfa.State;
-
 import java.util.HashMap;
 import java.util.Map;
 
