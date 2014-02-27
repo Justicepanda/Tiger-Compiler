@@ -9,21 +9,20 @@ import java.util.List;
 
 public class ParsingTable {
   private List<List<Integer>> table;
-  private SvReader fileReader;
+  private final SvReader fileReader;
+  private final List<String> nonTerminals;
   private List<String> terminals;
-  private List<String> nonTerminals;
 
   public ParsingTable(String fileName) {
     fileReader = new SvReader(',');
     fileReader.read(fileName);
-    initTerminals();
     nonTerminals = new ArrayList<String>();
+    initTerminals();
     initTable();
   }
 
   private void initTerminals() {
     String[] header = fileReader.getHeader();
-    terminals = new ArrayList<String>();
     header = Arrays.copyOfRange(header, 2, header.length);
     terminals = Arrays.asList(header);
   }
@@ -67,9 +66,14 @@ public class ParsingTable {
 
   private int getTerminalIndex(TokenTuple terminal) {
     for (int i = 0; i < terminals.size(); i++)
-      if (terminals.get(i).equals(terminal.getToken()) || terminals.get(i).equalsIgnoreCase(terminal.toString()))
+      if (terminalMatches(terminal, terminals.get(i)))
         return i;
     return -1;
+  }
+
+  private boolean terminalMatches(TokenTuple terminal, String toCheck) {
+    return toCheck.equals(terminal.getToken())
+            || toCheck.equalsIgnoreCase(terminal.toString());
   }
 
   private int getNonTerminalIndex(TokenTuple nonTerminal) {
