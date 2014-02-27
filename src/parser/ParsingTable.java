@@ -4,81 +4,86 @@ import utilities.SvReader;
 import frontend.TokenTuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ParsingTable {
-  private int[][] table;
+  private List<List<Integer>> table;
   private SvReader fileReader;
-  private List<String> terms;
-  private String[] nonTerminals; //Starts at index 0
+  private List<String> terminals;
+  private List<String> nonTerminals;
 
   public ParsingTable(String fileName) {
-
-    nonTerminals = new String[47];
-    table = new int[47][50];
-
     fileReader = new SvReader(',');
     fileReader.read(fileName);
-    int currentLine = 0;
+    initTerminals();
+    nonTerminals = new ArrayList<String>();
+    initTable();
+  }
 
-    while (fileReader.hasLine()) {
-      terms = new ArrayList<String>();
-      String[] tempTerminals = fileReader.getHeader();
+  private void initTerminals() {
+    String[] header = fileReader.getHeader();
+    terminals = new ArrayList<String>();
+    header = Arrays.copyOfRange(header, 2, header.length);
+    terminals = Arrays.asList(header);
+  }
 
-      //Quick hack.. couldn't figure out why it was adding quotation marks into the mix
-      for (int i = 0; i < 50; i++)
-        terms.add(i, tempTerminals[i+2]);
+  private void initTable() {
+    table = new ArrayList<List<Integer>>();
+    while (fileReader.hasLine())
+      addLine();
+  }
 
-      String[] cells = fileReader.getLine();
-      for (int i = 0; i < 50; i++) {
-        try {
-          nonTerminals[currentLine] = cells[0];
-          table[currentLine][i] = Integer.parseInt(cells[i + 1]);
-        } catch (Exception ex) {
-          //It was an empty cell, don't do anything
-        }
-      }
-      currentLine++;
+  private void addLine() {
+    String[] cells = fileReader.getLine();
+    nonTerminals.add(cells[0]);
+    List<Integer> line = new ArrayList<Integer>();
+    for (int i = 0; i < terminals.size(); i++)
+      addCell(cells[i + 1], line);
+    table.add(line);
+  }
+
+  private void addCell(String cell, List<Integer> line) {
+    try {
+      line.add(Integer.parseInt(cell));
+    } catch (Exception ex) {
+      line.add(0);
     }
-  }
-
-  public int getTerminalIndex(TokenTuple terminal) {
-    for (int i = 0; i < terms.size(); i++)
-      if (terms.get(i).equals(terminal.getToken()) || terms.get(i).equalsIgnoreCase(terminal.toString()))
-        return i;
-    return -1;
-  }
-
-  public int getNonTerminalIndex(TokenTuple nonTerminal) {
-    for (int i = 0; i < nonTerminals.length; i++) {
-      if (nonTerminals[i].equals(nonTerminal.getToken())) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  public int getCell(TokenTuple terminal, TokenTuple nonTerminal) {
-    int term = getTerminalIndex(terminal);
-    int nonterm = getNonTerminalIndex(nonTerminal);
-
-    if (term != -1 && nonterm != -1)
-      return table[nonterm][term];
-    else
-      return -1;
   }
 
   public int getCell(int x, TokenTuple t) {
     int y = getNonTerminalIndex(t);
-    return table[y][x];
+    return table.get(y).get(x);
+  }
+
+  public int getCell(TokenTuple terminal, TokenTuple nonTerminal) {
+    int term = getTerminalIndex(terminal);
+    int nonTerm = getNonTerminalIndex(nonTerminal);
+    if (term != -1 && nonTerm != -1)
+      return table.get(nonTerm).get(term);
+    else
+      return -1;
+  }
+
+  private int getTerminalIndex(TokenTuple terminal) {
+    for (int i = 0; i < terminals.size(); i++)
+      if (terminals.get(i).equals(terminal.getToken()) || terminals.get(i).equalsIgnoreCase(terminal.toString()))
+        return i;
+    return -1;
+  }
+
+  private int getNonTerminalIndex(TokenTuple nonTerminal) {
+    for (int i = 0; i < nonTerminals.size(); i++)
+      if (nonTerminals.get(i).equals(nonTerminal.getToken()))
+        return i;
+    return -1;
   }
 
   public int getWidth() {
-    return terms.size();
+    return terminals.size();
   }
 
   public String getTerminal(int i) {
-    return terms.get(i);
+    return terminals.get(i);
   }
 }
