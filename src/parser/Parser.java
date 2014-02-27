@@ -1,6 +1,5 @@
 package parser;
 
-import scanner.LexicalException;
 import scanner.Scanner;
 import compiler.TokenTuple;
 
@@ -13,10 +12,8 @@ public class Parser {
   private final List<Rule> ruleTable;
 
   private final Scanner scanner;
-  private boolean isLegal;
 
   public Parser(Scanner scanner, String tableFileName, String rulesFileName) {
-    isLegal = true;
     this.scanner = scanner;
     parsingTable = new ParsingTable(tableFileName);
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
@@ -29,18 +26,8 @@ public class Parser {
     parsingStack.push(new TokenTuple("NONTERM", "<tiger-program>"));
   }
 
-  public void parse() {
-    while (scanner.hasMoreTokens() && isLegal) {
-      try {
-        handleNextToken(scanner.getNextToken());
-      } catch (LexicalException e) {
-        System.err.println(e.getMessage());
-      }
-    }
-  }
-
-  void handleNextToken(TokenTuple token) {
-    while (topOfStackIsNonTerminal() && noErrorsEncountered())
+  public void parse(TokenTuple token) {
+    while (topOfStackIsNonTerminal())
       handleNonTerminal(token);
     handleTerminal(token);
   }
@@ -49,9 +36,8 @@ public class Parser {
     int rule = findTopOfStackInTable(token);
     if (ruleIsLegal(rule))
       replaceNonTerminalWithContent(rule);
-    else {
-      handleNonTerminalError();
-    }
+    else
+      throw new NonTerminalException(scanner.getLineInfo(), printExpectedTokens(parsingStack.peek()));
   }
 
   private void replaceNonTerminalWithContent(int rule) {
@@ -59,12 +45,6 @@ public class Parser {
     push(ruleTable.get(rule-1));
     if (parsingStack.peek().getToken().equals("NULL"))
       parsingStack.pop();
-  }
-
-  private void handleNonTerminalError() {
-    NonTerminalException e = new NonTerminalException(scanner.getLineInfo(), printExpectedTokens(parsingStack.peek()));
-    System.err.println(e.getMessage());
-    isLegal = false;
   }
 
   String printExpectedTokens(TokenTuple expected) {
@@ -78,18 +58,12 @@ public class Parser {
   private void handleTerminal(TokenTuple token) {
     if (tokenMatchesStack(token))
       parsingStack.pop();
-    else if (noErrorsEncountered())
-      handleTerminalError(token);
+    else
+      throw new TerminalException(scanner.getLineInfo(), token, parsingStack.peek());
   }
 
   private boolean tokenMatchesStack(TokenTuple token) {
     return token.getType().equals(parsingStack.peek().getType());
-  }
-
-  private void handleTerminalError(TokenTuple token) {
-    TerminalException e = new TerminalException(scanner.getLineInfo(), token, parsingStack.peek());
-    System.err.println(e.getMessage());
-    isLegal = false;
   }
 
   private int findTopOfStackInTable(TokenTuple t) {
@@ -102,10 +76,6 @@ public class Parser {
 
   private boolean ruleIsLegal(int rule) {
     return rule != 0;
-  }
-
-  public boolean noErrorsEncountered() {
-    return isLegal && scanner.isValid();
   }
 
   private void push(Rule rule) {

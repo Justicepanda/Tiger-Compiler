@@ -6,17 +6,11 @@ public class Scanner {
 
   private final TokenDfa dfa;
   private LinesHandler handler;
-  private boolean isValid;
 
   public Scanner(TokenDfa dfa) {
     this.dfa = dfa;
-    isValid = true;
   }
   
-  public boolean isValid() {
-	  return isValid;
-  }
-
   public void scan(String[] toScan) {
     handler = new LinesHandler(toScan);
   }
@@ -35,10 +29,14 @@ public class Scanner {
    * a lexical error is found, a LexicalException is thrown.
    */
   public TokenTuple getNextToken() {
+    return getToken();
+  }
+
+  public TokenTuple getToken() {
     TokenTuple token = findToken();
     prepareToFindNextToken();
     if (isComment(token))
-      return getNextToken();
+      return getToken();
     else
       return token;
   }
@@ -63,7 +61,6 @@ public class Scanner {
   }
 
   private void handleErrorState() {
-    isValid = false;
     dfa.reset();
     throw handler.generateLexicalException();
   }
@@ -85,5 +82,23 @@ public class Scanner {
 
   public String getLineInfo() {
     return handler.getLineInfo();
+  }
+
+  public static Scanner debug(TokenDfa tokenDfa) {
+    return new DebugScanner(tokenDfa);
+  }
+}
+
+class DebugScanner extends Scanner {
+
+  public DebugScanner(TokenDfa dfa) {
+    super(dfa);
+  }
+
+  @Override
+  public TokenTuple getNextToken() {
+    TokenTuple t = super.getNextToken();
+    System.out.print(t.getType() + " ");
+    return t;
   }
 }

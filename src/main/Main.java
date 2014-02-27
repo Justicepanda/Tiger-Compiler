@@ -1,7 +1,6 @@
 package main;
 
 import compiler.Compiler;
-import parser.DebugParser;
 import scanner.TokenDfa;
 import scanner.TokenDfaBuilder;
 import scanner.Scanner;
@@ -25,12 +24,15 @@ class Main
       return;
     }
 
-    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    Scanner scanner;
     Parser parser;
-    if (debugFlag)
-      parser = new DebugParser(scanner, "ParsingTable.csv", "GrammarRules");
-    else
-      parser = new Parser(scanner, "ParsingTable.csv", "GrammarRules");
+    if (debugFlag) {
+      scanner = Scanner.debug((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    }
+    else {
+      scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    }
+    parser = new Parser(scanner, "ParsingTable.csv", "GrammarRules");
 
     Compiler frontend = new compiler.Compiler(scanner, parser);
 

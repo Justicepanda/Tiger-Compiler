@@ -44,7 +44,6 @@ class LinesHandler {
 
   LexicalException generateLexicalException() {
     moveBackward();
-    //System.err.println("\nLexical error (line: " + (getLineNo() + 1) + "): \"" + getCurrentChar() + "\" does not begin a valid token.");
     LexicalException e = new LexicalException(lineInd, getCurrentChar());
     moveForward();
     return e;

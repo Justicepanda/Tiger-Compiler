@@ -2,7 +2,6 @@ import compiler.Compiler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import parser.DebugParser;
 import parser.Parser;
 import scanner.Scanner;
 import scanner.TokenDfa;
@@ -18,6 +17,7 @@ public class Phase1Tests {
   private Compiler frontend;
   private ByteArrayOutputStream outStream;
   private ByteArrayOutputStream errStream;
+  private Parser parser;
 
   @Before
   public void setUp() {
@@ -27,8 +27,8 @@ public class Phase1Tests {
     System.setOut(new PrintStream(outStream));
     System.setErr(new PrintStream(errStream));
 
-    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    Parser parser = new DebugParser(scanner, "ParsingTable.csv", "GrammarRules");
+    Scanner scanner = Scanner.debug((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    parser = new Parser(scanner, "ParsingTable.csv", "GrammarRules");
     frontend = new compiler.Compiler(scanner, parser);
 
   }
@@ -69,7 +69,7 @@ public class Phase1Tests {
     assertFalse(frontend.compile("./tests/ex4.tiger"));
     String ex4Tokens = "LET VAR ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI ID LPAREN ID RPAREN SEMI END ";
     assertEquals(ex4Tokens, outStream.toString());
-    String ex4ErrorMessage = "\nLexical error (line: 2): \"_\" does not begin a valid token.\n";
+    String ex4ErrorMessage = "Lexical error (line: 2): \"_\" does not begin a valid token.\n";
     assertEquals(ex4ErrorMessage, errStream.toString());
   }
 
@@ -79,7 +79,7 @@ public class Phase1Tests {
     String ex5Tokens = "LET VAR ID COMMA ID COLON ID ASSIGN INTLIT SEMI IN IF LPAREN ID EQ ID RPAREN THEN ID ASSIGN ID INTLIT " +
             "SEMI ENDIF SEMI ID LPAREN ID RPAREN SEMI END ";
     assertEquals(ex5Tokens, outStream.toString());
-    String ex5ErrorMessage = "\nLexical error (line: 5): \"%\" does not begin a valid token.\n";
+    String ex5ErrorMessage = "Lexical error (line: 5): \"%\" does not begin a valid token.\n";
     assertEquals(ex5ErrorMessage, errStream.toString());
   }
 
