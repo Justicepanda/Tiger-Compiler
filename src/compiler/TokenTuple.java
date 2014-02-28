@@ -9,14 +9,6 @@ public class TokenTuple {
     this.token = token;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof TokenTuple))
-      return false;
-    TokenTuple t = (TokenTuple) o;
-    return tokenType.equals(t.tokenType) && token.equals(t.token);
-  }
-
   public String getToken()
   {
 	  return token;

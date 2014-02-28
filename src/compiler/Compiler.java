@@ -29,19 +29,16 @@ public class Compiler {
   }
 
   public String compile(String filename)  {
-    message = "";
-    scanner.scan(getLinesFromFile(filename));
+    init(filename);
     while (scanner.hasMoreTokens() && !parserErrorEncountered)
       compileNextToken();
     addSuccessMessage();
     return message;
   }
 
-  protected void addSuccessMessage() {
-    if (noErrorEncountered)
-      message += "Tiger-Compiler: Compilation successful!\n";
-    else
-      message += "Tiger-Compiler: Compilation unsuccessful.\n";
+  private void init(String filename) {
+    message = "";
+    scanner.scan(getLinesFromFile(filename));
   }
 
   private String[] getLinesFromFile(String filename) {
@@ -79,52 +76,15 @@ public class Compiler {
   }
 
   protected void handleParserError(ParserException e) {
-    message += "Parsing error " +
-            scanner.getLineInfo() +
-            " <-- " +
-            e.getMessage();
+    message += "Parsing error " + scanner.getLineInfo() + " <-- " + e.getMessage();
     noErrorEncountered = false;
     parserErrorEncountered = true;
   }
-}
 
-class DebugCompiler extends Compiler {
-  private boolean lineStarted;
-
-  public DebugCompiler(Scanner scanner, Parser parser) {
-    super(scanner, parser);
-  }
-
-  @Override
-  protected TokenTuple scan() {
-    TokenTuple t = super.scan();
-    if (t != null) {
-      if (lineStarted)
-        message += " ";
-      message += t.getType();
-      lineStarted = true;
-    }
-    return t;
-  }
-
-  @Override
-  protected void handleScannerError(LexicalException e) {
-    message += "\n";
-    lineStarted = false;
-    super.handleScannerError(e);
-  }
-
-  @Override
-  protected void handleParserError(ParserException e) {
-    message += "\n";
-    lineStarted = false;
-    super.handleParserError(e);
-  }
-
-  @Override
   protected void addSuccessMessage() {
-    message += "\n";
-    lineStarted = false;
-    super.addSuccessMessage();
+    if (noErrorEncountered)
+      message += "Tiger-Compiler: Compilation successful!\n";
+    else
+      message += "Tiger-Compiler: Compilation unsuccessful.\n";
   }
 }

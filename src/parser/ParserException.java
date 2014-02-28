@@ -10,12 +10,7 @@ public class ParserException extends RuntimeException {
 
 class TerminalException extends ParserException {
   public TerminalException(TokenTuple actual, TokenTuple expected) {
-    super(
-            "\"" +
-            actual.getToken() +
-            "\" is not a valid token. Expected \"" +
-            expected.getToken() +
-            "\".");
+    super("\"" + actual.getToken() + "\" is not a valid token. Expected \"" + expected.getToken() + "\".");
   }
 }
 
