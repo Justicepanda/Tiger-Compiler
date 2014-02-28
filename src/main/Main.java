@@ -24,21 +24,16 @@ class Main
       return;
     }
 
-    Scanner scanner;
-    Parser parser;
-    if (debugFlag) {
-      scanner = Scanner.debug((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    }
-    else {
-      scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    }
-    parser = new Parser(scanner, "ParsingTable.csv", "GrammarRules");
+    Scanner scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
+    Parser parser = new Parser("ParsingTable.csv", "GrammarRules");
 
-    Compiler frontend = new compiler.Compiler(scanner, parser);
+    Compiler compiler;
+    if (debugFlag)
+      compiler = Compiler.debug(scanner, parser);
+    else
+      compiler = Compiler.normal(scanner, parser);
 
-		if(frontend.compile(filename))
-			System.out.println("\nTiger-Compiler: Parse Successful!");
-		else
-			System.out.println("\nTiger-Compiler: Parse Unsuccessful.");
+    System.out.println(compiler.compile(filename));
+
 	}
 }

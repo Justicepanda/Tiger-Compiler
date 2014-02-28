@@ -1,6 +1,5 @@
 package parser;
 
-import scanner.Scanner;
 import compiler.TokenTuple;
 
 import java.util.List;
@@ -11,10 +10,7 @@ public class Parser {
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
 
-  private final Scanner scanner;
-
-  public Parser(Scanner scanner, String tableFileName, String rulesFileName) {
-    this.scanner = scanner;
+  public Parser(String tableFileName, String rulesFileName) {
     parsingTable = new ParsingTable(tableFileName);
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
     initParsingStack();
@@ -37,7 +33,7 @@ public class Parser {
     if (ruleIsLegal(rule))
       replaceNonTerminalWithContent(rule);
     else
-      throw new NonTerminalException(scanner.getLineInfo(), printExpectedTokens(parsingStack.peek()));
+      throw new NonTerminalException(printExpectedTokens(parsingStack.peek()));
   }
 
   private void replaceNonTerminalWithContent(int rule) {
@@ -47,19 +43,19 @@ public class Parser {
       parsingStack.pop();
   }
 
-  String printExpectedTokens(TokenTuple expected) {
+  private String printExpectedTokens(TokenTuple expected) {
     String returnValue = "expected ";
     for (int i = 0; i < parsingTable.getWidth() - 1; i++)
       if (ruleIsLegal(parsingTable.getCell(i, expected)))
         returnValue += "'" + parsingTable.getTerminal(i) + "' or ";
-    return returnValue.substring(0, returnValue.length() - 3);
+    return returnValue.substring(0, returnValue.length() - 4);
   }
 
   private void handleTerminal(TokenTuple token) {
     if (tokenMatchesStack(token))
       parsingStack.pop();
     else
-      throw new TerminalException(scanner.getLineInfo(), token, parsingStack.peek());
+      throw new TerminalException(token, parsingStack.peek());
   }
 
   private boolean tokenMatchesStack(TokenTuple token) {

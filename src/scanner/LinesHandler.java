@@ -5,7 +5,7 @@ class LinesHandler {
   private int charInd;
   private final String[] lines;
 
-  public LinesHandler(String[] lines) {
+  LinesHandler(String[] lines) {
     for (int i = 0; i < lines.length; i++)
       lines[i] += " ";
     this.lines = lines;
@@ -17,11 +17,11 @@ class LinesHandler {
     charInd = 0;
   }
 
-  public char getCurrentChar() {
+  char getCurrentChar() {
     return lines[lineInd].charAt(charInd);
   }
 
-  public boolean hasChars() {
+  boolean hasChars() {
     return lineInd < lines.length;
   }
 
@@ -30,13 +30,13 @@ class LinesHandler {
     return c == ' ' || c == '\t' || c == '\n';
   }
 
-  public void moveForward() {
+  void moveForward() {
     charInd++;
     if (noCharsLeftInLine())
       moveToNextLine();
   }
 
-  public void moveBackward() {
+  void moveBackward() {
     charInd--;
     if (charInd < 0)
       moveToPrevLine();
@@ -70,8 +70,7 @@ class LinesHandler {
 	  return lines[lineInd].substring(0, charInd);
   }
 
-  public String getLineInfo() {
+  String getLineInfo() {
     return "(line " + (lineInd + 1) + "): " + getLineUpToCurrChar();
   }
-
 }

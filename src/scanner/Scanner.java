@@ -32,7 +32,7 @@ public class Scanner {
     return getToken();
   }
 
-  public TokenTuple getToken() {
+  private TokenTuple getToken() {
     TokenTuple token = findToken();
     prepareToFindNextToken();
     if (isComment(token))
@@ -82,23 +82,5 @@ public class Scanner {
 
   public String getLineInfo() {
     return handler.getLineInfo();
-  }
-
-  public static Scanner debug(TokenDfa tokenDfa) {
-    return new DebugScanner(tokenDfa);
-  }
-}
-
-class DebugScanner extends Scanner {
-
-  public DebugScanner(TokenDfa dfa) {
-    super(dfa);
-  }
-
-  @Override
-  public TokenTuple getNextToken() {
-    TokenTuple t = super.getNextToken();
-    System.out.print(t.getType() + " ");
-    return t;
   }
 }

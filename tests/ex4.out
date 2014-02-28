@@ -1,0 +1,4 @@
+LET VAR
+Lexical error (line: 2): "_" does not begin a valid token.
+ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI ID LPAREN ID RPAREN SEMI END
+Tiger-Compiler: Compilation unsuccessful.

@@ -1,0 +1,3 @@
+LET VAR ID COMMA ID COLON ID SEMI IN ID ASSIGN INTLIT SEMI WHILE LPAREN ID LESSER INTLIT RPAREN DO ID PLUS
+Parsing error (line 6):                a+ <-- expected '(' or '[' or ':='
+Tiger-Compiler: Compilation unsuccessful.

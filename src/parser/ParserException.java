@@ -9,10 +9,9 @@ public class ParserException extends RuntimeException {
 }
 
 class TerminalException extends ParserException {
-  public TerminalException(String lineInfo, TokenTuple actual, TokenTuple expected) {
-    super("Parsing error " +
-            lineInfo +
-            "<-- \"" +
+  public TerminalException(TokenTuple actual, TokenTuple expected) {
+    super(
+            "\"" +
             actual.getToken() +
             "\" is not a valid token. Expected \"" +
             expected.getToken() +
@@ -21,10 +20,7 @@ class TerminalException extends ParserException {
 }
 
 class NonTerminalException extends ParserException {
-  public NonTerminalException(String lineInfo, String expected) {
-    super("Parsing error " +
-          lineInfo +
-          " <-- " +
-          expected);
+  public NonTerminalException(String expected) {
+    super(expected);
   }
 }
