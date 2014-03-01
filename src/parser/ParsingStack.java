@@ -5,7 +5,7 @@ import compiler.TokenTuple;
 import java.util.Stack;
 
 class ParsingStack {
-  private Stack<TokenTuple> stack;
+  private final Stack<TokenTuple> stack;
 
   ParsingStack() {
     stack = new Stack<TokenTuple>();
@@ -37,7 +37,7 @@ class ParsingStack {
     return stack.peek();
   }
 
-  TokenTuple pop() {
-    return stack.pop();
+  void pop() {
+    stack.pop();
   }
 }

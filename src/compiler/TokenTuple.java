@@ -17,8 +17,4 @@ public class TokenTuple {
   public String getType() {
     return tokenType;
   }
-
-  public String toString() {
-    return tokenType;
-  }
 }

@@ -4,7 +4,7 @@ import utilities.SvReader;
 import compiler.TokenTuple;
 
 class ParsingTable {
-  private Table table;
+  private final Table table;
 
   public ParsingTable(String fileName) {
     SvReader file = new SvReader(',');

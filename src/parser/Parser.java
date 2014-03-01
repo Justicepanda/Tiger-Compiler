@@ -5,7 +5,7 @@ import compiler.TokenTuple;
 import java.util.List;
 
 public class Parser {
-  private ParsingStack stack;
+  private final ParsingStack stack;
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
 

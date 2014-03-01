@@ -20,9 +20,9 @@ public class Compiler {
   private final Parser parser;
   private boolean noErrorEncountered;
   private boolean parserErrorEncountered;
-  protected String message;
+  String message;
 
-  protected Compiler(Scanner scanner, Parser parser) {
+  Compiler(Scanner scanner, Parser parser) {
     this.scanner = scanner;
     this.parser = parser;
     noErrorEncountered = true;
@@ -52,7 +52,7 @@ public class Compiler {
       parseToken(token);
   }
 
-  protected TokenTuple scan() {
+  TokenTuple scan() {
     TokenTuple token = null;
     try {
       token = scanner.getNextToken();
@@ -62,7 +62,7 @@ public class Compiler {
     return token;
   }
 
-  protected void handleScannerError(LexicalException e) {
+  void handleScannerError(LexicalException e) {
     noErrorEncountered = false;
     message += e.getMessage() + "\n";
   }
@@ -75,13 +75,13 @@ public class Compiler {
     }
   }
 
-  protected void handleParserError(ParserException e) {
+  void handleParserError(ParserException e) {
     message += "Parsing error " + scanner.getLineInfo() + " <-- " + e.getMessage();
     noErrorEncountered = false;
     parserErrorEncountered = true;
   }
 
-  protected void addSuccessMessage() {
+  void addSuccessMessage() {
     if (noErrorEncountered)
       message += "Tiger-Compiler: Compilation successful!\n";
     else

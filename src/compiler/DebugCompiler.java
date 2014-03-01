@@ -8,38 +8,41 @@ import scanner.Scanner;
 class DebugCompiler extends Compiler {
   private boolean lineStarted;
 
-  protected DebugCompiler(Scanner scanner, Parser parser) {
+  DebugCompiler(Scanner scanner, Parser parser) {
     super(scanner, parser);
   }
 
   @Override
   protected TokenTuple scan() {
     TokenTuple t = super.scan();
-    if (t != null) {
-      if (lineStarted)
-        message += " ";
-      message += t.getType();
-      lineStarted = true;
-    }
+    if (t != null)
+      addTokenToMessage(t);
     return t;
   }
 
+  private void addTokenToMessage(TokenTuple t) {
+    if (lineStarted)
+      message += " ";
+    message += t.getType();
+    lineStarted = true;
+  }
+
   @Override
-  protected void handleScannerError(LexicalException e) {
+  void handleScannerError(LexicalException e) {
     message += "\n";
     lineStarted = false;
     super.handleScannerError(e);
   }
 
   @Override
-  protected void handleParserError(ParserException e) {
+  void handleParserError(ParserException e) {
     message += "\n";
     lineStarted = false;
     super.handleParserError(e);
   }
 
   @Override
-  protected void addSuccessMessage() {
+  void addSuccessMessage() {
     message += "\n";
     lineStarted = false;
     super.addSuccessMessage();

@@ -69,7 +69,7 @@ public class Phase1Tests {
   }
 
   @Test
-  public void tictactoe() {
+  public void ex8() {
     String message = compiler.compile("./tests/ex8.tiger");
     compareFileToMessage("./tests/ex8.out", message);
   }

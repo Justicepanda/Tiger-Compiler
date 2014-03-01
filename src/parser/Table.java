@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Table {
-  private List<String> verticalHeader;
+class Table {
+  private final List<String> verticalHeader;
   private List<String> horizontalHeader;
   private List<List<Integer>> cells;
 
@@ -61,8 +61,7 @@ public class Table {
 
   int getCol(String token, String type) {
     for (int i = 0; i < horizontalHeader.size(); i++)
-      if (token.equals(horizontalHeader.get(i)) ||
-              type.equalsIgnoreCase(horizontalHeader.get(i)))
+      if (token.equals(horizontalHeader.get(i)) || type.equalsIgnoreCase(horizontalHeader.get(i)))
         return i;
     return -1;
   }
