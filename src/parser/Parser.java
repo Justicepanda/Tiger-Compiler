@@ -3,44 +3,40 @@ package parser;
 import compiler.TokenTuple;
 
 import java.util.List;
-import java.util.Stack;
 
 public class Parser {
-  private final ParsingStack stack;
+  private ParsingStack parsingStack;
+  private ParsingTree parsingTree;
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
-  private final ParsingTree tree;
-  private final Stack<Rule> rules;
 
   public Parser(String tableFileName, String rulesFileName) {
-    parsingTable = new ParsingTable(tableFileName);
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
-    stack = new ParsingStack();
-    tree = new ParsingTree();
-    rules = new Stack<Rule>();
-    rules.push(Rule.determineFrom("let <declaration-segment> in <stat-seq> end"));
+    parsingTable = new ParsingTable(tableFileName);
+  }
+
+  public void reset() {
+    parsingStack = new ParsingStack();
+    parsingTree = new ParsingTree();
   }
 
   public void parse(TokenTuple token) {
-    while (stack.isTopNonTerminal())
+    while (parsingStack.isTopNonTerminal())
       handleNonTerminal(token);
     handleTerminal(token);
   }
 
   private void handleNonTerminal(TokenTuple token) {
-    int ruleIndex = parsingTable.findIntersection(token, stack.peek());
+    int ruleIndex = parsingTable.findIntersection(token, parsingStack.peek());
     if (ruleIsLegal(ruleIndex))
       applyNonTerminal(ruleTable.get(ruleIndex - 1));
     else
-      throw new NonTerminalException(printExpectedTokens(stack.peek()));
+      throw new NonTerminalException(printExpectedTokens(parsingStack.peek()));
   }
 
   private void applyNonTerminal(Rule rule) {
-    moveAndAdd(stack.peek());
-    tree.moveDown();
-    stack.replaceNonTerminalRule(rule);
-    rules.push(rule.copy());
-    handleFinishedRules();
+    parsingTree.addNonTerminal(parsingStack.peek(), rule);
+    parsingStack.replaceNonTerminalRule(rule);
   }
 
   private String printExpectedTokens(TokenTuple expected) {
@@ -48,27 +44,10 @@ public class Parser {
   }
 
   private void handleTerminal(TokenTuple token) {
-    if (stack.topMatches(token))
-      applyTerminal();
+    if (parsingStack.topMatches(token))
+      parsingTree.addTerminal(parsingStack.pop());
     else
-      throw new TerminalException(token, stack.peek());
-  }
-
-  private void applyTerminal() {
-    moveAndAdd(stack.pop());
-    handleFinishedRules();
-  }
-
-  private void moveAndAdd(TokenTuple pop) {
-    tree.addChild(pop);
-    rules.peek().moveToNextToken();
-  }
-
-  private void handleFinishedRules() {
-    while (rules.peek().isFinished()) {
-      rules.pop();
-      tree.moveUp();
-    }
+      throw new TerminalException(token, parsingStack.peek());
   }
 
   private boolean ruleIsLegal(int rule) {
@@ -76,6 +55,6 @@ public class Parser {
   }
 
   public String printTree() {
-    return tree.print();
+    return parsingTree.print();
   }
 }

@@ -21,7 +21,8 @@ class Main {
     }
 
     initCompiler();
-    System.out.println(compiler.compile(filename));
+    compiler.compile(filename);
+    System.out.println(compiler.getMessage());
 	}
 
   private static void parseArgs(String[] args) {

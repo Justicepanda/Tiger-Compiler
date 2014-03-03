@@ -4,56 +4,72 @@ import compiler.TokenTuple;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
-public class ParsingTree {
-  private Node parentNode;
+class ParsingTree {
+  private final Stack<Rule> rules;
+  private final Node parentNode;
   private Node currentNode;
 
   ParsingTree() {
     currentNode = new Node(new TokenTuple("EXIT", "$"));
     parentNode = currentNode;
+    rules = new Stack<Rule>();
+    rules.push(Rule.determineFrom("let <declaration-segment> in <stat-seq> end"));
   }
 
-  void moveDown() {
-    currentNode = currentNode.getLastChild();
-  }
-
-  void moveUp() {
-    currentNode = currentNode.getParent();
-  }
-
-  void addChild(TokenTuple data) {
-    currentNode.addChild(data);
-  }
-
-  public String print() {
+  String print() {
     return parentNode.print("");
   }
 
-  private class Node {
-    TokenTuple data;
-    Node parent;
-    List<Node> children;
+  void addNonTerminal(TokenTuple nonTerminalToken, Rule nonTerminalRule) {
+    moveAndAdd(nonTerminalToken);
+    currentNode = currentNode.getLastChild();
+    rules.push(nonTerminalRule.copy());
+    handleFinishedRules();
+  }
 
-    Node (TokenTuple data, Node parent) {
+  void addTerminal(TokenTuple terminalToken) {
+    moveAndAdd(terminalToken);
+    handleFinishedRules();
+  }
+
+  private void moveAndAdd(TokenTuple pop) {
+    currentNode.addChild(pop);
+    rules.peek().moveToNextToken();
+  }
+
+  private void handleFinishedRules() {
+    while (rules.peek().isFinished()) {
+      rules.pop();
+      currentNode = currentNode.getParent();
+    }
+  }
+
+  private class Node {
+    final TokenTuple data;
+    final Node parent;
+    final List<Node> children;
+
+    private Node (TokenTuple data, Node parent) {
       this.data = data;
       this.parent = parent;
       children = new ArrayList<Node>();
     }
 
-    Node(TokenTuple data) {
+    private Node(TokenTuple data) {
       this(data, null);
     }
 
-    Node getLastChild() {
+    private Node getLastChild() {
       return children.get(children.size()-1);
     }
 
-    Node getParent() {
+    private Node getParent() {
       return parent;
     }
 
-    void addChild(TokenTuple data) {
+    private void addChild(TokenTuple data) {
       children.add(new Node(data, this));
     }
 

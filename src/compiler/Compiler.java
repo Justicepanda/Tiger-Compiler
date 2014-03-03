@@ -25,15 +25,24 @@ public class Compiler {
   Compiler(Scanner scanner, Parser parser) {
     this.scanner = scanner;
     this.parser = parser;
-    noErrorEncountered = true;
   }
 
-  public String compile(String filename)  {
+  public void compile(String filename)  {
+    noErrorEncountered = true;
+    scanner.reset();
+    parser.reset();
     init(filename);
     while (scanner.hasMoreTokens() && !parserErrorEncountered)
       compileNextToken();
     addSuccessMessage();
+  }
+
+  public String getMessage() {
     return message;
+  }
+
+  public String getParseTreePrintout() {
+    return parser.printTree();
   }
 
   private void init(String filename) {

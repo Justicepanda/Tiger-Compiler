@@ -10,7 +10,11 @@ public class Scanner {
   public Scanner(TokenDfa dfa) {
     this.dfa = dfa;
   }
-  
+
+  public void reset() {
+    dfa.reset();
+  }
+
   public void scan(String[] toScan) {
     handler = new LinesHandler(toScan);
   }
@@ -83,4 +87,5 @@ public class Scanner {
   public String getLineInfo() {
     return handler.getLineInfo();
   }
+
 }
