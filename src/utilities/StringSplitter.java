@@ -3,7 +3,7 @@ package utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-class StringSplitter {
+public class StringSplitter {
   private final char splitAbout;
   private String toSplit;
   private int currChar;

@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Tiger-Compiler:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Tiger_Compiler_jar</output-path>
+    <root id="archive" name="Tiger-Compiler.jar">
+      <element id="module-output" name="Tiger-Compiler" />
+      <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/lib/junit-4.10.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

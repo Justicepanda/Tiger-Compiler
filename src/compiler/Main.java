@@ -23,6 +23,7 @@ class Main {
     initCompiler();
     compiler.compile(filename);
     System.out.println(compiler.getMessage());
+    System.out.println(compiler.getParseTreePrintout());
 	}
 
   private static void parseArgs(String[] args) {
