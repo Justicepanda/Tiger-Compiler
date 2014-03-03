@@ -1,0 +1,8 @@
+$
+	<tiger-program>
+		let
+		<declaration-segment>
+			<type-declaration-list>
+				<type-declaration>
+					type
+					id

@@ -2,6 +2,7 @@ package parser;
 
 import compiler.TokenTuple;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,8 @@ public class Rule {
   private static String[] tokenStrings;
   private static TokenTuple[] tokenBuilder;
 
-  final TokenTuple[] tokens;
+  private final TokenTuple[] tokens;
+  private int currentIndex;
 
   public static Rule determineFrom(String rule) {
     tokenStrings = rule.split(" ");
@@ -57,16 +59,37 @@ public class Rule {
     if (tokenMap.containsKey(tokenStrings[index]))
       tokenBuilder[index] = tokenMap.get(tokenStrings[index]);
     else if (tokenStrings[index].contains("<"))
-      tokenBuilder[index] = new TokenTuple("NONTERM", tokenStrings[index]); // non-terminal
+      tokenBuilder[index] = new TokenTuple("NONTERM", tokenStrings[index]);
     else
       tokenBuilder[index] = new TokenTuple(tokenStrings[index].toUpperCase(), tokenStrings[index]);
   }
 
   private Rule(TokenTuple[] tokens) {
     this.tokens = tokens;
+    currentIndex = 0;
+  }
+
+  TokenTuple getToken(int index) {
+    return tokens[index];
+  }
+
+  boolean isFinished() {
+    return tokens[0].getToken().equals("NULL") || !(currentIndex < tokens.length);
+  }
+
+  void moveToNextToken() {
+    currentIndex++;
   }
 
   public int getLength() {
     return tokens.length;
+  }
+
+  public String toString() {
+    return Arrays.asList(tokens).toString();
+  }
+
+  public Rule copy() {
+    return new Rule(tokens);
   }
 }

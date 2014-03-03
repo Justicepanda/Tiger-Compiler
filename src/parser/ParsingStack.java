@@ -26,7 +26,7 @@ class ParsingStack {
 
   private void push(Rule rule) {
     for (int i = rule.getLength() - 1; i >= 0; i--)
-      stack.push(rule.tokens[i]);
+      stack.push(rule.getToken(i));
   }
 
   boolean topMatches(TokenTuple token) {
@@ -37,7 +37,7 @@ class ParsingStack {
     return stack.peek();
   }
 
-  void pop() {
-    stack.pop();
+  TokenTuple pop() {
+    return stack.pop();
   }
 }
