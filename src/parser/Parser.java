@@ -36,9 +36,8 @@ public class Parser {
   }
 
   private void applyNonTerminal(Rule rule) {
-    tree.addChild(stack.peek());
+    moveAndAdd(stack.peek());
     tree.moveDown();
-    rules.peek().moveToNextToken();
     stack.replaceNonTerminalRule(rule);
     rules.push(rule.copy());
     handleFinishedRules();
@@ -56,9 +55,13 @@ public class Parser {
   }
 
   private void applyTerminal() {
-    rules.peek().moveToNextToken();
-    tree.addChild(stack.pop());
+    moveAndAdd(stack.pop());
     handleFinishedRules();
+  }
+
+  private void moveAndAdd(TokenTuple pop) {
+    tree.addChild(pop);
+    rules.peek().moveToNextToken();
   }
 
   private void handleFinishedRules() {
