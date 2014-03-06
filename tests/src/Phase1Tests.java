@@ -6,8 +6,6 @@ import scanner.Scanner;
 import scanner.TokenDfa;
 import scanner.TokenDfaBuilder;
 
-import java.io.*;
-
 import static junit.framework.Assert.*;
 
 public class Phase1Tests {
@@ -83,27 +81,8 @@ public class Phase1Tests {
   }
 
   String readFile(String fileName) {
-    BufferedReader br = null;
-    try {
-      br = new BufferedReader(new FileReader(fileName));
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    try {
-      StringBuilder sb = new StringBuilder();
-      String line = null;
-      if (br != null)
-        line = br.readLine();
-
-      while (line != null) {
-        sb.append(line);
-        sb.append("\n");
-        line = br.readLine();
-      }
-      return sb.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return "";
+    return new TestReader().read(fileName);
   }
+
 }
+

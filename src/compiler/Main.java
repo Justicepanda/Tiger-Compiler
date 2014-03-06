@@ -10,6 +10,13 @@ class Main {
   private static String filename;
   private static Compiler compiler;
 
+  /**
+   * Compiles a file found in the command arguments. If '-d'
+   * is given as an argument then the compiler will print out
+   * tokens found in the compiled file.
+   *
+   * @param args Filename and optional debug flag.
+   */
   public static void main(String[] args) {
     debugFlag = false;
     filename = "";

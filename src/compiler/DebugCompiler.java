@@ -12,6 +12,12 @@ class DebugCompiler extends Compiler {
     super(scanner, parser);
   }
 
+  /**
+   * Overrides scan() to append each scanned token to
+   * the compiler message.
+   *
+   * @return The scanned Token.
+   */
   @Override
   protected TokenTuple scan() {
     TokenTuple t = super.scan();
