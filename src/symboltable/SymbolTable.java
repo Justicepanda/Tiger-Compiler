@@ -2,14 +2,14 @@ package symboltable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayList;
 
 public class SymbolTable {
-  private Map<String, Stack<Entry>> entries;
+  private Map<String, ArrayList<Entry>> entries;
   private int scope;
 
   public SymbolTable() {
-    entries = new HashMap<String, Stack<Entry>>();
+    entries = new HashMap<String, ArrayList<Entry>>();
     scope = 1;
   }
 
@@ -19,19 +19,16 @@ public class SymbolTable {
 
   public void moveDownScope() {
     scope--;
-    for (Stack<Entry> entry: entries.values())
-      if (scope < entry.peek().getScope())
-        entry.pop();
   }
 
   public Entry getEntry(String id) {
-    return entries.get(id).peek();
+    return entries.get(id).get(scope);
   }
 
   public void addEntry(String id, Entry entry) {
     entry.setScope(scope);
     if (!entries.containsKey(id))
-      entries.put(id, new Stack<Entry>());
-    entries.get(id).push(entry);
+      entries.put(id, new ArrayList<Entry>());
+    entries.get(id).add(entry);
   }
 }

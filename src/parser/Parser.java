@@ -23,7 +23,10 @@ public class Parser {
   public void parse(TokenTuple token) {
     while (parsingStack.isTopNonTerminal())
       handleNonTerminal(token);
-    handleTerminal(token);
+    if(token.getType().equals("ATTRIBUTE"))
+    	handleAttribute(token);
+    else
+    	handleTerminal(token);
   }
 
   private void handleNonTerminal(TokenTuple token) {
@@ -50,6 +53,11 @@ public class Parser {
       throw new TerminalException(token, parsingStack.peek());
   }
 
+  private void handleAttribute(TokenTuple token)
+  {
+	  
+  }
+  
   private boolean ruleIsLegal(int rule) {
     return rule != 0;
   }
