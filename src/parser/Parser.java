@@ -3,15 +3,19 @@ package parser;
 import compiler.TokenTuple;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class Parser {
   private ParsingStack parsingStack;
   private ParsingTree parsingTree;
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
+  private final List<AttributeRule> attRuleTable;
 
   public Parser(String tableFileName, String rulesFileName) {
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
+    //attRuleTable = new AttributeRulesReader().determineFrom(rulesFileName);
+    attRuleTable = new ArrayList<AttributeRule>();
     parsingTable = new ParsingTable(tableFileName);
   }
 
@@ -48,14 +52,19 @@ public class Parser {
 
   private void handleTerminal(TokenTuple token) {
     if (parsingStack.topMatches(token))
-      parsingTree.addTerminal(parsingStack.pop());
+    {
+      parsingTree.addTerminal(token);
+      parsingStack.pop();
+    }
     else
+    {
       throw new TerminalException(token, parsingStack.peek());
+    }
   }
 
   private void handleAttribute(TokenTuple token)
   {
-	  
+	  //Add the attribute rule to the attribute rule table
   }
   
   private boolean ruleIsLegal(int rule) {
