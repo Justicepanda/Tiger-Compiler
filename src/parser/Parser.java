@@ -10,12 +10,9 @@ public class Parser {
   private ParsingTree parsingTree;
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
-  private final List<AttributeRule> attRuleTable;
 
   public Parser(String tableFileName, String rulesFileName) {
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
-    //attRuleTable = new AttributeRulesReader().determineFrom(rulesFileName);
-    attRuleTable = new ArrayList<AttributeRule>();
     parsingTable = new ParsingTable(tableFileName);
   }
 
@@ -27,10 +24,7 @@ public class Parser {
   public void parse(TokenTuple token) {
     while (parsingStack.isTopNonTerminal())
       handleNonTerminal(token);
-    if(token.getType().equals("ATTRIBUTE"))
-    	handleAttribute(token);
-    else
-    	handleTerminal(token);
+    handleTerminal(token);
   }
 
   private void handleNonTerminal(TokenTuple token) {
@@ -60,11 +54,6 @@ public class Parser {
     {
       throw new TerminalException(token, parsingStack.peek());
     }
-  }
-
-  private void handleAttribute(TokenTuple token)
-  {
-	  //Add the attribute rule to the attribute rule table
   }
   
   private boolean ruleIsLegal(int rule) {
