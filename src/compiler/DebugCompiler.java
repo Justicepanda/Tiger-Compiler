@@ -16,7 +16,7 @@ class DebugCompiler extends Compiler {
    * Overrides scan() to append each scanned token to
    * the compiler message.
    *
-   * @return The scanned Token.
+   * @return The scanned Token. lolololol
    */
   @Override
   protected TokenTuple scan() {
