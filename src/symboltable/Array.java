@@ -14,6 +14,17 @@ public class Array extends Entry
 		this.type = type;
 		this.name = name;
 		this.dimensions = dimensions;
+		int size = 1;
+		for(int i = 0; i < dimensions.size(); i++)
+		{
+			size *= dimensions.get(i);
+		}
+		this.values = new ArrayList<String>();
+		
+		for(int i = 0; i < size; i++)
+		{
+			this.values.add(null);
+		}
 	}
 	
 	public String getValue(ArrayList<Integer> indices)
@@ -27,6 +38,14 @@ public class Array extends Entry
 				offset += indices.get(i);
 		}
 		return values.get(offset);
+	}
+	
+	public void setValue(String value)
+	{
+		for(int i = 0; i < values.size(); i++)
+		{
+			values.set(i, value);
+		}
 	}
 	
 	public void setValue(ArrayList<Integer> indices, String value)
@@ -66,5 +85,10 @@ public class Array extends Entry
 	public ArrayList<Integer> getDimensions()
 	{
 		return dimensions;
+	}
+	
+	public ArrayList<String> getList()
+	{
+		return values;
 	}
 }

@@ -113,24 +113,81 @@ public class Parser {
 	  {
 		  //You can instantiate more than one variable in a single line
 		  ArrayList<Variable> vars = new ArrayList<Variable>();
+		  ArrayList<Array> arrays = new ArrayList<Array>();
 		  Node currentIdListNode = node.children.get(1);
 		  Type variableType = symbolTable.getType(node.children.get(3).children.get(0).token.getToken());
-		  vars.add(new Variable(variableType, currentIdListNode.children.get(0).token.getToken()));
-		  currentIdListNode = currentIdListNode.children.get(1);
-		  while(currentIdListNode.children.size() > 0)
-		  {
-			  vars.add(new Variable(variableType, currentIdListNode.children.get(1).token.getToken()));
-			  currentIdListNode = currentIdListNode.children.get(2);
-		  }
 		  
-		  for(Variable var: vars)
+		  //If type is an array, create an array instead of a variable
+		  if(variableType.getActualType().split(" ")[0].equals("array"))
 		  {
-			  symbolTable.addVariable(var.getName(), var);
+			  String arrayValue = "";
+			  
+			  if(node.children.get(4).children.size() > 0)
+			  {
+				  if(node.children.get(4).children.get(1).children.get(0).token.getToken().equals("-"))
+					  arrayValue = node.children.get(4).children.get(1).children.get(0).token.getToken() + node.children.get(4).children.get(1).children.get(1).token.getToken();
+				  else
+					  arrayValue = node.children.get(4).children.get(1).children.get(0).token.getToken();
+			  }
+			  String[] temp = variableType.getActualType().split("\\[");
+			  ArrayList<Integer> dimensions = new ArrayList<Integer>();
+			  for(int i = 1; i < temp.length; i++)
+			  {
+				  dimensions.add(new Integer(temp[i].split(" ")[1]));
+			  }
+			  
+			  Array newArray = new Array(variableType, currentIdListNode.children.get(0).token.getToken(), dimensions);
+			  newArray.setValue(arrayValue);
+			  arrays.add(newArray);
+			  currentIdListNode = currentIdListNode.children.get(1);
+			  
+			  while(currentIdListNode.children.size() > 0)
+			  {
+				  newArray = new Array(variableType, currentIdListNode.children.get(1).token.getToken(), dimensions);
+				  newArray.setValue(arrayValue);
+				  arrays.add(newArray);
+				  currentIdListNode = currentIdListNode.children.get(2);
+			  }
+			  
+			  for(Array arr: arrays)
+			  {
+				  symbolTable.addArray(arr.getName(), arr);
+			  }
+		  }
+		  else
+		  {
+			  String variableValue = "";
+			  
+			  if(node.children.get(4).children.size() > 0)
+			  {
+				  if(node.children.get(4).children.get(1).children.get(0).token.getToken().equals("-"))
+					  variableValue = node.children.get(4).children.get(1).children.get(0).token.getToken() + node.children.get(4).children.get(1).children.get(1).token.getToken();
+				  else
+					  variableValue = node.children.get(4).children.get(1).children.get(0).token.getToken();
+			  }
+			  
+			  Variable newVar = new Variable(variableType, currentIdListNode.children.get(0).token.getToken());
+			  newVar.setValue(variableValue);
+			  vars.add(newVar);
+			  currentIdListNode = currentIdListNode.children.get(1);
+			  
+			  while(currentIdListNode.children.size() > 0)
+			  {
+				  newVar = new Variable(variableType, currentIdListNode.children.get(1).token.getToken());
+				  newVar.setValue(variableValue);
+				  vars.add(newVar);
+				  currentIdListNode = currentIdListNode.children.get(2);
+			  }
+			  
+			  for(Variable var: vars)
+			  {
+				  symbolTable.addVariable(var.getName(), var);
+			  }
 		  }
 	  }
 	  else if(node.token.getToken().equals("<funct-declaration>"))
 	  {
-	  	
+	  		
 	  }
   }
 }

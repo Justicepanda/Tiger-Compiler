@@ -7,13 +7,15 @@ import java.util.ArrayList;
 public class SymbolTable {
   private ArrayList<Type> types;
   private Map<String, ArrayList<Variable>> variables;
-  private Map<String, ArrayList<FunctionDeclaration>> funcDecs;
+  private Map<String, ArrayList<Array>> arrays;
+  private ArrayList<FunctionDeclaration> funcDecs;
   private int scope;
 
   public SymbolTable() {
     types = new ArrayList<Type>();
     variables = new HashMap<String, ArrayList<Variable>>();
-    funcDecs = new HashMap<String, ArrayList<FunctionDeclaration>>();
+    funcDecs = new ArrayList<FunctionDeclaration>();
+    arrays = new HashMap<String, ArrayList<Array>>();
     scope = 1;
     addType(new Type("int", "int"));
     addType(new Type("string", "string"));
@@ -47,7 +49,15 @@ public class SymbolTable {
   
   public FunctionDeclaration getFunction(String id) 
   {
-	    return funcDecs.get(id).get(scope);
+	  	for(int i = 0; i < funcDecs.size(); i++)
+	    {
+	    	if(funcDecs.get(i).getName().equals(id))
+	    	{
+	    		return funcDecs.get(i);
+	    	}
+	    }
+	  	
+	  	return null;
   }
 
   public void addType(Type entry) 
@@ -64,6 +74,14 @@ public class SymbolTable {
     variables.get(id).add(entry);
   }
   
+  public void addArray(String id, Array entry)
+  {
+  	entry.setScope(scope);
+	if (!arrays.containsKey(id))
+	  arrays.put(id, new ArrayList<Array>());
+	arrays.get(id).add(entry);
+  }
+  
   public void print()
   {
 	  System.out.println("--Symbol Table--");
@@ -78,6 +96,12 @@ public class SymbolTable {
 			  System.out.println("Variable: " + varList.get(i).getName() + ", Type: " + varList.get(i).getType().getName() + ", Scope: " + varList.get(i).getScope() + ", CurrentValue: " + varList.get(i).getValue());
 		  }
 	  }
-	  
+	  for(ArrayList<Array> arrList: arrays.values())
+	  {
+		  for(int i = 0; i < arrList.size(); i++)
+		  {
+			  System.out.println("Array: " + arrList.get(i).getName() + ", Type: " + arrList.get(i).getType().getName() + ", Scope: " + arrList.get(i).getScope() + ", CurrentValue: " + arrList.get(i).getList());
+		  }
+	  }
   }
 }

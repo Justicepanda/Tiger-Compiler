@@ -24,7 +24,7 @@ public class Variable extends Entry
   
   public void setValue(String value)
   {
-	  value = value;
+	  this.value = value;
   }
   
   public String getValue()
