@@ -33,5 +33,10 @@ public class Type extends Entry
 		}
 		
 		return false;
-	}	
+	}
+
+  @Override
+  public String toString() {
+    return name;
+  }
 }

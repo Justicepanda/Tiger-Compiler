@@ -2,7 +2,7 @@ package symboltable;
 
 import java.util.ArrayList;
 
-public class FunctionDeclaration 
+public class FunctionDeclaration extends Entry
 {
 	private final String name;
 	private final ArrayList<Argument> arguments;

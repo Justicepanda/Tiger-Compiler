@@ -8,15 +8,19 @@ public class SymbolTable {
   private ArrayList<Type> types;
   private Map<String, ArrayList<Variable>> variables;
   private Map<String, ArrayList<Array>> arrays;
-  private ArrayList<FunctionDeclaration> funcDecs;
+  private Map<String, ArrayList<FunctionDeclaration>> funcDecs;
   private int scope;
 
   public SymbolTable() {
     types = new ArrayList<Type>();
     variables = new HashMap<String, ArrayList<Variable>>();
-    funcDecs = new ArrayList<FunctionDeclaration>();
+    funcDecs = new HashMap<String, ArrayList<FunctionDeclaration>>();
     arrays = new HashMap<String, ArrayList<Array>>();
     scope = 1;
+    addDefaultTypes();
+  }
+
+  private void addDefaultTypes() {
     addType(new Type("int", "int"));
     addType(new Type("string", "string"));
   }
@@ -49,15 +53,7 @@ public class SymbolTable {
   
   public FunctionDeclaration getFunction(String id) 
   {
-	  	for(int i = 0; i < funcDecs.size(); i++)
-	    {
-	    	if(funcDecs.get(i).getName().equals(id))
-	    	{
-	    		return funcDecs.get(i);
-	    	}
-	    }
-	  	
-	  	return null;
+    return funcDecs.get(id).get(scope);
   }
 
   public void addType(Type entry) 
@@ -81,7 +77,14 @@ public class SymbolTable {
 	  arrays.put(id, new ArrayList<Array>());
 	arrays.get(id).add(entry);
   }
-  
+
+  public void addFunction(String id, FunctionDeclaration fd) {
+    fd.setScope(scope);
+    if (!funcDecs.containsKey(id))
+      funcDecs.put(id, new ArrayList<FunctionDeclaration>());
+    funcDecs.get(id).add(fd);
+  }
+
   public void print()
   {
 	  System.out.println("--Symbol Table--");
@@ -103,5 +106,15 @@ public class SymbolTable {
 			  System.out.println("Array: " + arrList.get(i).getName() + ", Type: " + arrList.get(i).getType().getName() + ", Scope: " + arrList.get(i).getScope() + ", CurrentValue: " + arrList.get(i).getList());
 		  }
 	  }
+    for(ArrayList<FunctionDeclaration> funcDec: funcDecs.values())
+    {
+      for(int i = 0; i < funcDec.size(); i++)
+      {
+        System.out.println("Function: " + funcDec.get(i).getName() +
+                ", Return Type: " + funcDec.get(i).getReturnType().getName() +
+                ", Arguments: " + funcDec.get(i).getArgs().toString() +
+                ", Scope: " + funcDec.get(i).getScope());
+      }
+    }
   }
 }

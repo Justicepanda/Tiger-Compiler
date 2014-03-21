@@ -92,102 +92,161 @@ public class Parser {
   
   public void visit(Node node)
   {
-	  if(node.token.getToken().equals("<type-declaration>"))
-	  {
-		  String typeName = (node.children.get(1)).token.getToken();
-		  String actualType = "";
-		  
-		  //The children of <type>
-		  for(int i = 0; i < node.children.get(3).children.size(); i++)
-		  {
-			  //This is the right value of a type assignment
-			  if(node.children.get(3).children.get(i).token.getToken().equals("<type-id>"))
-				  actualType += node.children.get(3).children.get(i).getLastChild().token.getToken() + " ";
-			  else
-				  actualType += node.children.get(3).children.get(i).token.getToken() + " ";
-		  }
+    new SymbolTableBuilder(node).invoke();
+  }
 
-		  symbolTable.addType(new Type(typeName, actualType));
-	  }
-	  else if(node.token.getToken().equals("<var-declaration>"))
-	  {
-		  //You can instantiate more than one variable in a single line
-		  ArrayList<Variable> vars = new ArrayList<Variable>();
-		  ArrayList<Array> arrays = new ArrayList<Array>();
-		  Node currentIdListNode = node.children.get(1);
-		  Type variableType = symbolTable.getType(node.children.get(3).children.get(0).token.getToken());
-		  
-		  //If type is an array, create an array instead of a variable
-		  if(variableType.getActualType().split(" ")[0].equals("array"))
-		  {
-			  String arrayValue = "";
-			  
-			  if(node.children.get(4).children.size() > 0)
-			  {
-				  if(node.children.get(4).children.get(1).children.get(0).token.getToken().equals("-"))
-					  arrayValue = node.children.get(4).children.get(1).children.get(0).token.getToken() + node.children.get(4).children.get(1).children.get(1).token.getToken();
-				  else
-					  arrayValue = node.children.get(4).children.get(1).children.get(0).token.getToken();
-			  }
-			  String[] temp = variableType.getActualType().split("\\[");
-			  ArrayList<Integer> dimensions = new ArrayList<Integer>();
-			  for(int i = 1; i < temp.length; i++)
-			  {
-				  dimensions.add(new Integer(temp[i].split(" ")[1]));
-			  }
-			  
-			  Array newArray = new Array(variableType, currentIdListNode.children.get(0).token.getToken(), dimensions);
-			  newArray.setValue(arrayValue);
-			  arrays.add(newArray);
-			  currentIdListNode = currentIdListNode.children.get(1);
-			  
-			  while(currentIdListNode.children.size() > 0)
-			  {
-				  newArray = new Array(variableType, currentIdListNode.children.get(1).token.getToken(), dimensions);
-				  newArray.setValue(arrayValue);
-				  arrays.add(newArray);
-				  currentIdListNode = currentIdListNode.children.get(2);
-			  }
-			  
-			  for(Array arr: arrays)
-			  {
-				  symbolTable.addArray(arr.getName(), arr);
-			  }
-		  }
-		  else
-		  {
-			  String variableValue = "";
-			  
-			  if(node.children.get(4).children.size() > 0)
-			  {
-				  if(node.children.get(4).children.get(1).children.get(0).token.getToken().equals("-"))
-					  variableValue = node.children.get(4).children.get(1).children.get(0).token.getToken() + node.children.get(4).children.get(1).children.get(1).token.getToken();
-				  else
-					  variableValue = node.children.get(4).children.get(1).children.get(0).token.getToken();
-			  }
-			  
-			  Variable newVar = new Variable(variableType, currentIdListNode.children.get(0).token.getToken());
-			  newVar.setValue(variableValue);
-			  vars.add(newVar);
-			  currentIdListNode = currentIdListNode.children.get(1);
-			  
-			  while(currentIdListNode.children.size() > 0)
-			  {
-				  newVar = new Variable(variableType, currentIdListNode.children.get(1).token.getToken());
-				  newVar.setValue(variableValue);
-				  vars.add(newVar);
-				  currentIdListNode = currentIdListNode.children.get(2);
-			  }
-			  
-			  for(Variable var: vars)
-			  {
-				  symbolTable.addVariable(var.getName(), var);
-			  }
-		  }
-	  }
-	  else if(node.token.getToken().equals("<funct-declaration>"))
-	  {
-	  		
-	  }
+  private class SymbolTableBuilder {
+    private Node node;
+    private ArrayList<Variable> variables;
+    private ArrayList<Array> arrays;
+    private Type variableType;
+    private Node currentIdListNode;
+
+    public SymbolTableBuilder(Node node) {
+      this.node = node;
+    }
+
+    public void invoke() {
+      variables = new ArrayList<Variable>();
+      arrays = new ArrayList<Array>();
+      if(node.token.getToken().equals("<type-declaration>"))
+        addTypeToTable();
+      else if(node.token.getToken().equals("<var-declaration>"))
+      {
+        //You can instantiate more than one variable in a single line
+        currentIdListNode = node.children.get(1);
+        variableType = symbolTable.getType(node.children.get(3).children.get(0).token.getToken());
+
+        //If type is an array, create an array instead of a variable
+        if(variableType.getActualType().split(" ")[0].equals("array"))
+          addArrayToTable();
+        else
+          addVariableToTable();
+      }
+      else if(node.token.getToken().equals("<funct-declaration>"))
+      {
+        addFunctionToTable();
+      }
+    }
+
+    private void addFunctionToTable() {
+      String functionName = node.children.get(1).token.getToken();
+      Type type = null;
+      if (node.children.get(5).children.size() > 0) {
+        type = symbolTable.getType(node.children.get(5).children.get(1).children.get(0).token.getToken());
+      }
+      else
+        type = new Type(null, null);
+
+      ArrayList<Argument> arguments = new ArrayList<Argument>();
+      if (node.children.get(3).children.size() > 0) {
+
+        Node paramList = node.children.get(3);
+        Node param = paramList.children.get(0);
+        Type argType = symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
+        arguments.add(new Argument(argType, param.children.get(0).token.getToken()));
+
+        param = param.children.get(1);
+        while (param.children.size() > 0) {
+          argType = symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
+          arguments.add(new Argument(argType, param.children.get(0).token.getToken()));
+        }
+      }
+
+
+      FunctionDeclaration fd = new FunctionDeclaration(functionName, arguments, type);
+      symbolTable.addFunction(functionName, fd);
+    }
+
+    private void addTypeToTable() {
+      String typeName = (node.children.get(1)).token.getToken();
+      String actualType = "";
+
+      //The children of <type>
+      for(int i = 0; i < node.children.get(3).children.size(); i++)
+      {
+        //This is the right value of a type assignment
+        if(node.children.get(3).children.get(i).token.getToken().equals("<type-id>"))
+          actualType += node.children.get(3).children.get(i).getLastChild().token.getToken() + " ";
+        else
+          actualType += node.children.get(3).children.get(i).token.getToken() + " ";
+      }
+
+      symbolTable.addType(new Type(typeName, actualType));
+    }
+
+    private void addVariableToTable() {
+      String variableValue = "";
+
+      if(node.children.get(4).children.size() > 0)
+      {
+        if(getLiteralValue().equals("-"))
+          variableValue = getLiteralValue() + getNegativeValue();
+        else
+          variableValue = getLiteralValue();
+      }
+
+      Variable newVar = new Variable(variableType, currentIdListNode.children.get(0).token.getToken());
+      newVar.setValue(variableValue);
+      variables.add(newVar);
+      currentIdListNode = currentIdListNode.children.get(1);
+
+      while(currentIdListNode.children.size() > 0)
+      {
+        newVar = new Variable(variableType, currentIdListNode.children.get(1).token.getToken());
+        newVar.setValue(variableValue);
+        variables.add(newVar);
+        currentIdListNode = currentIdListNode.children.get(2);
+      }
+
+      for(Variable var: variables)
+      {
+        symbolTable.addVariable(var.getName(), var);
+      }
+    }
+
+    private String getNegativeValue() {
+      return node.children.get(4).children.get(1).children.get(1).token.getToken();
+    }
+
+    private String getLiteralValue() {
+      return node.children.get(4).children.get(1).children.get(0).token.getToken();
+    }
+
+    private void addArrayToTable() {
+      String arrayValue = "";
+
+      if(node.children.get(4).children.size() > 0)
+      {
+        if(getLiteralValue().equals("-"))
+          arrayValue = getLiteralValue() + getNegativeValue();
+        else
+          arrayValue = getLiteralValue();
+      }
+      String[] temp = variableType.getActualType().split("\\[");
+      ArrayList<Integer> dimensions = new ArrayList<Integer>();
+      for(int i = 1; i < temp.length; i++)
+      {
+        dimensions.add(new Integer(temp[i].split(" ")[1]));
+      }
+
+      Array newArray = new Array(variableType, currentIdListNode.children.get(0).token.getToken(), dimensions);
+      newArray.setValue(arrayValue);
+      arrays.add(newArray);
+      currentIdListNode = currentIdListNode.children.get(1);
+
+      while(currentIdListNode.children.size() > 0)
+      {
+        newArray = new Array(variableType, currentIdListNode.children.get(1).token.getToken(), dimensions);
+        newArray.setValue(arrayValue);
+        arrays.add(newArray);
+        currentIdListNode = currentIdListNode.children.get(2);
+      }
+
+      for(Array arr: arrays)
+      {
+        symbolTable.addArray(arr.getName(), arr);
+      }
+    }
   }
 }

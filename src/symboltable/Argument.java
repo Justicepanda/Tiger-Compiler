@@ -2,7 +2,7 @@ package symboltable;
 
 
 
-public class Argument extends Entry
+public class Argument
 {
 	private final Type type;
 	private final String name;
@@ -22,4 +22,9 @@ public class Argument extends Entry
 	{
 		return name;
 	}
+
+  @Override
+  public String toString() {
+    return type + ": " + name;
+  }
 }
