@@ -2,15 +2,21 @@ package symboltable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayList;
 
 public class SymbolTable {
-  private Map<String, Stack<Entry>> entries;
+  private ArrayList<Type> types;
+  private Map<String, ArrayList<Variable>> variables;
+  private Map<String, ArrayList<FunctionDeclaration>> funcDecs;
   private int scope;
 
   public SymbolTable() {
-    entries = new HashMap<String, Stack<Entry>>();
+    types = new ArrayList<Type>();
+    variables = new HashMap<String, ArrayList<Variable>>();
+    funcDecs = new HashMap<String, ArrayList<FunctionDeclaration>>();
     scope = 1;
+    addType(new Type("int", "int"));
+    addType(new Type("string", "string"));
   }
 
   public void moveUpScope() {
@@ -19,19 +25,59 @@ public class SymbolTable {
 
   public void moveDownScope() {
     scope--;
-    for (Stack<Entry> entry: entries.values())
-      if (scope < entry.peek().getScope())
-        entry.pop();
   }
 
-  public Entry getEntry(String id) {
-    return entries.get(id).peek();
+  public Type getType(String id) 
+  {
+	for(int i = 0; i < types.size(); i++)
+    {
+    	if(types.get(i).getName().equals(id))
+    	{
+    		return types.get(i);
+    	}
+    }
+    
+    return null;
+  }
+  
+  public Variable getVariable(String id) 
+  {
+	    return variables.get(id).get(scope);
+  }
+  
+  public FunctionDeclaration getFunction(String id) 
+  {
+	    return funcDecs.get(id).get(scope);
   }
 
-  public void addEntry(String id, Entry entry) {
+  public void addType(Type entry) 
+  {
+	  entry.setScope(scope);
+	  types.add(entry);
+  }
+  
+  public void addVariable(String id, Variable entry) 
+  {
     entry.setScope(scope);
-    if (!entries.containsKey(id))
-      entries.put(id, new Stack<Entry>());
-    entries.get(id).push(entry);
+    if (!variables.containsKey(id))
+      variables.put(id, new ArrayList<Variable>());
+    variables.get(id).add(entry);
+  }
+  
+  public void print()
+  {
+	  System.out.println("--Symbol Table--");
+	  for(Type e: types)
+	  {
+		  System.out.println("Type: " + e.getName() + ", Scope: " + e.getScope() + ", ActualType: " + e.getActualType());
+	  }
+	  for(ArrayList<Variable> varList: variables.values())
+	  {
+		  for(int i = 0; i < varList.size(); i++)
+		  {
+			  System.out.println("Variable: " + varList.get(i).getName() + ", Type: " + varList.get(i).getType().getName() + ", Scope: " + varList.get(i).getScope() + ", CurrentValue: " + varList.get(i).getValue());
+		  }
+	  }
+	  
   }
 }
