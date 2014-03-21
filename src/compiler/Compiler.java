@@ -35,6 +35,7 @@ public class Compiler {
     while (scanner.hasMoreTokens() && !parserErrorEncountered)
       compileNextToken();
     addSuccessMessage();
+    parser.buildSymbolTable();
   }
 
   public String getMessage() {
@@ -43,6 +44,11 @@ public class Compiler {
 
   public String getParseTreePrintout() {
     return parser.printTree();
+  }
+  
+  public void getSymbolTablePrintout()
+  {
+	  parser.printSymbolTable();
   }
 
   private void init(String filename) {

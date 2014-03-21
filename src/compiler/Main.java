@@ -24,6 +24,7 @@ class Main {
     compiler.compile(filename);
     System.out.println(compiler.getMessage());
     System.out.println(compiler.getParseTreePrintout());
+    compiler.getSymbolTablePrintout();
 	}
 
   private static void parseArgs(String[] args) {

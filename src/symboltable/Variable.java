@@ -12,6 +12,16 @@ public class Variable extends Entry
     this.name = name;
   }
   
+  public String getName()
+  {
+	  return name;
+  }
+  
+  public Type getType()
+  {
+	  return type;
+  }
+  
   public void setValue(String value)
   {
 	  value = value;
