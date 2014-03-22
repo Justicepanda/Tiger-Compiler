@@ -17,8 +17,11 @@ class LinesHandler {
     charInd = 0;
   }
 
-  char getCurrentChar() {
-    return lines[lineInd].charAt(charInd);
+  char getCurrentChar() 
+  {
+	  if(lineInd < lines.length)
+		  return lines[lineInd].charAt(charInd);
+	  return ' ';
   }
 
   boolean hasChars() {
@@ -57,7 +60,8 @@ class LinesHandler {
       charInd = lines[lineInd].length() - 1;
   }
 
-  private void moveToNextLine() {
+  private void moveToNextLine() 
+  {
     charInd = 0;
     lineInd++;
   }
@@ -66,11 +70,28 @@ class LinesHandler {
     return charInd >= lines[lineInd].length();
   }
   
-  String getLineUpToCurrChar() {
-	  return lines[lineInd].substring(0, charInd);
+  String getLineUpToCurrChar() 
+  {
+	  if(lineInd < lines.length)
+		  return lines[lineInd].substring(0, charInd);
+	  else
+		  return "";
   }
 
-  String getLineInfo() {
-    return "(line " + (lineInd + 1) + "): " + getLineUpToCurrChar();
+  String getLineInfo() 
+  {
+	  int movesBackward = 0;
+	  while(getCurrentChar() == ' ')
+	  {
+		  movesBackward++;
+		  moveBackward();
+	  }
+	  String line = "(line " + (lineInd + 1) + "): " + getLineUpToCurrChar();
+	  while(movesBackward > 0)
+	  {
+		  movesBackward--;
+		  moveForward();
+	  }
+	  return line;
   }
 }

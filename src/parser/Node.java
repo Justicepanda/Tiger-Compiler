@@ -3,12 +3,16 @@ package parser;
 import java.util.List;
 import java.util.ArrayList;
 
+import symboltable.Type;
+import symboltable.SymbolTable;
+import semantics.TypeValuePair;
 import compiler.TokenTuple;
 
 public class Node {
   final TokenTuple token;
   private final Node parent;
   public final List<Node> children;
+  private TypeValuePair typeValue;
 
   public Node(TokenTuple token, Node parent) {
     super();
@@ -20,18 +24,30 @@ public class Node {
   public Node getLastChild() {
     return children.get(children.size() - 1);
   }
+  
+  public TypeValuePair getTypeValuePair()
+  {
+	  return typeValue;
+  }
+  
+  public void setTypeValuePair(TypeValuePair tp)
+  {
+	  this.typeValue = tp;
+  }
 
   public Node getParent() {
     return parent;
   }
 
   public void addChild(TokenTuple data) {
-    children.add(new Node(data, this));
+	  Node newNode = new Node(data, this);
+	  newNode.setTypeValuePair(new TypeValuePair((Type)SymbolTable.getType(data.getType()), data.getToken()));
+	  children.add(newNode);
   }
 
   public String print(String prepend) {
     String res = "";
-    res += prepend + token.getToken() + "\n";
+    res += prepend + token.getToken() + "[" + token.getLocationInfo() + "]\n";
     for (Node n : children)
       res += n.print(prepend + "\t");
     return res;

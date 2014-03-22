@@ -39,6 +39,7 @@ public class Scanner {
   private TokenTuple getToken() {
     TokenTuple token = findToken();
     prepareToFindNextToken();
+    token.setLocationInfo(getLineInfo());
     if (isComment(token))
       return getToken();
     else
@@ -81,11 +82,10 @@ public class Scanner {
 
   private void changeDfaState(char c) {
     dfa.changeState(c);
-    handler.moveForward();
+	handler.moveForward();
   }
 
   public String getLineInfo() {
     return handler.getLineInfo();
   }
-
 }
