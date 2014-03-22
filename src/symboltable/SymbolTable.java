@@ -14,7 +14,7 @@ public class SymbolTable {
     FUNCTION
   }
 
-  private final Map<SymbolType, Map<String, List<Entry>>> table;
+  private static Map<SymbolType, Map<String, List<Entry>>> table;
   private final int scope;
 
   public SymbolTable() {
@@ -36,8 +36,8 @@ public class SymbolTable {
     addType(new Type("string", "string"));
   }
 
-  public Entry getType(String id) {
-    return table.get(SymbolType.TYPE).get(id).get(0);
+  public static Type getType(String id) {
+    return (Type)table.get(SymbolType.TYPE).get(id).get(0);
   }
 
   public void addType(Type entry) {

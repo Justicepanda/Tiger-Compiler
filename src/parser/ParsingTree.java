@@ -4,7 +4,7 @@ import compiler.TokenTuple;
 
 import java.util.Stack;
 
-class ParsingTree {
+public class ParsingTree {
   private final Stack<Rule> rules;
   private final Node parentNode;
   private Node currentNode;

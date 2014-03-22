@@ -3,6 +3,7 @@ package compiler;
 public class TokenTuple {
   private final String tokenType;
   private final String token;
+  private String locationInfo;
 
   /**
    * Core concept for compilation, stores data about a scanned
@@ -14,8 +15,19 @@ public class TokenTuple {
   public TokenTuple(String tokenType, String token) {
     this.tokenType = tokenType;
     this.token = token;
+    this.locationInfo = "";
   }
 
+  public void setLocationInfo(String info)
+  {
+	  locationInfo = info;
+  }
+  
+  public String getLocationInfo()
+  {
+	  return locationInfo;
+  }
+  
   public String getToken()
   {
 	  return token;
