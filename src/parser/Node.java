@@ -8,7 +8,7 @@ import compiler.TokenTuple;
 public class Node {
   final TokenTuple token;
   private final Node parent;
-  final List<Node> children;
+  public final List<Node> children;
 
   public Node(TokenTuple token, Node parent) {
     super();

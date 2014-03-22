@@ -52,7 +52,7 @@ public class SymbolTable {
     addEntry(SymbolType.ARRAY, entry);
   }
 
-  public void addFunction(FunctionDeclaration entry) {
+  public void addFunction(Function entry) {
     addEntry(SymbolType.FUNCTION, entry);
   }
 

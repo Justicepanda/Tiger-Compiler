@@ -1,5 +1,6 @@
-package parser;
+package symboltableconstruction;
 
+import parser.Node;
 import symboltable.Array;
 import symboltable.Entry;
 import symboltable.Type;
@@ -12,8 +13,10 @@ public class VariableBuilder {
   private Node node;
   private String value;
   private Type type;
+
   private boolean isArray;
   private List<Integer> dimensions;
+
   private int nodeTypeLocation = 0;
   private int nextChildLocation = 1;
 
@@ -49,11 +52,11 @@ public class VariableBuilder {
   }
 
   private String getLiteralValue() {
-    return node.children.get(4).children.get(1).children.get(0).token.getToken();
+    return node.getTokenTypeOfChild(4, 1, 0);
   }
 
   private String getNegativeValue() {
-    return node.children.get(4).children.get(1).children.get(1).token.getToken();
+    return node.getTokenTypeOfChild(4, 1, 1);
   }
 
   public boolean hasMoreVariables() {
@@ -61,30 +64,31 @@ public class VariableBuilder {
   }
 
   public Entry getNextVariable() {
-    Entry entry;
-    if (isArray)
-      entry = setupArray();
-    else
-      entry = setupVariable();
+    Entry entry = getEntry();
     node = node.navigateToChild(nextChildLocation);
     setNextLocations();
     return entry;
   }
 
-  private Entry setupArray() {
+  private Entry getEntry() {
     Entry entry;
-    Array arr = new Array(type, node.getTokenTypeOfChild(nodeTypeLocation), dimensions);
-    arr.setValue(value);
-    entry = arr;
+    if (isArray)
+      entry = setupArray();
+    else
+      entry = setupVariable();
     return entry;
   }
 
+  private Entry setupArray() {
+    Array arr = new Array(type, node.getTokenTypeOfChild(nodeTypeLocation), dimensions);
+    arr.setValue(value);
+    return arr;
+  }
+
   private Entry setupVariable() {
-    Entry entry;
     Variable var = new Variable(type, node.getTokenTypeOfChild(nodeTypeLocation));
     var.setValue(value);
-    entry = var;
-    return entry;
+    return var;
   }
 
   private void setNextLocations() {

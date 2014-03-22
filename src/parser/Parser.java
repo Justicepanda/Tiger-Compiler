@@ -2,6 +2,7 @@ package parser;
 
 import compiler.TokenTuple;
 import symboltable.*;
+import symboltableconstruction.SymbolTableBuilder;
 
 import java.util.List;
 
