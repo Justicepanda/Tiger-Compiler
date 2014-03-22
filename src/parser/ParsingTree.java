@@ -4,9 +4,7 @@ import compiler.TokenTuple;
 
 import java.util.Stack;
 
-import symboltable.*;
-
-class ParsingTree 
+class ParsingTree
 {
   private final Stack<Rule> rules;
   private final Node parentNode;
@@ -22,7 +20,7 @@ class ParsingTree
 
   String print() 
   {
-    return ((Node)parentNode).print("");
+    return parentNode.print("");
   }
 
   void addNonTerminal(TokenTuple nonTerminalToken, Rule nonTerminalRule) 

@@ -68,9 +68,8 @@ public class Compiler {
     return parser.printTree();
   }
   
-  public void getSymbolTablePrintout()
-  {
-	  parser.printSymbolTable();
+  public String getSymbolTablePrintout() {
+	  return parser.printSymbolTable();
   }
 
   private void init(String filename) {

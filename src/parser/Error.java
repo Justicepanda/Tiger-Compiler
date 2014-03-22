@@ -2,9 +2,9 @@ package parser;
 
 import compiler.TokenTuple;
 
-public class Error 
+class Error
 {
-	private String errorString;
+	private final String errorString;
 	
 	public Error(String error, int line, TokenTuple token)
 	{

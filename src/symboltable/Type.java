@@ -1,42 +1,28 @@
 package symboltable;
 
-public class Type extends Entry 
-{
-	private String name;
-	private String actualType;
-	
-	public Type(String name, String actualType)
-	{
-		this.name = name;
-		this.actualType = actualType;
-	}
-	
-	public String getName()
-	{
-		return name;
-	}
-	
-	public String getActualType()
-	{
-		return actualType;
-	}
-	
-	public boolean equals(Object o)
-	{
-		if(o instanceof Type)
-		{
-			Type t = (Type)o;
-			if(t.getName().equals(getName()))
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
+public class Type extends Entry {
+  private final String actualType;
+
+  public Type(String name, String actualType) {
+    super(name);
+    this.actualType = actualType;
+  }
+
+  public String getActualType() {
+    return actualType;
+  }
+
+  public boolean equals(Object o) {
+    if (!(o instanceof Type))
+      return false;
+    Type t = (Type) o;
+    return t.getName().equals(getName());
+  }
 
   @Override
   public String toString() {
-    return name;
+    return "Type: " + getName() +
+            ", Scope: " + getScope() +
+            ", ActualType: " + actualType;
   }
 }

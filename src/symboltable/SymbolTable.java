@@ -1,21 +1,28 @@
 package symboltable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
 public class SymbolTable {
-  private ArrayList<Type> types;
-  private Map<String, ArrayList<Variable>> variables;
-  private Map<String, ArrayList<Array>> arrays;
-  private Map<String, ArrayList<FunctionDeclaration>> funcDecs;
-  private int scope;
+
+  private enum SymbolType {
+    TYPE,
+    VARIABLE,
+    ARRAY,
+    FUNCTION
+  }
+
+  private final Map<SymbolType, Map<String, List<Entry>>> table;
+  private final int scope;
 
   public SymbolTable() {
-    types = new ArrayList<Type>();
-    variables = new HashMap<String, ArrayList<Variable>>();
-    funcDecs = new HashMap<String, ArrayList<FunctionDeclaration>>();
-    arrays = new HashMap<String, ArrayList<Array>>();
+    table = new HashMap<SymbolType, Map<String, List<Entry>>>();
+    table.put(SymbolType.TYPE, new HashMap<String, List<Entry>>());
+    table.put(SymbolType.VARIABLE, new HashMap<String, List<Entry>>());
+    table.put(SymbolType.ARRAY, new HashMap<String, List<Entry>>());
+    table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
     scope = 1;
     addDefaultTypes();
   }
@@ -25,96 +32,41 @@ public class SymbolTable {
     addType(new Type("string", "string"));
   }
 
-  public void moveUpScope() {
-    scope++;
+  public Entry getType(String id) {
+    return table.get(SymbolType.TYPE).get(id).get(0);
   }
 
-  public void moveDownScope() {
-    scope--;
+  public void addType(Type entry) {
+    addEntry(SymbolType.TYPE, entry);
   }
 
-  public Type getType(String id) 
-  {
-	for(int i = 0; i < types.size(); i++)
-    {
-    	if(types.get(i).getName().equals(id))
-    	{
-    		return types.get(i);
-    	}
-    }
-    
-    return null;
-  }
-  
-  public Variable getVariable(String id) 
-  {
-	    return variables.get(id).get(scope);
-  }
-  
-  public FunctionDeclaration getFunction(String id) 
-  {
-    return funcDecs.get(id).get(scope);
+  public void addVariable(Variable entry) {
+    addEntry(SymbolType.VARIABLE, entry);
   }
 
-  public void addType(Type entry) 
-  {
-	  entry.setScope(scope);
-	  types.add(entry);
+  public void addArray(Array entry) {
+    addEntry(SymbolType.ARRAY, entry);
   }
-  
-  public void addVariable(String id, Variable entry) 
-  {
+
+  public void addFunction(FunctionDeclaration entry) {
+    addEntry(SymbolType.FUNCTION, entry);
+  }
+
+  private void addEntry(SymbolType label, Entry entry) {
     entry.setScope(scope);
-    if (!variables.containsKey(id))
-      variables.put(id, new ArrayList<Variable>());
-    variables.get(id).add(entry);
-  }
-  
-  public void addArray(String id, Array entry)
-  {
-  	entry.setScope(scope);
-	if (!arrays.containsKey(id))
-	  arrays.put(id, new ArrayList<Array>());
-	arrays.get(id).add(entry);
+    Map<String, List<Entry>> symbolSection = table.get(label);
+    if (!symbolSection.containsKey(entry.getName()))
+      symbolSection.put(entry.getName(), new ArrayList<Entry>());
+    symbolSection.get(entry.getName()).add(entry);
+
   }
 
-  public void addFunction(String id, FunctionDeclaration fd) {
-    fd.setScope(scope);
-    if (!funcDecs.containsKey(id))
-      funcDecs.put(id, new ArrayList<FunctionDeclaration>());
-    funcDecs.get(id).add(fd);
-  }
-
-  public void print()
-  {
-	  System.out.println("--Symbol Table--");
-	  for(Type e: types)
-	  {
-		  System.out.println("Type: " + e.getName() + ", Scope: " + e.getScope() + ", ActualType: " + e.getActualType());
-	  }
-	  for(ArrayList<Variable> varList: variables.values())
-	  {
-		  for(int i = 0; i < varList.size(); i++)
-		  {
-			  System.out.println("Variable: " + varList.get(i).getName() + ", Type: " + varList.get(i).getType().getName() + ", Scope: " + varList.get(i).getScope() + ", CurrentValue: " + varList.get(i).getValue());
-		  }
-	  }
-	  for(ArrayList<Array> arrList: arrays.values())
-	  {
-		  for(int i = 0; i < arrList.size(); i++)
-		  {
-			  System.out.println("Array: " + arrList.get(i).getName() + ", Type: " + arrList.get(i).getType().getName() + ", Scope: " + arrList.get(i).getScope() + ", CurrentValue: " + arrList.get(i).getList());
-		  }
-	  }
-    for(ArrayList<FunctionDeclaration> funcDec: funcDecs.values())
-    {
-      for(int i = 0; i < funcDec.size(); i++)
-      {
-        System.out.println("Function: " + funcDec.get(i).getName() +
-                ", Return Type: " + funcDec.get(i).getReturnType().getName() +
-                ", Arguments: " + funcDec.get(i).getArgs().toString() +
-                ", Scope: " + funcDec.get(i).getScope());
-      }
-    }
+  public String print() {
+    String res = "";
+    for (SymbolType type: SymbolType.values())
+      for (List<Entry> entryList: table.get(type).values())
+        for (Entry entry: entryList)
+          res += entry + "\n";
+    return res;
   }
 }

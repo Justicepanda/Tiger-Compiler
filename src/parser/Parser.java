@@ -68,9 +68,8 @@ public class Parser {
     return parsingTree.print();
   }
   
-  public void printSymbolTable()
-  {
-	  symbolTable.print();
+  public String printSymbolTable() {
+	  return symbolTable.print();
   }
   
   public void buildSymbolTable()
@@ -78,7 +77,7 @@ public class Parser {
 	  traverseSymbolTable(parsingTree.getRoot());
   }
   
-  public void traverseSymbolTable(Node parent)
+  void traverseSymbolTable(Node parent)
   {
 	  for(int i = 0; i < parent.children.size(); i++)
 	  {
@@ -90,13 +89,13 @@ public class Parser {
 	  }
   }
   
-  public void visit(Node node)
+  void visit(Node node)
   {
     new SymbolTableBuilder(node).invoke();
   }
 
   private class SymbolTableBuilder {
-    private Node node;
+    private final Node node;
     private ArrayList<Variable> variables;
     private ArrayList<Array> arrays;
     private Type variableType;
@@ -115,7 +114,7 @@ public class Parser {
       {
         //You can instantiate more than one variable in a single line
         currentIdListNode = node.children.get(1);
-        variableType = symbolTable.getType(node.children.get(3).children.get(0).token.getToken());
+        variableType = (Type) symbolTable.getType(node.children.get(3).children.get(0).token.getToken());
 
         //If type is an array, create an array instead of a variable
         if(variableType.getActualType().split(" ")[0].equals("array"))
@@ -131,9 +130,9 @@ public class Parser {
 
     private void addFunctionToTable() {
       String functionName = node.children.get(1).token.getToken();
-      Type type = null;
+      Type type;
       if (node.children.get(5).children.size() > 0) {
-        type = symbolTable.getType(node.children.get(5).children.get(1).children.get(0).token.getToken());
+        type = (Type) symbolTable.getType(node.children.get(5).children.get(1).children.get(0).token.getToken());
       }
       else
         type = new Type(null, null);
@@ -143,19 +142,19 @@ public class Parser {
 
         Node paramList = node.children.get(3);
         Node param = paramList.children.get(0);
-        Type argType = symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
+        Type argType = (Type) symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
         arguments.add(new Argument(argType, param.children.get(0).token.getToken()));
 
         param = param.children.get(1);
         while (param.children.size() > 0) {
-          argType = symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
+          argType = (Type) symbolTable.getType(param.children.get(2).children.get(0).token.getToken());
           arguments.add(new Argument(argType, param.children.get(0).token.getToken()));
         }
       }
 
 
       FunctionDeclaration fd = new FunctionDeclaration(functionName, arguments, type);
-      symbolTable.addFunction(functionName, fd);
+      symbolTable.addFunction(fd);
     }
 
     private void addTypeToTable() {
@@ -201,7 +200,7 @@ public class Parser {
 
       for(Variable var: variables)
       {
-        symbolTable.addVariable(var.getName(), var);
+        symbolTable.addVariable(var);
       }
     }
 
@@ -245,7 +244,7 @@ public class Parser {
 
       for(Array arr: arrays)
       {
-        symbolTable.addArray(arr.getName(), arr);
+        symbolTable.addArray(arr);
       }
     }
   }

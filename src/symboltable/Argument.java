@@ -1,30 +1,15 @@
 package symboltable;
 
+public class Argument extends Entry {
+  private final Type type;
 
-
-public class Argument
-{
-	private final Type type;
-	private final String name;
-	
-	public Argument(Type type, String name)
-	{
-		this.type = type;
-		this.name = name;
-	}
-	
-	public Type getType()
-	{
-		return type;
-	}
-	
-	public String getName()
-	{
-		return name;
-	}
+  public Argument(Type type, String name) {
+    super(name);
+    this.type = type;
+  }
 
   @Override
   public String toString() {
-    return type + ": " + name;
+    return type.getName() + ": " + getName();
   }
 }

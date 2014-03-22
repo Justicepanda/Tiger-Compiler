@@ -8,12 +8,12 @@ import compiler.TokenTuple;
 public class Node
 {
   final TokenTuple token;
-  protected Node parent;
-  protected List<Node> children;
+  private final Node parent;
+  final List<Node> children;
 
   public Node(TokenTuple token, Node parent)
   {
-	super();
+	  super();
     this.token = token;
     this.parent = parent;
     children = new ArrayList<Node>();

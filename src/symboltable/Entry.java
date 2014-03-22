@@ -2,8 +2,17 @@ package symboltable;
 
 public abstract class Entry {
   private int scope;
+  private final String name;
 
-  public int getScope() {
+  Entry(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  int getScope() {
     return scope;
   }
 
