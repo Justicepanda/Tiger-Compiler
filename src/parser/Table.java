@@ -18,7 +18,7 @@ class Table {
   }
 
   private void initHorizontalHeader(String[] header) {
-    header = Arrays.copyOfRange(header, 2, header.length) ;
+    header = Arrays.copyOfRange(header, 2, header.length);
     horizontalHeader = Arrays.asList(header);
   }
 

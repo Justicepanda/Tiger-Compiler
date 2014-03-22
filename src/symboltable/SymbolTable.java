@@ -18,13 +18,17 @@ public class SymbolTable {
   private final int scope;
 
   public SymbolTable() {
+    scope = 1;
     table = new HashMap<SymbolType, Map<String, List<Entry>>>();
+    initTableSections();
+    addDefaultTypes();
+  }
+
+  private void initTableSections() {
     table.put(SymbolType.TYPE, new HashMap<String, List<Entry>>());
     table.put(SymbolType.VARIABLE, new HashMap<String, List<Entry>>());
     table.put(SymbolType.ARRAY, new HashMap<String, List<Entry>>());
     table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
-    scope = 1;
-    addDefaultTypes();
   }
 
   private void addDefaultTypes() {
@@ -40,11 +44,11 @@ public class SymbolTable {
     addEntry(SymbolType.TYPE, entry);
   }
 
-  public void addVariable(Variable entry) {
+  public void addVariable(Entry entry) {
     addEntry(SymbolType.VARIABLE, entry);
   }
 
-  public void addArray(Array entry) {
+  public void addArray(Entry entry) {
     addEntry(SymbolType.ARRAY, entry);
   }
 
@@ -58,7 +62,6 @@ public class SymbolTable {
     if (!symbolSection.containsKey(entry.getName()))
       symbolSection.put(entry.getName(), new ArrayList<Entry>());
     symbolSection.get(entry.getName()).add(entry);
-
   }
 
   public String print() {

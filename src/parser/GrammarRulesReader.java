@@ -15,7 +15,7 @@ class GrammarRulesReader {
   public List<Rule> determineFrom(String filename) {
     String[] lines = scraper.read(filename);
     List<Rule> rules = new ArrayList<Rule>();
-    for (String line: lines)
+    for (String line : lines)
       rules.add(Rule.determineFrom(line));
     return rules;
   }
