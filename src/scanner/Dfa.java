@@ -3,7 +3,6 @@ package scanner;
 import java.util.List;
 
 public abstract class Dfa {
-  //test 
   private final List<State> states;
   private int currState;
 

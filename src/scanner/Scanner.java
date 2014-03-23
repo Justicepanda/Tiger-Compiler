@@ -6,6 +6,7 @@ public class Scanner {
 
   private final TokenDfa dfa;
   private LinesHandler handler;
+  private TokenTuple stored;
 
   public Scanner(TokenDfa dfa) {
     this.dfa = dfa;
@@ -33,7 +34,13 @@ public class Scanner {
    * a lexical error is found, a LexicalException is thrown.
    */
   public TokenTuple getNextToken() {
-    return getToken();
+    if (stored == null)
+      return getToken();
+    else {
+      TokenTuple temp = stored;
+      stored = null;
+      return temp;
+    }
   }
 
   private TokenTuple getToken() {
@@ -87,5 +94,10 @@ public class Scanner {
 
   public String getLineInfo() {
     return handler.getLineInfo();
+  }
+
+  public TokenTuple peek() {
+    stored = getNextToken();
+    return stored;
   }
 }
