@@ -10,6 +10,9 @@ class FunctionDeclarationList extends ParserRule {
 
   @Override
   public void parse() {
-
+    if (peekTypeMatches("FUNCTION")) {
+      matchNonTerminal(new FunctionDeclaration(scanner));
+      matchNonTerminal(new FunctionDeclarationList(scanner));
+    }
   }
 }

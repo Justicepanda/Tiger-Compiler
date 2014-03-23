@@ -10,6 +10,9 @@ public class OptionalInit extends ParserRule {
 
   @Override
   public void parse() {
-
+    if (peekTypeMatches("ASSIGN")) {
+      matchTerminal("ASSIGN");
+      matchNonTerminal(new Constant(scanner));
+    }
   }
 }
