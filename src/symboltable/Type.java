@@ -19,6 +19,10 @@ public class Type extends Entry {
     return t.getName().equals(getName());
   }
 
+  public boolean isOfSameType(Type t) {
+    return t.actualType.equals(actualType);
+  }
+
   @Override
   public String toString() {
     return "Type: " + getName() +

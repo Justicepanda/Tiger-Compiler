@@ -48,7 +48,6 @@ public class Compiler {
     while (scanner.hasMoreTokens() && !parserErrorEncountered)
       compileNextToken();
     addSuccessMessage();
-    parser.buildSymbolTable();
   }
 
   /**

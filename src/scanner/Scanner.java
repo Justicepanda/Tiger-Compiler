@@ -38,8 +38,8 @@ public class Scanner {
 
   private TokenTuple getToken() {
     TokenTuple token = findToken();
-    prepareToFindNextToken();
     token.setLocationInfo(getLineInfo());
+    prepareToFindNextToken();
     if (isComment(token))
       return getToken();
     else

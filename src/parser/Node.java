@@ -3,8 +3,6 @@ package parser;
 import java.util.List;
 import java.util.ArrayList;
 
-import symboltable.Type;
-import symboltable.SymbolTable;
 import semantics.TypeValuePair;
 import compiler.TokenTuple;
 
@@ -41,7 +39,7 @@ public class Node {
 
   public void addChild(TokenTuple data) {
 	  Node newNode = new Node(data, this);
-	  newNode.setTypeValuePair(new TypeValuePair((Type)SymbolTable.getType(data.getType()), data.getToken()));
+	  //newNode.setTypeValuePair(new TypeValuePair((Type)SymbolTable.getType(data.getType()), data.getToken()));
 	  children.add(newNode);
   }
 
@@ -72,5 +70,13 @@ public class Node {
   public String getTokenTypeOfChild(int... indices) {
     Node child = navigateToChild(indices);
     return child.token.getToken();
+  }
+
+  public boolean isTerminal() {
+    return !(token.getType().equals("NONTERM"));
+  }
+
+  public boolean isExpression() {
+    return token.getToken().equals("<expr>");
   }
 }

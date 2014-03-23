@@ -1,28 +1,23 @@
 package parser;
 
 import compiler.TokenTuple;
-import symboltable.*;
-import symboltableconstruction.SymbolTableBuilder;
 
 import java.util.List;
 
 public class Parser {
   private ParsingStack parsingStack;
   private ParsingTree parsingTree;
-  private SymbolTable symbolTable;
   private final ParsingTable parsingTable;
   private final List<Rule> ruleTable;
 
   public Parser(String tableFileName, String rulesFileName) {
     ruleTable = new GrammarRulesReader().determineFrom(rulesFileName);
     parsingTable = new ParsingTable(tableFileName);
-    symbolTable = new SymbolTable();
   }
 
   public void reset() {
     parsingStack = new ParsingStack();
     parsingTree = new ParsingTree();
-    symbolTable = new SymbolTable();
   }
 
   public void parse(TokenTuple token) {
@@ -66,10 +61,6 @@ public class Parser {
   }
 
   public String printSymbolTable() {
-    return symbolTable.print();
-  }
-
-  public void buildSymbolTable() {
-    this.symbolTable = new SymbolTableBuilder().constructTable(parsingTree.getRoot());
+    return parsingTree.getSymbolTable().print();
   }
 }

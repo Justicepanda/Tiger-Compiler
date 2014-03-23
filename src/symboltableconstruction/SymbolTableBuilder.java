@@ -12,13 +12,7 @@ public class SymbolTableBuilder {
     symbolTable = new SymbolTable();
   }
 
-  public SymbolTable constructTable(Node node) {
-    for (int i = 0; i < node.children.size(); i++) {
-      if (node.children.size() > 0) {
-        visit(node.children.get(i));
-        constructTable(node.children.get(i));
-      }
-    }
+  public SymbolTable getConstructedTable() {
     return symbolTable;
   }
 

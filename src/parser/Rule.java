@@ -69,7 +69,7 @@ public class Rule {
     currentIndex = 0;
   }
 
-  TokenTuple getToken(int index) {
+  public TokenTuple getToken(int index) {
     return tokens[index];
   }
 
