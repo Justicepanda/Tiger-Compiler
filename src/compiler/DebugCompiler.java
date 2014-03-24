@@ -53,4 +53,5 @@ class DebugCompiler extends Compiler {
     lineStarted = false;
     super.addSuccessMessage();
   }
+
 }
