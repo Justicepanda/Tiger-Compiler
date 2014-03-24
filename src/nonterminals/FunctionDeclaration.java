@@ -2,10 +2,10 @@ package nonterminals;
 
 import parser.ParserRule;
 import scanner.Scanner;
-import symboltable.Function;
+import symboltable.*;
+import symboltable.Type;
 
 public class FunctionDeclaration extends ParserRule {
-
   private ParamList paramList;
   private ReturnType returnType;
 
@@ -35,5 +35,10 @@ public class FunctionDeclaration extends ParserRule {
   @Override
   public String getLabel() {
     return "<funct-declaration>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
   }
 }

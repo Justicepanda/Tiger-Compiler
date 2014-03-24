@@ -2,10 +2,14 @@ package nonterminals;
 
 import parser.ParserRule;
 import scanner.Scanner;
+import symboltable.*;
+import symboltable.Type;
 
 public class Factor extends ParserRule 
 {
-	public Factor(Scanner scanner)
+  private Type type;
+
+  public Factor(Scanner scanner)
 	{
 		super(scanner);
 	}
@@ -14,21 +18,29 @@ public class Factor extends ParserRule
 	public void parse() {
     if (peekTypeMatches("LPAREN")) {
       matchTerminal("LPAREN");
-      matchNonTerminal(new Expression(scanner));
+      Expression expression = new Expression(scanner);
+      type = expression.getType();
+      matchNonTerminal(expression);
       matchTerminal("RPAREN");
     }
     else if (peekTypeMatches("INTLIT") ||
             peekTypeMatches("STRLIT") ||
             peekTypeMatches("NIL")) {
-      matchNonTerminal(new Constant(scanner));
+      Constant constant = new Constant(scanner);
+      type = constant.getType();
+      matchNonTerminal(constant);
     }
     else if (peekTypeMatches("MINUS")) {
       matchTerminal("MINUS");
-      matchNonTerminal(new Factor(scanner));
+      Factor factor = new Factor(scanner);
+      matchNonTerminal(factor);
+      type = factor.getType();
     }
     else {
       matchTerminal("ID");
-      matchNonTerminal(new LValue(scanner));
+      LValue lValue = new LValue(scanner);
+      type = lValue.getType();
+      matchNonTerminal(lValue);
     }
 	}
 
@@ -37,4 +49,8 @@ public class Factor extends ParserRule
     return "<factor>";
   }
 
+  @Override
+  public Type getType() {
+    return type;
+  }
 }

@@ -4,6 +4,7 @@ class LinesHandler {
   private int lineInd;
   private int charInd;
   private final String[] lines;
+  private int currentLine;
 
   LinesHandler(String[] lines) {
     for (int i = 0; i < lines.length; i++)
@@ -93,5 +94,9 @@ class LinesHandler {
 		  moveForward();
 	  }
 	  return line;
+  }
+
+  public int getCurrentLine() {
+    return currentLine;
   }
 }

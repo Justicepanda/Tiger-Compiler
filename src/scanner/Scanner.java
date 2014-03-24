@@ -101,4 +101,9 @@ public class Scanner {
   public String getLineInfo() {
     return handler.getLineInfo();
   }
+
+  public int getLineNum() {
+    return handler.getCurrentLin
+    e();
+  }
 }

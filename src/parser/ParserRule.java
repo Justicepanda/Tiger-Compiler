@@ -3,6 +3,7 @@ package parser;
 import compiler.TokenTuple;
 import scanner.Scanner;
 import symboltable.SymbolTable;
+import symboltable.Type;
 
 public abstract class ParserRule {
   protected Scanner scanner;
@@ -44,6 +45,8 @@ public abstract class ParserRule {
   public abstract void parse();
 
   public abstract String getLabel();
+
+  public abstract Type getType();
 
   public static String print() {
     return tree.print() + symbolTable.print();
