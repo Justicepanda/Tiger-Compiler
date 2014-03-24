@@ -1,6 +1,6 @@
 package utilities;
 
-public class SvReader {
+class SvReader {
   private final StringSplitter ss;
   private String[] lines;
   private int currLine;

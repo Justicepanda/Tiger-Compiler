@@ -2,70 +2,47 @@ package nonterminals;
 
 import parser.ParserRule;
 import parser.SemanticTypeException;
-import scanner.Scanner;
 import symboltable.Type;
 import symboltable.Variable;
 
-public class VariableDeclaration extends ParserRule
-{
-	private IdList idList;
-	private TypeId typeId;
-	private OptionalInit optionalInit;
+public class VariableDeclaration extends ParserRule {
+  private final IdList idList = new IdList();
+  private final TypeId typeId = new TypeId();
+  private final OptionalInit optionalInit = new OptionalInit();
 
-	public VariableDeclaration(Scanner scanner) 
-	{
-		super(scanner);
-		idList = new IdList(scanner);
-		typeId = new TypeId(scanner);
-		optionalInit = new OptionalInit(scanner);
-	}
+  @Override
+  public void parse() {
+    matchTerminal("VAR");
+    matchNonTerminal(idList);
+    matchTerminal("COLON");
+    matchNonTerminal(typeId);
+    matchNonTerminal(optionalInit);
+    matchTerminal("SEMI");
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		matchTerminal("VAR");
-		matchNonTerminal(idList);
-		matchTerminal("COLON");
-		matchNonTerminal(typeId);
-		matchNonTerminal(optionalInit);
-		matchTerminal("SEMI");
+    if (optionalInit.getType() != null) {
+      if (optionalInit.getType().isOfSameType(typeId.getType())) {
+        for (String id : idList.getIds()) {
+          Variable var = new Variable(typeId.getType(), id);
+          super.addVariable(var);
+          var.setValue(optionalInit.getValue());
+        }
+      } else {
+        throw new SemanticTypeException(typeId.getLineNumber());
+      }
+    } else {
+      for (String id : idList.getIds()) {
+        addVariable(typeId.getType(), id);
+      }
+    }
+  }
 
-		if(optionalInit.getType() != null)
-		{
-			if(optionalInit.getType().isOfSameType(typeId.getType()))
-			{
-				for (String id : idList.getIds()) 
-				{
-					Variable var = new Variable(typeId.getType(), id);
-					symbolTable.addVariable(var);
-					var.setValue(optionalInit.getValue());
-				}
-			}
-			else
-			{
-				throw new SemanticTypeException(typeId.getLineNumber());
-			}
-		}
-		else
-		{
-			for (String id : idList.getIds()) 
-			{
-				Variable var = new Variable(typeId.getType(), id);
-				symbolTable.addVariable(var);
-			}
-		}
-	}
+  @Override
+  public String getLabel() {
+    return "<var-declaration>";
+  }
 
-	@Override
-	public String getLabel() 
-	{
-		return "<var-declaration>";
-	}
-
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

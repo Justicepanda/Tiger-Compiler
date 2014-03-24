@@ -1,40 +1,27 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 
-class TypeDeclaration extends ParserRule 
-{
-	private Type type;
+class TypeDeclaration extends ParserRule {
+  private final Type type = new Type();
 
-	TypeDeclaration(Scanner scanner) 
-	{
-		super(scanner);
-	}
+  @Override
+  public void parse() {
+    matchTerminal("TYPE");
+    String id = matchIdAndGetValue();
+    matchTerminal("EQ");
+    matchNonTerminal(type);
+    matchTerminal("SEMI");
+    addType(id, type.getType());
+  }
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		matchTerminal("TYPE");
-		String id = peekTokenValue();
-		matchTerminal("ID");
-		matchTerminal("EQ");
-		matchNonTerminal(type = new Type(scanner));
-		matchTerminal("SEMI");
+  @Override
+  public String getLabel() {
+    return "<type-declaration>";
+  }
 
-		symbolTable.addType(new symboltable.Type(id, type.getType().getActualType()));
-	}
-
-	@Override
-	public String getLabel() 
-	{
-		return "<type-declaration>";
-	}
-
-	@Override
-	public symboltable.Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public symboltable.Type getType() {
+    return type.getType();
+  }
 }

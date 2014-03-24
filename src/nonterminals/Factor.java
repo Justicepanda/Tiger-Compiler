@@ -1,70 +1,70 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
-import symboltable.*;
 import symboltable.Type;
 
 public class Factor extends ParserRule {
-	private Type type;
+  private Type type;
+  private Expression expression;
+  private Constant constant;
+  private Factor factor;
+  private LValue lValue;
 
-	public Factor(Scanner scanner) {
-		super(scanner);
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("LPAREN"))
+      matchParenthesizedExpression();
+    else if (isConstant())
+      matchConstant();
+    else if (peekTypeMatches("MINUS"))
+      matchNegativeFactor();
+    else
+      matchVariable();
+  }
 
-	@Override
-	public void parse()
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("LPAREN")) 
-		{
-			matchTerminal("LPAREN");
-			Expression expression = new Expression(scanner);
-			matchNonTerminal(expression);
-			type = expression.getType();
-			matchTerminal("RPAREN");
-		} 
-		else if (peekTypeMatches("INTLIT") || peekTypeMatches("STRLIT")
-				|| peekTypeMatches("NIL")) 
-		{
-			Constant constant = new Constant(scanner);
-			matchNonTerminal(constant);
-			type = constant.getType();
-		} 
-		else if (peekTypeMatches("MINUS")) 
-		{
-			matchTerminal("MINUS");
-			Factor factor = new Factor(scanner);
-			matchNonTerminal(factor);
-			type = factor.getType();
-		}
-		else
-		{
-			String id = scanner.peekToken().getToken();
-			matchTerminal("ID");
-			LValue lValue = new LValue(scanner);
-			matchNonTerminal(lValue);
-			
-			if(lValue.getType() == null)
-			{
-				//This is a variable, not an array
-				type = symbolTable.getVariable(id).getType();
-			}
-			else
-			{
-				//This is an array
-				type = lValue.getType();
-			}
-		}
- 	}
+  private void matchParenthesizedExpression() {
+    expression = new Expression();
+    matchTerminal("LPAREN");
+    matchNonTerminal(expression);
+    matchTerminal("RPAREN");
+    type = expression.getType();
+  }
 
-	@Override
-	public String getLabel() {
-		return "<factor>";
-	}
+  private boolean isConstant() {
+    return peekTypeMatches("INTLIT") || peekTypeMatches("STRLIT")
+            || peekTypeMatches("NIL");
+  }
 
-	@Override
-	public Type getType() {
-		return type;
-	}
+  private void matchConstant() {
+    constant = new Constant();
+    matchNonTerminal(constant);
+    type = constant.getType();
+  }
+
+  private void matchNegativeFactor() {
+    factor = new Factor();
+    matchTerminal("MINUS");
+    matchNonTerminal(factor);
+    type = factor.getType();
+  }
+
+  private void matchVariable() {
+    lValue = new LValue();
+    String id = matchIdAndGetValue();
+    matchNonTerminal(lValue);
+    if (lValue.getType() == null)
+      type = getTypeOfVariable(id);
+    else
+      type = lValue.getType();
+  }
+
+  @Override
+  public String getLabel() {
+    return "<factor>";
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
 }

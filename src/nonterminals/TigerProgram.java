@@ -1,36 +1,29 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-public class TigerProgram extends ParserRule 
-{
-	public TigerProgram(Scanner scanner) 
-	{
-		super(scanner);
-	}
+public class TigerProgram extends ParserRule {
 
-	@Override
-	public void parse()
-	{
-		lineNumber = scanner.getLineNum();
-		matchTerminal("LET");
-		matchNonTerminal(new DeclarationSegment(scanner));
-		matchTerminal("IN");
-		matchNonTerminal(new StatSequence(scanner));
-		matchTerminal("END");
-	}
+  private final DeclarationSegment declarationSegment = new DeclarationSegment();
+  private final StatSequence statSequence = new StatSequence();
 
-	@Override
-	public String getLabel() 
-	{
-		return "<tiger-program>";
-	}
+  @Override
+  public void parse() {
+    matchTerminal("LET");
+    matchNonTerminal(declarationSegment);
+    matchTerminal("IN");
+    matchNonTerminal(statSequence);
+    matchTerminal("END");
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public String getLabel() {
+    return "<tiger-program>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

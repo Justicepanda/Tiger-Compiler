@@ -3,9 +3,9 @@ package parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleTree 
+class SimpleTree
 {
-	private SimpleNode parentNode;
+	private final SimpleNode parentNode;
 	private SimpleNode currentNode;
 
 	public SimpleTree()
@@ -38,9 +38,9 @@ public class SimpleTree
 
 	private class SimpleNode 
 	{
-		private String label;
-		private SimpleNode parent;
-		private List<SimpleNode> children;
+		private final String label;
+		private final SimpleNode parent;
+		private final List<SimpleNode> children;
 
 		SimpleNode(SimpleNode parent, String label) 
 		{

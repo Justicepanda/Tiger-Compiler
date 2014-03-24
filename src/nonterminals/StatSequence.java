@@ -1,38 +1,35 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-class StatSequence extends ParserRule 
-{
-	StatSequence(Scanner scanner) 
-	{
-		super(scanner);
-	}
+class StatSequence extends ParserRule {
+  private Stat stat;
+  private StatSequence statSequence;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("RETURN") || peekTypeMatches("ID")
-				|| peekTypeMatches("IF") || peekTypeMatches("WHILE")
-				|| peekTypeMatches("FOR") || peekTypeMatches("BREAK")) 
-		{
-			matchNonTerminal(new Stat(scanner));
-			matchNonTerminal(new StatSequence(scanner));
-		}
-	}
+  @Override
+  public void parse() {
+    if (isStatement()) {
+      stat = new Stat();
+      statSequence = new StatSequence();
+      matchNonTerminal(stat);
+      matchNonTerminal(statSequence);
+    }
+  }
 
-	@Override
-	public String getLabel() 
-	{
-		return "<stat-seq>";
-	}
+  private boolean isStatement() {
+    return peekTypeMatches("RETURN") || peekTypeMatches("ID")
+            || peekTypeMatches("IF") || peekTypeMatches("WHILE")
+            || peekTypeMatches("FOR") || peekTypeMatches("BREAK");
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public String getLabel() {
+    return "<stat-seq>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

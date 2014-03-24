@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
-import parser.ParserRule;
+import static symboltable.Type.INT_TYPE;
+import static symboltable.Type.STRING_TYPE;
 
 public class SymbolTable 
 {
@@ -23,7 +24,7 @@ public class SymbolTable
 		scope = 1;
 		table = new HashMap<SymbolType, Map<String, List<Entry>>>();
 		initTableSections();
-		addDefaultTypes();
+		addDefaults();
 	}
 
 	private void initTableSections() 
@@ -34,10 +35,37 @@ public class SymbolTable
 		table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
 	}
 
-	private void addDefaultTypes() 
+	private void addDefaults()
 	{
-		addType(new Type("int", "int"));
-		addType(new Type("string", "string"));
+		addType(INT_TYPE);
+		addType(STRING_TYPE);
+
+    Argument s = new Argument(STRING_TYPE, "s");
+    Argument i = new Argument(INT_TYPE, "i");
+
+    List<Argument> s_arg = new ArrayList<Argument>();
+    s_arg.add(s);
+    List<Argument> i_arg = new ArrayList<Argument>();
+    i_arg.add(i);
+    List<Argument> sii_args = new ArrayList<Argument>();
+    sii_args.add(s);
+    sii_args.add(i);
+    sii_args.add(i);
+    List<Argument> ss_args = new ArrayList<Argument>();
+    ss_args.add(s);
+    ss_args.add(s);
+
+    addFunction(new Function("print", s_arg, null));
+    addFunction(new Function("printi", i_arg, null));
+    addFunction(new Function("flush", null, null));
+    addFunction(new Function("get_char", null, STRING_TYPE));
+    addFunction(new Function("ord", s_arg, INT_TYPE));
+    addFunction(new Function("chr", i_arg, STRING_TYPE));
+    addFunction(new Function("size", s_arg, INT_TYPE));
+    addFunction(new Function("substring", sii_args, STRING_TYPE));
+    addFunction(new Function("concat", ss_args, STRING_TYPE));
+    addFunction(new Function("not", i_arg, INT_TYPE));
+    addFunction(new Function("exit", i_arg, null));
 	}
 
 	public static Type getType(String id)

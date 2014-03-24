@@ -3,6 +3,10 @@ package symboltable;
 public class Type extends Entry {
   private final String actualType;
 
+  public static final Type STRING_TYPE = new Type("string", "string");
+  public static final Type INT_TYPE = new Type("int", "int");
+  public static final Type NIL_TYPE = new Type("nil", "nil");
+
   public Type(String name, String actualType) {
     super(name);
     this.actualType = actualType;
@@ -20,7 +24,11 @@ public class Type extends Entry {
   }
 
   public boolean isOfSameType(Type t) {
-    return t.actualType.equals(actualType);
+    if (t == null)
+      return true;
+    if (t.actualType.equals("nil") || actualType.equals("nil"))
+      return true;
+    return actualType.equals(t.actualType);
   }
 
   @Override

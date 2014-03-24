@@ -1,34 +1,28 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-class DeclarationSegment extends ParserRule 
-{	
-	DeclarationSegment(Scanner scanner) 
-	{
-		super(scanner);
-	}
+class DeclarationSegment extends ParserRule {
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		matchNonTerminal(new TypeDeclarationList(scanner));
-		matchNonTerminal(new VariableDeclarationList(scanner));
-		matchNonTerminal(new FunctionDeclarationList(scanner));
-	}
+  private final TypeDeclarationList typeDeclarationList = new TypeDeclarationList();
+  private final VariableDeclarationList variableDeclarationList = new VariableDeclarationList();
+  private final FunctionDeclarationList functionDeclarationList = new FunctionDeclarationList();
 
-	@Override
-	public String getLabel()
-	{
-		return "<declaration-segment>";
-	}
+  @Override
+  public void parse() {
+    matchNonTerminal(typeDeclarationList);
+    matchNonTerminal(variableDeclarationList);
+    matchNonTerminal(functionDeclarationList);
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public String getLabel() {
+    return "<declaration-segment>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

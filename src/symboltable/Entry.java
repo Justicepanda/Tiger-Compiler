@@ -1,6 +1,6 @@
 package symboltable;
 
-public abstract class Entry {
+abstract class Entry {
   private int scope;
   private final String name;
 

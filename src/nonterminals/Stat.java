@@ -1,116 +1,119 @@
 package nonterminals;
 
-import java.util.ArrayList;
-
 import parser.ParserRule;
 import parser.SemanticTypeException;
-import scanner.Scanner;
 import symboltable.Argument;
 import symboltable.Type;
-import symboltable.Variable;
 
-public class Stat extends ParserRule
-{
-	public Stat(Scanner scanner) 
-	{
-		super(scanner);
-	}
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("RETURN")) 
-		{
-			matchTerminal("RETURN");
-			matchNonTerminal(new Expression(scanner));
-			matchTerminal("SEMI");
-		} 
-		else if (peekTypeMatches("ID")) 
-		{
-			String id = scanner.peekToken().getToken();
-			matchTerminal("ID");
-			StatId statId;
-			matchNonTerminal(statId = new StatId(scanner));
-			matchTerminal("SEMI");
-			if(statId.isFunction())
-			{
-				if(symbolTable.getFunction(id) != null)
-				{
-					if(statId.getParameters() != null)
-					{
-						ArrayList<Argument> args = symbolTable.getFunction(id).getArguments();
-						for(int i = 0; i < statId.getParameters().getExpressions().size(); i++)
-						{
-							if(!statId.getParameters().getExpressions().get(i).getType().isOfSameType(args.get(i).getType()))
-							{
-								throw new SemanticTypeException(statId.getLineNumber());
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				if(statId.getType() == null)
-					throw new SemanticTypeException(statId.getLineNumber());
-				
-				if(!symbolTable.getVariable(id).getType().isOfSameType(statId.getType()))
-				{
-					throw new SemanticTypeException(statId.getLineNumber());
-				}
-			}
-		} 
-		else if (peekTypeMatches("IF")) 
-		{
-			matchTerminal("IF");
-			matchNonTerminal(new Expression(scanner));
-			matchTerminal("THEN");
-			matchNonTerminal(new StatSequence(scanner));
-			matchNonTerminal(new StatTail(scanner));
-		}
-		else if (peekTypeMatches("WHILE")) 
-		{
-			matchTerminal("WHILE");
-			matchNonTerminal(new Expression(scanner));
-			matchTerminal("DO");
-			matchNonTerminal(new StatSequence(scanner));
-			matchTerminal("ENDDO");
-			matchTerminal("SEMI");
-		} 
-		else if (peekTypeMatches("FOR"))
-		{
-			matchTerminal("FOR");
-			String id = scanner.peekToken().getToken();
-			matchTerminal("ID");
-			matchTerminal("ASSIGN");
-			Expression expression1;
-			matchNonTerminal(expression1 = new Expression(scanner));
-			symbolTable.addVariable(new Variable(expression1.getType(), id));
-			matchTerminal("TO");
-			matchNonTerminal(new Expression(scanner));
-			matchTerminal("DO");
-			matchNonTerminal(new StatSequence(scanner));
-			matchTerminal("ENDDO");
-			matchTerminal("SEMI");
-		} 
-		else 
-		{
-			matchTerminal("BREAK");
-			matchTerminal("SEMI");
-		}
-	}
+public class Stat extends ParserRule {
+  private StatId statId;
+  private Expression expression;
+  private StatSequence statSequence;
+  private StatTail statTail;
 
-	@Override
-	public String getLabel() 
-	{
-		return "<stat>";
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("RETURN"))
+      matchReturn();
+    else if (peekTypeMatches("ID"))
+      matchLeadingId();
+    else if (peekTypeMatches("IF"))
+      matchIf();
+    else if (peekTypeMatches("WHILE"))
+      matchWhile();
+    else if (peekTypeMatches("FOR"))
+      matchFor();
+    else
+      matchBreak();
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  private void matchBreak() {
+    matchTerminal("BREAK");
+    matchTerminal("SEMI");
+  }
+
+  private void matchFor() {
+    expression = new Expression();
+    matchTerminal("FOR");
+    String id = matchIdAndGetValue();
+    matchTerminal("ASSIGN");
+    matchNonTerminal(expression);
+    super.addVariable(expression.getType(), id);
+    matchTerminal("TO");
+    //TODO semantic checking to ensure type matches here
+    matchNonTerminal(new Expression());
+    matchTerminal("DO");
+    matchNonTerminal(new StatSequence());
+    matchTerminal("ENDDO");
+    matchTerminal("SEMI");
+  }
+
+  private void matchWhile() {
+    expression = new Expression();
+    statSequence = new StatSequence();
+    matchTerminal("WHILE");
+    matchNonTerminal(expression);
+    matchTerminal("DO");
+    matchNonTerminal(statSequence);
+    matchTerminal("ENDDO");
+    matchTerminal("SEMI");
+  }
+
+  private void matchIf() {
+    expression = new Expression();
+    statSequence = new StatSequence();
+    statTail = new StatTail();
+    matchTerminal("IF");
+    matchNonTerminal(expression);
+    matchTerminal("THEN");
+    matchNonTerminal(statSequence);
+    matchNonTerminal(statTail);
+  }
+
+  private void matchReturn() {
+    expression = new Expression();
+    matchTerminal("RETURN");
+    matchNonTerminal(expression);
+    matchTerminal("SEMI");
+  }
+
+  private void matchLeadingId() {
+    statId = new StatId();
+    String id = matchIdAndGetValue();
+    matchNonTerminal(statId);
+    matchTerminal("SEMI");
+
+    if (statId.isFunction()) {
+      if (super.getFunction(id) != null) {
+        //TODO remove - System.out.println("Found function! " + id + lineNumber);
+        if (statId.getParameters() != null) {
+          List<Argument> args = getFunction(id).getArguments();
+          for (int i = 0; i < statId.getParameters().size(); i++) {
+            if (args != null && statId.getParameters().get(i) != null &&
+                    !statId.getParameters().get(i).getType().isOfSameType(args.get(i).getType())) {
+              throw new SemanticTypeException(statId.getLineNumber());
+            }
+          }
+        }
+      }
+    } else {
+      if (!getTypeOfVariable(id).isOfSameType(statId.getType())) {
+        throw new SemanticTypeException(statId.getLineNumber());
+      }
+    }
+  }
+
+  @Override
+  public String getLabel() {
+    return "<stat>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 
 }

@@ -28,9 +28,8 @@ public class Function extends Entry {
 	  return returnType;
   }
   
-  public ArrayList<Argument> getArguments()
-  {
-	  return (ArrayList)arguments;
+  public List<Argument> getArguments() {
+	  return arguments;
   }
 }
 

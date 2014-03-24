@@ -2,57 +2,52 @@ package nonterminals;
 
 import parser.ParserRule;
 import symboltable.Type;
-import scanner.Scanner;
 
-public class Constant extends ParserRule 
-{
-	private String value;
-	private Type type;
+import static symboltable.Type.INT_TYPE;
+import static symboltable.Type.NIL_TYPE;
+import static symboltable.Type.STRING_TYPE;
 
-	public Constant(Scanner scanner) 
-	{
-		super(scanner);
-	}
+public class Constant extends ParserRule {
+  private String value;
+  private Type type;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		value = peekTokenValue();
-		if (peekTypeMatches("INTLIT"))
-		{
-			type = new Type("int", "int");
-			matchTerminal("INTLIT");
-		}
-		else if (peekTypeMatches("STRLIT"))
-		{	
-			type = new Type("string", "string");
-			matchTerminal("STRLIT");
-		}
-		else
-		{
-			type = new Type("nil", "nil");
-			matchTerminal("NIL");
-		}
-	}
+  @Override
+  public void parse() {
+    value = peekTokenValue();
+    if (peekTypeMatches("INTLIT"))
+      matchInt();
+    else if (peekTypeMatches("STRLIT"))
+      matchString();
+    else
+      matchNil();
+  }
 
-	@Override
-	public String getLabel() 
-	{
-		return "<const>";
-	}
+  private void matchInt() {
+    type = INT_TYPE;
+    matchTerminal("INTLIT");
+  }
 
-	public String getValue() 
-	{
-		if (value == null)
-			return "nil";
-		else
-			return value;
-	}
+  private void matchString() {
+    type = STRING_TYPE;
+    matchTerminal("STRLIT");
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return type;
-	}
+  private void matchNil() {
+    type = NIL_TYPE;
+    matchTerminal("NIL");
+  }
+
+  @Override
+  public String getLabel() {
+    return "<const>";
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
 }

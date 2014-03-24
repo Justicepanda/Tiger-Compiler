@@ -3,7 +3,7 @@ package parser;
 import compiler.TokenTuple;
 import compiler.Compiler;
 
-public class ParserException extends RuntimeException 
+class ParserException extends RuntimeException
 {
 	ParserException(String s) 
 	{

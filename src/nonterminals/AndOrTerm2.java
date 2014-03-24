@@ -2,51 +2,43 @@ package nonterminals;
 
 import parser.ParserRule;
 import parser.SemanticTypeException;
-import scanner.Scanner;
 import symboltable.Type;
 
-public class AndOrTerm2 extends ParserRule 
-{
-	private IneqTerm ineqTerm;
-	private AndOrTerm2 andOrTerm2;
-	
-	public AndOrTerm2(Scanner scanner) 
-	{
-		super(scanner);
-	}
+public class AndOrTerm2 extends ParserRule {
+  private AndOrOp andOrOp;
+  private EqualityTerm equalityTerm;
+  private AndOrTerm2 andOrTerm2;
+  private int lineNumber;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("AND") || peekTypeMatches("OR"))
-		{
-			matchNonTerminal(new AndOrOp(scanner));
-			matchNonTerminal(ineqTerm = new IneqTerm(scanner));
-			matchNonTerminal(andOrTerm2 = new AndOrTerm2(scanner));
-		}
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("AND") || peekTypeMatches("OR")) {
+      andOrOp = new AndOrOp();
+      equalityTerm = new EqualityTerm();
+      andOrTerm2 = new AndOrTerm2();
+      lineNumber = getLineNumber();
+      matchNonTerminal(andOrOp);
+      matchNonTerminal(equalityTerm);
+      matchNonTerminal(andOrTerm2);
+    }
+  }
 
-	@Override
-	public String getLabel() 
-	{
-		return "<and-or-term2>";
-	}
+  @Override
+  public String getLabel() {
+    return "<and-or-term2>";
+  }
 
-	@Override
-	public Type getType() 
-	{
-		if(andOrTerm2 != null && andOrTerm2.getType() != null && ineqTerm != null && ineqTerm.getType() != null)
-		{
-			if(ineqTerm.getType().isOfSameType(andOrTerm2.getType()))
-				return ineqTerm.getType();
-			throw new SemanticTypeException(lineNumber);
-		}
-		else if(ineqTerm != null && ineqTerm.getType() != null && andOrTerm2.getType() == null)
-			return ineqTerm.getType();
-		else if(andOrTerm2 != null && andOrTerm2.getType() != null && ineqTerm.getType() == null)
-			return andOrTerm2.getType();
-		
-		return null;
-	}
+  @Override
+  public Type getType() {
+    if (andOrTerm2 != null && andOrTerm2.getType() != null && equalityTerm != null && equalityTerm.getType() != null) {
+      if (equalityTerm.getType().isOfSameType(andOrTerm2.getType()))
+        return equalityTerm.getType();
+      throw new SemanticTypeException(lineNumber);
+    } else if (equalityTerm != null && equalityTerm.getType() != null && andOrTerm2.getType() == null)
+      return equalityTerm.getType();
+    else if (andOrTerm2 != null && andOrTerm2.getType() != null && equalityTerm.getType() == null)
+      return andOrTerm2.getType();
+
+    return null;
+  }
 }

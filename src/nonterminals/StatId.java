@@ -1,60 +1,48 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-public class StatId extends ParserRule 
-{
-	private Type type;
-	private boolean isFunction;
-	private ExpressionList expressions;
-		
-	public StatId(Scanner scanner) 
-	{
-		super(scanner);
-	}
+import java.util.List;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("LPAREN"))
-		{
-			isFunction = true;
-			matchTerminal("LPAREN");
-   			matchNonTerminal(expressions = new ExpressionList(scanner));
-			matchTerminal("RPAREN");
-		} 
-		else
-		{
-			matchNonTerminal(new LValue(scanner));
-			matchTerminal("ASSIGN");
-			StatIdTail statIdTail;
-			matchNonTerminal(statIdTail = new StatIdTail(scanner));
-			type = statIdTail.getType();
-		}
-	}
+public class StatId extends ParserRule {
+  private Type type;
+  private ExpressionList expressionList;
+  private LValue lValue;
+  private StatIdTail statIdTail;
 
-	@Override
-	public String getLabel() 
-	{
-		return "<stat-id>";
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("LPAREN")) {
+      expressionList = new ExpressionList();
+      matchTerminal("LPAREN");
+      matchNonTerminal(expressionList);
+      matchTerminal("RPAREN");
+    } else {
+      lValue = new LValue();
+      this.statIdTail = new StatIdTail();
+      matchNonTerminal(lValue);
+      matchTerminal("ASSIGN");
+      matchNonTerminal(statIdTail);
+      type = statIdTail.getType();
+    }
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return type;
-	}
-	
-	public boolean isFunction()
-	{
-		return isFunction;
-	}
-	
-	public ExpressionList getParameters()
-	{
-		return expressions;
-	}
+  @Override
+  public String getLabel() {
+    return "<stat-id>";
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
+
+  public boolean isFunction() {
+    return expressionList != null;
+  }
+
+  public List<Expression> getParameters() {
+    return expressionList.getExpressions();
+  }
 }

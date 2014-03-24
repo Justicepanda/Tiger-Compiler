@@ -1,46 +1,31 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Argument;
 import symboltable.Type;
 
-public class Param extends ParserRule 
-{
+public class Param extends ParserRule {
+  private final TypeId typeId = new TypeId();
+  private String id;
 
-	private TypeId typeId;
-	private String id;
+  @Override
+  public void parse() {
+    id = matchIdAndGetValue();
+    matchTerminal("COLON");
+    matchNonTerminal(typeId);
+  }
 
-	public Param(Scanner scanner) 
-	{
-		super(scanner);
-		typeId = new TypeId(scanner);
-	}
+  @Override
+  public String getLabel() {
+    return "<param>";
+  }
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		id = peekTokenValue();
-		matchTerminal("ID");
-		matchTerminal("COLON");
-		matchNonTerminal(typeId);
-	}
+  public Argument getArgument() {
+    return new Argument(typeId.getType(), id);
+  }
 
-	@Override
-	public String getLabel() 
-	{
-		return "<param>";
-	}
-
-	public Argument getArgument() 
-	{
-		return new Argument(typeId.getType(), id);
-	}
-
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

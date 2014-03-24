@@ -1,36 +1,30 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-class FunctionDeclarationList extends ParserRule 
-{	
-	FunctionDeclarationList(Scanner scanner) 
-	{
-		super(scanner);
-	}
+class FunctionDeclarationList extends ParserRule {
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("FUNC")) 
-		{
-			matchNonTerminal(new FunctionDeclaration(scanner));
-			matchNonTerminal(new FunctionDeclarationList(scanner));
-		}
-	}
+  private FunctionDeclaration functionDeclaration;
+  private FunctionDeclarationList functionDeclarationList;
 
-	@Override
-	public String getLabel() 
-	{
-		return "<funct-declaration-list>";
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("FUNC")) {
+      functionDeclaration = new FunctionDeclaration();
+      functionDeclarationList = new FunctionDeclarationList();
+      matchNonTerminal(functionDeclaration);
+      matchNonTerminal(functionDeclarationList);
+    }
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public String getLabel() {
+    return "<funct-declaration-list>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 }

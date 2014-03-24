@@ -14,15 +14,14 @@ public class TigerParser
 
 	public void parse()
 	{
-		TigerProgram program = new TigerProgram(scanner);
+		TigerProgram program = new TigerProgram();
+    ParserRule.setScanner(scanner);
 		ParserRule.reset();
 		program.parse();
+    System.out.println(print());
 	}
 	
-	public String print()
-	{
+	public String print() {
 		return ParserRule.print();
 	}
-	
-	
 }

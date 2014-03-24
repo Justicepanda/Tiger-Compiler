@@ -117,13 +117,13 @@ public class Scanner
 		handler.moveForward();
 	}
 
-	public String getLineInfo() 
+	String getLineInfo()
 	{
 		return handler.getLineInfo();
 	}
 
 	public int getLineNum() 
 	{
-		return handler.getCurrentLine();
+		return handler.getCurrentLine()+1;
 	}
 }

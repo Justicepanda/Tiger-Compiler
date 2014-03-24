@@ -1,83 +1,63 @@
 package nonterminals;
 
-import java.util.ArrayList;
-
 import parser.ParserRule;
 import parser.SemanticTypeException;
-import scanner.Scanner;
 import symboltable.Argument;
 import symboltable.Type;
 
-public class StatIdTail extends ParserRule 
-{
-	private Type type;
-	
-	public StatIdTail(Scanner scanner) 
-	{
-		super(scanner);
-	}
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("ID")) 
-		{
-			String id = scanner.peekToken().getToken();
-			matchTerminal("ID");
-			StatIdTailTail statIdTailTail;
-			matchNonTerminal(statIdTailTail = new StatIdTailTail(scanner));
-			if(statIdTailTail.getType() == null)
-			{
-				if(statIdTailTail.getParameters() != null)
-				{
-					if(symbolTable.getFunction(id) != null)
-					{
-						type = symbolTable.getFunction(id).getReturnType();
-						if(!statIdTailTail.getType().isOfSameType(type))
-						{
-							throw new SemanticTypeException(statIdTailTail.getLineNumber());
-						}
-						ArrayList<Argument> args = symbolTable.getFunction(id).getArguments();
-						//TODO - Check it's parameters types to make sure they match the declared parameter types
-						for(int i = 0; i < statIdTailTail.getParameters().getExpressions().size(); i++)
-						{
-							if(!statIdTailTail.getParameters().getExpressions().get(i).getType().isOfSameType(args.get(i).getType()))
-							{
-								throw new SemanticTypeException(statIdTailTail.getLineNumber());
-							}
-						}
-					}
-				}
-				else
-				{
-					if(symbolTable.getVariable(id) != null)
-						type = symbolTable.getVariable(id).getType();
-				}
-			}
-			else
-			{
-				type = statIdTailTail.getType();
-			}
-		} 
-		else 
-		{
-			Expression expression;
-			matchNonTerminal(expression = new Expression(scanner));
-			type = expression.getType();
-		}
-	}
+public class StatIdTail extends ParserRule {
+  private Type type;
+  private String id;
+  private int lineNumber;
+  private StatIdTailTail statIdTailTail;
+  private Expression expression;
 
-	@Override
-	public String getLabel()
-	{
-		return "<stat-id-tail>";
-	}
+  @Override
+  public void parse() {
+    lineNumber = getLineNumber();
+    if (peekTypeMatches("ID")) {
+      statIdTailTail = new StatIdTailTail();
+      id = matchIdAndGetValue();
+      matchNonTerminal(statIdTailTail);
+      semanticCheck();
+    } else {
+      expression = new Expression();
+      matchNonTerminal(expression);
+      type = expression.getType();
+    }
+  }
 
-	@Override
-	public Type getType()
-	{
-		return type;
-	}
+  private void semanticCheck() {
+    if (statIdTailTail.getType() == null && statIdTailTail.getParameters() != null) {
+      if (getFunction(id) != null) {
+        type = getFunction(id).getReturnType();
+        if (type != null && !type.isOfSameType(statIdTailTail.getType()))
+          throw new SemanticTypeException(statIdTailTail.getLineNumber());
+        List<Argument> args = getFunction(id).getArguments();
+        for (int i = 0; i < statIdTailTail.getParameters().size(); i++) {
+          if (args != null && !statIdTailTail.getParameters().get(i).getType().isOfSameType(args.get(i).getType()))
+            throw new SemanticTypeException(statIdTailTail.getLineNumber());
+        }
+      } else {
+        if (super.getVariable(id) != null)
+          type = getVariable(id).getType();
+      }
+    } else {
+      type = statIdTailTail.getType();
+    }
+  }
+
+  @Override
+  public String getLabel() {
+    return "<stat-id-tail>";
+  }
+
+  @Override
+  public Type getType() {
+    return type;
+  }
 
 }

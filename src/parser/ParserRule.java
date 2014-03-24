@@ -2,29 +2,26 @@ package parser;
 
 import compiler.TokenTuple;
 import scanner.Scanner;
-import symboltable.SymbolTable;
-import symboltable.Type;
+import symboltable.*;
+
+import java.util.List;
 
 public abstract class ParserRule 
 {
-	protected Scanner scanner;
-	protected static SymbolTable symbolTable = new SymbolTable();
+	private static Scanner scanner;
+	private static SymbolTable symbolTable = new SymbolTable();
 	private static SimpleTree tree = new SimpleTree();
-	protected int lineNumber;
 
-	public ParserRule(Scanner scanner) 
-	{
-		this.scanner = scanner;
-	}
+  public static void setScanner(Scanner scanner) {
+    ParserRule.scanner = scanner;
+  }
 
-	public static void reset() 
-	{
+	public static void reset() {
 		symbolTable = new SymbolTable();
 		tree = new SimpleTree();
 	}
 
-	protected void matchTerminal(String expected) 
-	{
+	protected void matchTerminal(String expected) {
 		tree.add(expected);
 		TokenTuple actual = scanner.popToken();
 		if (!actual.getType().equals(expected))
@@ -38,32 +35,67 @@ public abstract class ParserRule
 		return scanner.peekToken().getType().equals(toMatch);
 	}
 
-	protected String peekTokenValue() 
+	protected String peekTokenValue()
 	{
 		return scanner.peekToken().getToken();
 	}
 
-	protected void matchNonTerminal(ParserRule expected) 
-	{
+  protected String matchIdAndGetValue() {
+    String value = peekTokenValue();
+    matchTerminal("ID");
+    return value;
+  }
+
+	protected void matchNonTerminal(ParserRule expected) {
 		tree.add(expected.getLabel());
 		tree.moveDown();
 		expected.parse();
 		tree.moveUp();
 	}
 
-	public abstract void parse();
+	protected abstract void parse();
 
-	public abstract String getLabel();
+	protected abstract String getLabel();
 
 	public abstract Type getType();
-	
-	public int getLineNumber()
-	{
-		return lineNumber;
-	}
 
-	public static String print() 
-	{
+	public static String print() {
 		return tree.print() + symbolTable.print();
 	}
+
+  public int getLineNumber() {
+    return scanner.getLineNum();
+  }
+
+  protected Type getTypeOfVariable(String id) {
+    return symbolTable.getVariable(id).getType();
+  }
+
+  protected void addFunction(String id, List<Argument> arguments, Type type) {
+    symbolTable.addFunction(new Function(id, arguments, type));
+  }
+
+  protected Function getFunction(String id) {
+    return symbolTable.getFunction(id);
+  }
+
+  protected void addVariable(Type type, String id) {
+    symbolTable.addVariable(new Variable(type, id));
+  }
+
+  protected void addVariable(Variable var) {
+    symbolTable.addVariable(var);
+  }
+
+  protected Variable getVariable(String id) {
+    return symbolTable.getVariable(id);
+  }
+
+  protected void addType(String id, Type type) {
+    symbolTable.addType(new Type(id, type.getActualType()));
+  }
+
+  protected Type getType(String id) {
+    return SymbolTable.getType(id);
+  }
 }

@@ -1,36 +1,30 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
 import symboltable.Type;
 
-class VariableDeclarationList extends ParserRule 
-{
-	VariableDeclarationList(Scanner scanner) 
-	{
-		super(scanner);
-	}
+class VariableDeclarationList extends ParserRule {
 
-	@Override
-	public void parse() 
-	{
-		lineNumber = scanner.getLineNum();
-		if (peekTypeMatches("VAR")) 
-		{
-			matchNonTerminal(new VariableDeclaration(scanner));
-			matchNonTerminal(new VariableDeclarationList(scanner));
-		}
-	}
+  private VariableDeclaration variableDeclaration;
+  private VariableDeclarationList variableDeclarationList;
 
-	@Override
-	public String getLabel() 
-	{
-		return "<var-declaration-list>";
-	}
+  @Override
+  public void parse() {
+    if (peekTypeMatches("VAR")) {
+      variableDeclaration = new VariableDeclaration();
+      variableDeclarationList = new VariableDeclarationList();
+      matchNonTerminal(variableDeclaration);
+      matchNonTerminal(variableDeclarationList);
+    }
+  }
 
-	@Override
-	public Type getType() 
-	{
-		return null;
-	}
+  @Override
+  public String getLabel() {
+    return "<var-declaration-list>";
+  }
+
+  @Override
+  public Type getType() {
+    return null;
+  }
 }
