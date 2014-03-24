@@ -3,7 +3,13 @@ package nonterminals;
 import parser.ParserRule;
 import scanner.Scanner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IdListTail extends ParserRule {
+  private IdListTail idListTail;
+  private String id;
+
   public IdListTail(Scanner scanner) {
     super(scanner);
   }
@@ -11,9 +17,26 @@ public class IdListTail extends ParserRule {
   @Override
   public void parse() {
     if (peekTypeMatches("COMMA")) {
+      idListTail = new IdListTail(scanner);
       matchTerminal("COMMA");
+      id = peekTokenValue();
       matchTerminal("ID");
-      matchNonTerminal(new IdListTail(scanner));
+      matchNonTerminal(idListTail);
     }
+  }
+
+  @Override
+  public String getLabel() {
+    return "<id-list-tail>";
+  }
+
+  public List<String> getIds() {
+    if (id == null)
+      return null;
+    List<String> listSoFar = idListTail.getIds();
+    if (listSoFar == null)
+      listSoFar = new ArrayList<String>();
+    listSoFar.add(id);
+    return listSoFar;
   }
 }

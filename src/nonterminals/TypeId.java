@@ -2,9 +2,10 @@ package nonterminals;
 
 import parser.ParserRule;
 import scanner.Scanner;
+import symboltable.Type;
 
 class TypeId extends ParserRule {
-  private String type;
+  private Type type;
 
   TypeId(Scanner scanner) {
     super(scanner);
@@ -13,20 +14,25 @@ class TypeId extends ParserRule {
   @Override
   public void parse() {
     if (peekTypeMatches("INT")) {
-      type = "int";
+      type = new symboltable.Type("int", "int");
       matchTerminal("INT");
     }
     else if (peekTypeMatches("STRING")) {
-      type = "string";
+      type = new Type("string", "string");
       matchTerminal("STRING");
     }
     else {
-      type = symbolTable.getType(peekTokenValue()).getActualType();
+      type = symbolTable.getType(peekTokenValue());
       matchTerminal("ID");
     }
   }
 
-  public String getType() {
+  @Override
+  public String getLabel() {
+    return "<type-id>";
+  }
+
+  public Type getType() {
     return type;
   }
 }

@@ -19,6 +19,12 @@ class TypeDeclaration extends ParserRule {
     matchTerminal("EQ");
     matchNonTerminal(type);
     matchTerminal("SEMI");
-    symbolTable.addType(new symboltable.Type(id, type.getType()));
+
+    symbolTable.addType(new symboltable.Type(id, type.getType().getActualType()));
+  }
+
+  @Override
+  public String getLabel() {
+    return "<type-declaration>";
   }
 }

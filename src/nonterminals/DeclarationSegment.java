@@ -14,4 +14,9 @@ class DeclarationSegment extends ParserRule {
     matchNonTerminal(new VariableDeclarationList(scanner));
     matchNonTerminal(new FunctionDeclarationList(scanner));
   }
+
+  @Override
+  public String getLabel() {
+    return "<declaration-segment>";
+  }
 }

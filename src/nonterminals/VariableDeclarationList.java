@@ -15,4 +15,9 @@ class VariableDeclarationList extends ParserRule {
       matchNonTerminal(new VariableDeclarationList(scanner));
     }
   }
+
+  @Override
+  public String getLabel() {
+    return "<var-declaration-list>";
+  }
 }

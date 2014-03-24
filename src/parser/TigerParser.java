@@ -12,6 +12,8 @@ public class TigerParser {
 
   public void parse() {
     TigerProgram program = new TigerProgram(scanner);
+    ParserRule.reset();
     program.parse();
+    System.out.println(ParserRule.print());
   }
 }

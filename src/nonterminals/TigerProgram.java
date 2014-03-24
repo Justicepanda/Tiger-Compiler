@@ -16,4 +16,9 @@ public class TigerProgram extends ParserRule {
     matchNonTerminal(new StatSequence(scanner));
     matchTerminal("END");
   }
+
+  @Override
+  public String getLabel() {
+    return "<tiger-program>";
+  }
 }

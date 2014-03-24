@@ -2,8 +2,15 @@ package nonterminals;
 
 import parser.ParserRule;
 import scanner.Scanner;
+import symboltable.Argument;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParamListTail extends ParserRule {
+  private Param param;
+  private ParamListTail paramListTail;
+
   public ParamListTail(Scanner scanner) {
     super(scanner);
   }
@@ -12,8 +19,25 @@ public class ParamListTail extends ParserRule {
   public void parse() {
     if (peekTypeMatches("COMMA")) {
       matchTerminal("COMMA");
-      matchNonTerminal(new Param(scanner));
-      matchNonTerminal(new ParamListTail(scanner));
+      param = new Param(scanner);
+      matchNonTerminal(param);
+      paramListTail = new ParamListTail(scanner);
+      matchNonTerminal(paramListTail);
     }
+  }
+
+  @Override
+  public String getLabel() {
+    return "<param-list>";
+  }
+
+  public List<Argument> getArguments() {
+    if (param == null)
+      return null;
+    List<Argument> listSoFar = paramListTail.getArguments();
+    if (listSoFar == null)
+      listSoFar = new ArrayList<Argument>();
+    listSoFar.add(param.getArgument());
+    return listSoFar;
   }
 }

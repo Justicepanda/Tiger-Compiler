@@ -25,7 +25,12 @@ class Type extends ParserRule {
       matchNonTerminal(typeId);
   }
 
-  String getType() {
+  @Override
+  public String getLabel() {
+    return "<type>";
+  }
+
+  symboltable.Type getType() {
     return typeId.getType();
   }
 }

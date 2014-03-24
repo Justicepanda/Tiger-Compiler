@@ -15,4 +15,9 @@ class TypeDeclarationList extends ParserRule {
       matchNonTerminal(new TypeDeclarationList(scanner));
     }
   }
+
+  @Override
+  public String getLabel() {
+    return "<type-declaration-list>";
+  }
 }

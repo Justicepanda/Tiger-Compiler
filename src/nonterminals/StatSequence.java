@@ -12,4 +12,9 @@ class StatSequence extends ParserRule {
   public void parse() {
 
   }
+
+  @Override
+  public String getLabel() {
+    return "<stat-seq>";
+  }
 }
