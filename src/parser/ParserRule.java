@@ -5,50 +5,65 @@ import scanner.Scanner;
 import symboltable.SymbolTable;
 import symboltable.Type;
 
-public abstract class ParserRule {
-  protected Scanner scanner;
-  protected static SymbolTable symbolTable = new SymbolTable();
-  private static SimpleTree tree = new SimpleTree();
+public abstract class ParserRule 
+{
+	protected Scanner scanner;
+	protected static SymbolTable symbolTable = new SymbolTable();
+	private static SimpleTree tree = new SimpleTree();
+	protected int lineNumber;
 
-  public ParserRule(Scanner scanner) {
-    this.scanner = scanner;
-  }
+	public ParserRule(Scanner scanner) 
+	{
+		this.scanner = scanner;
+	}
 
-  public static void reset() {
-    symbolTable = new SymbolTable();
-    tree = new SimpleTree();
-  }
+	public static void reset() 
+	{
+		symbolTable = new SymbolTable();
+		tree = new SimpleTree();
+	}
 
-  protected void matchTerminal(String expected) {
-    tree.add(expected);
-    TokenTuple actual = scanner.popToken();
-    if (!actual.getType().equals(expected))
-      throw new TerminalException(actual, new TokenTuple(expected, expected));
-    System.out.print(actual.getType() + " ");
-  }
+	protected void matchTerminal(String expected) 
+	{
+		tree.add(expected);
+		TokenTuple actual = scanner.popToken();
+		if (!actual.getType().equals(expected))
+			throw new TerminalException(actual, new TokenTuple(expected,
+					expected));
+		System.out.print(actual.getType() + " ");
+	}
 
-  protected boolean peekTypeMatches(String toMatch) {
-    return scanner.peekToken().getType().equals(toMatch);
-  }
+	protected boolean peekTypeMatches(String toMatch) 
+	{
+		return scanner.peekToken().getType().equals(toMatch);
+	}
 
-  protected String peekTokenValue() {
-    return scanner.peekToken().getToken();
-  }
+	protected String peekTokenValue() 
+	{
+		return scanner.peekToken().getToken();
+	}
 
-  protected void matchNonTerminal(ParserRule expected) {
-    tree.add(expected.getLabel());
-    tree.moveDown();
-    expected.parse();
-    tree.moveUp();
-  }
+	protected void matchNonTerminal(ParserRule expected) 
+	{
+		tree.add(expected.getLabel());
+		tree.moveDown();
+		expected.parse();
+		tree.moveUp();
+	}
 
-  public abstract void parse();
+	public abstract void parse();
 
-  public abstract String getLabel();
+	public abstract String getLabel();
 
-  public abstract Type getType();
+	public abstract Type getType();
+	
+	public int getLineNumber()
+	{
+		return lineNumber;
+	}
 
-  public static String print() {
-    return tree.print() + symbolTable.print();
-  }
+	public static String print() 
+	{
+		return tree.print() + symbolTable.print();
+	}
 }

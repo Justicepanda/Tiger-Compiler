@@ -1,35 +1,58 @@
 package nonterminals;
 
 import parser.ParserRule;
+import symboltable.Type;
 import scanner.Scanner;
 
-public class Constant extends ParserRule {
-  private String value;
+public class Constant extends ParserRule 
+{
+	private String value;
+	private Type type;
 
-  public Constant(Scanner scanner) {
-    super(scanner);
-  }
+	public Constant(Scanner scanner) 
+	{
+		super(scanner);
+	}
 
-  @Override
-  public void parse() {
-    value = peekTokenValue();
-    if (peekTypeMatches("INTLIT"))
-      matchTerminal("INTLIT");
-    else if (peekTypeMatches("STRLIT"))
-      matchTerminal("STRLIT");
-    else
-      matchTerminal("NIL");
-  }
+	@Override
+	public void parse() 
+	{
+		lineNumber = scanner.getLineNum();
+		value = peekTokenValue();
+		if (peekTypeMatches("INTLIT"))
+		{
+			type = new Type("int", "int");
+			matchTerminal("INTLIT");
+		}
+		else if (peekTypeMatches("STRLIT"))
+		{	
+			type = new Type("string", "string");
+			matchTerminal("STRLIT");
+		}
+		else
+		{
+			type = new Type("nil", "nil");
+			matchTerminal("NIL");
+		}
+	}
 
-  @Override
-  public String getLabel() {
-    return "<const>";
-  }
+	@Override
+	public String getLabel() 
+	{
+		return "<const>";
+	}
 
-  public String getValue() {
-    if (value == null)
-      return "nil";
-    else
-      return value;
-  }
+	public String getValue() 
+	{
+		if (value == null)
+			return "nil";
+		else
+			return value;
+	}
+
+	@Override
+	public Type getType() 
+	{
+		return type;
+	}
 }

@@ -4,29 +4,36 @@ import parser.ParserRule;
 import scanner.Scanner;
 import symboltable.Type;
 
-public class ReturnType extends ParserRule {
+public class ReturnType extends ParserRule 
+{
 
-  private TypeId typeId;
+	private TypeId typeId;
 
-  public ReturnType(Scanner scanner) {
-    super(scanner);
-    typeId = new TypeId(scanner);
-  }
+	public ReturnType(Scanner scanner) 
+	{
+		super(scanner);
+		typeId = new TypeId(scanner);
+	}
 
-  @Override
-  public void parse() {
-    if (peekTypeMatches("COLON")) {
-      matchTerminal("COLON");
-      matchNonTerminal(typeId);
-    }
-  }
+	@Override
+	public void parse() 
+	{
+		lineNumber = scanner.getLineNum();
+		if (peekTypeMatches("COLON")) 
+		{
+			matchTerminal("COLON");
+			matchNonTerminal(typeId);
+		}
+	}
 
-  @Override
-  public String getLabel() {
-    return "<ret-type>";
-  }
+	@Override
+	public String getLabel()
+	{
+		return "<ret-type>";
+	}
 
-  public Type getType() {
-    return typeId.getType();
-  }
+	public Type getType() 
+	{
+		return typeId.getType();
+	}
 }

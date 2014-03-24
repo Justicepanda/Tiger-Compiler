@@ -1,5 +1,6 @@
 package symboltable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Function extends Entry {
@@ -20,6 +21,16 @@ public class Function extends Entry {
             ", Return Type: " + returnType.getName() +
             ", Arguments: " + arguments +
             ", Scope: " + getScope();
+  }
+  
+  public Type getReturnType()
+  {
+	  return returnType;
+  }
+  
+  public ArrayList<Argument> getArguments()
+  {
+	  return (ArrayList)arguments;
   }
 }
 
