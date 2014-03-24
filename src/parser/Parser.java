@@ -5,6 +5,7 @@ import compiler.TokenTuple;
 import java.util.List;
 
 public class Parser {
+
   private ParsingStack parsingStack;
   private ParsingTree parsingTree;
   private final ParsingTable parsingTable;
