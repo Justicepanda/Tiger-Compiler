@@ -26,9 +26,7 @@ public class Type extends Entry {
   public boolean isOfSameType(Type t) {
     if (t == null)
       return true;
-    if (t.actualType.equals("nil") || actualType.equals("nil"))
-      return true;
-    return actualType.equals(t.actualType);
+    return t.actualType.equals("nil") || actualType.equals("nil") || actualType.equals(t.actualType);
   }
 
   @Override

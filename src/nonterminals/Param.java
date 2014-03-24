@@ -26,6 +26,6 @@ public class Param extends ParserRule {
 
   @Override
   public Type getType() {
-    return null;
+    return typeId.getType();
   }
 }

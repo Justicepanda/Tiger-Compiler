@@ -1,7 +1,6 @@
 package nonterminals;
 
 import parser.ParserRule;
-import parser.SemanticTypeException;
 import symboltable.Type;
 
 public class MultTerm2 extends ParserRule {
@@ -30,14 +29,6 @@ public class MultTerm2 extends ParserRule {
 
   @Override
   public Type getType() {
-    if (multTerm2 != null && multTerm2.getType() != null && factor != null && factor.getType() != null) {
-      if (factor.getType().isOfSameType(multTerm2.getType()))
-        return factor.getType();
-      generateException();
-    } else if (factor != null && factor.getType() != null)
-      return factor.getType();
-    else if (multTerm2 != null && multTerm2.getType() != null)
-      return multTerm2.getType();
-    return null;
+    return decideType(factor, multTerm2);
   }
 }

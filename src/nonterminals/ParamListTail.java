@@ -39,6 +39,6 @@ public class ParamListTail extends ParserRule {
 
   @Override
   public Type getType() {
-    return null;
+    return Type.NIL_TYPE;
   }
 }

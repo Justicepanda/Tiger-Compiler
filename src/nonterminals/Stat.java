@@ -113,7 +113,7 @@ public class Stat extends ParserRule {
 
   @Override
   public Type getType() {
-    return null;
+    return Type.NIL_TYPE;
   }
 
 }

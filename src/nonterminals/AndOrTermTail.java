@@ -1,7 +1,6 @@
 package nonterminals;
 
 import parser.ParserRule;
-import parser.SemanticTypeException;
 import symboltable.Type;
 
 public class AndOrTermTail extends ParserRule {
@@ -22,14 +21,6 @@ public class AndOrTermTail extends ParserRule {
 
   @Override
   public Type getType() {
-    if (andOrTerm2.getType() != null && equalityTermTail.getType() != null) {
-      if (equalityTermTail.getType().isOfSameType(andOrTerm2.getType()))
-        return equalityTermTail.getType();
-      generateException();
-    } else if (equalityTermTail.getType() != null)
-      return equalityTermTail.getType();
-    else if (andOrTerm2.getType() != null)
-      return andOrTerm2.getType();
-    return null;
+    return decideType(equalityTermTail, andOrTerm2);
   }
 }

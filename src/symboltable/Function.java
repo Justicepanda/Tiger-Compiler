@@ -1,6 +1,5 @@
 package symboltable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Function extends Entry {

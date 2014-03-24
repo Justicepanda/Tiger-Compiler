@@ -3,7 +3,7 @@ package nonterminals;
 import parser.ParserRule;
 import symboltable.Type;
 
-public class Equality extends ParserRule {
+public class EqualityOp extends ParserRule {
   @Override
   public void parse() {
     if (peekTypeMatches("NEQ"))

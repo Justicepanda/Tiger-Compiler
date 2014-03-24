@@ -1,6 +1,8 @@
 package parser;
 
 import compiler.TokenTuple;
+import nonterminals.AddTerm2;
+import nonterminals.MultTerm;
 import scanner.Scanner;
 import symboltable.*;
 
@@ -35,14 +37,6 @@ public abstract class ParserRule
 	{
 		return scanner.peekToken().getType().equals(toMatch);
 	}
-
-  protected boolean rulesMatchType(ParserRule... rules) {
-    Type type = rules[0].getType();
-    for (ParserRule rule: rules)
-      if (!rule.getType().isOfSameType(type))
-        return false;
-    return true;
-  }
 
 	protected String peekTokenValue()
 	{
@@ -110,5 +104,30 @@ public abstract class ParserRule
 
   protected void generateException() {
     throw new SemanticTypeException(lineNumber);
+  }
+
+  private boolean rulesMatchType(ParserRule... rules) {
+    Type type = rules[0].getType();
+    for (ParserRule rule: rules)
+      if (!rule.getType().isOfSameType(type))
+        return false;
+    return true;
+  }
+
+  private Type agreedUponType(ParserRule... rules) {
+    for (ParserRule rule: rules)
+      if (!rule.getType().isOfSameType(Type.NIL_TYPE))
+        return rule.getType();
+    return Type.NIL_TYPE;
+  }
+
+  protected Type decideType(ParserRule... rules) {
+    if (rules[0] == null)
+      return Type.NIL_TYPE;
+    if (rulesMatchType(rules))
+      return agreedUponType(rules);
+    else
+      generateException();
+    return null;
   }
 }

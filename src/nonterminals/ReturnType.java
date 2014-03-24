@@ -22,7 +22,7 @@ public class ReturnType extends ParserRule {
 
   public Type getType() {
     if (typeId == null)
-      return null;
+      return Type.NIL_TYPE;
     return typeId.getType();
   }
 }
