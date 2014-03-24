@@ -1,109 +1,129 @@
 package scanner;
 
 import compiler.TokenTuple;
+import compiler.Compiler;
 
-public class Scanner {
+public class Scanner 
+{
+	private final TokenDfa dfa;
+	private LinesHandler handler;
+	private TokenTuple stored;
 
-  private final TokenDfa dfa;
-  private LinesHandler handler;
-  private TokenTuple stored;
+	public Scanner(TokenDfa dfa) 
+	{
+		this.dfa = dfa;
+	}
 
-  public Scanner(TokenDfa dfa) {
-    this.dfa = dfa;
-  }
+	public void reset() {
+		dfa.reset();
+	}
 
-  public void reset() {
-    dfa.reset();
-  }
+	public void scan(String[] toScan) 
+	{
+		handler = new LinesHandler(toScan);
+	}
 
-  public void scan(String[] toScan) {
-    handler = new LinesHandler(toScan);
-  }
+	public boolean hasMoreTokens() 
+	{
+		return handler.hasChars();
+	}
 
-  public boolean hasMoreTokens() {
-    return handler.hasChars();
-  }
+	private void removeSpaces() 
+	{
+		while (handler.hasChars() && handler.isAtSpaceChar()
+				&& dfa.isInSpaceState())
+			processNextChar(handler.getCurrentChar());
+	}
 
-  private void removeSpaces() {
-    while (handler.hasChars() && handler.isAtSpaceChar() && dfa.isInSpaceState())
-      processNextChar(handler.getCurrentChar());
-  }
+	/**
+	 * Finds the next token in the scanned String and returns it. If a lexical
+	 * error is found, a LexicalException is thrown.
+	 */
+	public TokenTuple popToken() 
+	{
+		if (stored == null)
+			return getToken();
+		else 
+		{
+			TokenTuple temp = stored;
+			stored = null;
+			return temp;
+		}
+	}
 
-  /**
-   * Finds the next token in the scanned String and returns it. If
-   * a lexical error is found, a LexicalException is thrown.
-   */
-  public TokenTuple popToken() {
-    if (stored == null)
-      return getToken();
-    else {
-      TokenTuple temp = stored;
-      stored = null;
-      return temp;
-    }
-  }
+	public TokenTuple peekToken() 
+	{
+		if (stored == null)
+			stored = getToken();
+		return stored;
+	}
 
-  public TokenTuple peekToken() {
-    if (stored == null)
-      stored = getToken();
-    return stored;
-  }
+	private TokenTuple getToken() 
+	{
+		TokenTuple token = findToken();
+		token.setLocationInfo(getLineInfo());
+		prepareToFindNextToken();
+		if (isComment(token))
+			return getToken();
+		else
+			return token;
+	}
 
-  private TokenTuple getToken() {
-    TokenTuple token = findToken();
-    token.setLocationInfo(getLineInfo());
-    prepareToFindNextToken();
-    if (isComment(token))
-      return getToken();
-    else
-      return token;
-  }
+	private TokenTuple findToken() 
+	{
+		while (dfa.isNotInAcceptState())
+			processNextChar(handler.getCurrentChar());
+		return dfa.getToken();
+	}
 
-  private TokenTuple findToken() {
-    while (dfa.isNotInAcceptState())
-      processNextChar(handler.getCurrentChar());
-    return dfa.getToken();
-  }
+	private void processNextChar(char c) 
+	{
+		changeDfaState(c);
+		if (dfa.isNotInAcceptState())
+			handleNonAcceptState();
+	}
 
-  private void processNextChar(char c) {
-    changeDfaState(c);
-    if (dfa.isNotInAcceptState())
-      handleNonAcceptState();
-  }
+	private void handleNonAcceptState() 
+	{
+		if (dfa.isInErrorState())
+			handleErrorState();
+		else if (dfa.isInSpaceState())
+			dfa.reset();
+	}
 
-  private void handleNonAcceptState() {
-    if (dfa.isInErrorState())
-      handleErrorState();
-    else if (dfa.isInSpaceState())
-      dfa.reset();
-  }
+	private void handleErrorState() 
+	{
+		dfa.reset();
+		handler.printLexicalException();
+		Compiler.errorOccured();
+		popToken();
+	}
 
-  private void handleErrorState() {
-    dfa.reset();
-    throw handler.generateLexicalException();
-  }
+	private void prepareToFindNextToken() 
+	{
+		dfa.reset();
+		handler.moveBackward();
+		removeSpaces();
+	}
 
-  private void prepareToFindNextToken() {
-    dfa.reset();
-    handler.moveBackward();
-    removeSpaces();
-  }
+	private boolean isComment(TokenTuple token) 
+	{
+		return token.getType().equals("COMMENT");
+	}
 
-  private boolean isComment(TokenTuple token) {
-    return token.getType().equals("COMMENT");
-  }
+	private void changeDfaState(char c) 
+	{
+		dfa.changeState(c);
+		handler.moveForward();
+	}
 
-  private void changeDfaState(char c) {
-    dfa.changeState(c);
-	handler.moveForward();
-  }
+	public String getLineInfo() 
+	{
+		return handler.getLineInfo();
+	}
 
-  public String getLineInfo() {
-    return handler.getLineInfo();
-  }
-
-  public int getLineNum() {
-    return handler.getCurrentLin
-    e();
-  }
+	public int getLineNum() 
+	{
+		return handler.getCurrentLine();
+	}
 }

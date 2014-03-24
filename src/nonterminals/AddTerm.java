@@ -6,38 +6,44 @@ import scanner.Scanner;
 import symboltable.*;
 import symboltable.Type;
 
-public class AddTerm extends ParserRule {
-  private int lineNum;
-  private Type multType;
-  private Type addType;
+public class AddTerm extends ParserRule 
+{
+	private MultTerm multTerm;
+	private AddTerm2 addTerm2;
 
-	public AddTerm(Scanner scanner)
+	public AddTerm(Scanner scanner) 
 	{
 		super(scanner);
 	}
-	
+
 	@Override
 	public void parse() 
 	{
-    lineNum = scanner.getLineNum();
-    MultTerm multTerm = new MultTerm(scanner);
-    matchNonTerminal(multTerm);
-    multType = multTerm.getType();
-    AddTerm2 addTerm2 = new AddTerm2(scanner);
-    matchNonTerminal(addTerm2);
-    addType = addTerm2.getType();
+		lineNumber = scanner.getLineNum();
+		matchNonTerminal(multTerm = new MultTerm(scanner));
+		matchNonTerminal(addTerm2 = new AddTerm2(scanner));
 	}
 
-  @Override
-  public String getLabel() {
-    return "<add-term>";
-  }
+	@Override
+	public String getLabel() 
+	{
+		return "<add-term>";
+	}
 
-  @Override
-  public Type getType() {
-    if (multType.isOfSameType(addType))
-      return multType;
-    throw new SemanticTypeException(lineNum);
-  }
+	@Override
+	public Type getType() 
+	{
+		if(addTerm2 != null && addTerm2.getType() != null && multTerm != null && multTerm.getType() != null)
+		{
+			if(multTerm.getType().isOfSameType(addTerm2.getType()))
+				return multTerm.getType();
+			throw new SemanticTypeException(lineNumber);
+		}
+		else if(multTerm != null && multTerm.getType() != null && addTerm2.getType() == null)
+			return multTerm.getType();
+		else if(addTerm2 != null && addTerm2.getType() != null && multTerm.getType() == null)
+			return addTerm2.getType();
+		return null;
+	}
 
 }

@@ -2,22 +2,27 @@ package nonterminals;
 
 import parser.ParserRule;
 import scanner.Scanner;
+import symboltable.Type;
 
-public class StatTail extends ParserRule {
+public class StatTail extends ParserRule 
+{
 
-	public StatTail(Scanner scanner)
+	public StatTail(Scanner scanner) 
 	{
 		super(scanner);
 	}
-	
+
 	@Override
-	public void parse() 
+	public void parse()
 	{
-    if(peekTypeMatches("ENDIF")) {
+		lineNumber = scanner.getLineNum();
+		if (peekTypeMatches("ENDIF")) 
+		{
 			matchTerminal("ENDIF");
 			matchTerminal("SEMI");
-		}
-		else {
+		} 
+		else 
+		{
 			matchTerminal("ELSE");
 			matchNonTerminal(new StatSequence(scanner));
 			matchTerminal("ENDIF");
@@ -25,9 +30,15 @@ public class StatTail extends ParserRule {
 		}
 	}
 
-  @Override
-  public String getLabel() {
-    return "<stat-tail>";
-  }
+	@Override
+	public String getLabel() {
+		return "<stat-tail>";
+	}
+
+	@Override
+	public Type getType()
+	{
+		return null;
+	}
 
 }
