@@ -7,7 +7,6 @@ import symboltable.Type;
 public class MultTerm2 extends ParserRule {
   private Factor factor;
   private MultTerm2 multTerm2;
-  private int lineNumber;
   private MultOp multOp;
 
 
@@ -17,7 +16,7 @@ public class MultTerm2 extends ParserRule {
       multOp = new MultOp();
       factor = new Factor();
       multTerm2 = new MultTerm2();
-      lineNumber = getLineNumber();
+      storeLineNumber();
       matchNonTerminal(multOp);
       matchNonTerminal(factor);
       matchNonTerminal(multTerm2);
@@ -34,10 +33,10 @@ public class MultTerm2 extends ParserRule {
     if (multTerm2 != null && multTerm2.getType() != null && factor != null && factor.getType() != null) {
       if (factor.getType().isOfSameType(multTerm2.getType()))
         return factor.getType();
-      throw new SemanticTypeException(lineNumber);
-    } else if (factor != null && factor.getType() != null && multTerm2.getType() == null)
+      generateException();
+    } else if (factor != null && factor.getType() != null)
       return factor.getType();
-    else if (multTerm2 != null && multTerm2.getType() != null && factor.getType() == null)
+    else if (multTerm2 != null && multTerm2.getType() != null)
       return multTerm2.getType();
     return null;
   }

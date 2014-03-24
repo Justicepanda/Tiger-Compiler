@@ -7,13 +7,12 @@ import symboltable.Type;
 public class EqualityTerm2 extends ParserRule {
   private AddTerm addTerm;
   private EqualityTerm2 equalityTerm2;
-  private int lineNumber;
   private Equality equality;
 
   @Override
   public void parse() {
     if (isEqualityTerm()) {
-      lineNumber = getLineNumber();
+      storeLineNumber();
       equality = new Equality();
       addTerm = new AddTerm();
       equalityTerm2 = new EqualityTerm2();
@@ -36,13 +35,13 @@ public class EqualityTerm2 extends ParserRule {
 
   @Override
   public Type getType() {
-    if (equalityTerm2 != null && equalityTerm2.getType() != null && addTerm != null && equalityTerm2.getType() != null) {
+    if (equalityTerm2 != null && equalityTerm2.getType() != null && addTerm != null) {
       if (addTerm.getType().isOfSameType(equalityTerm2.getType()))
         return addTerm.getType();
-      throw new SemanticTypeException(lineNumber);
-    } else if (addTerm != null && addTerm.getType() != null && equalityTerm2.getType() == null)
+      generateException();
+    } else if (addTerm != null && addTerm.getType() != null)
       return addTerm.getType();
-    else if (equalityTerm2 != null && equalityTerm2.getType() != null && addTerm.getType() == null)
+    else if (equalityTerm2 != null && equalityTerm2.getType() != null)
       return equalityTerm2.getType();
     return null;
   }

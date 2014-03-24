@@ -12,6 +12,7 @@ public class VariableDeclaration extends ParserRule {
 
   @Override
   public void parse() {
+    storeLineNumber();
     matchTerminal("VAR");
     matchNonTerminal(idList);
     matchTerminal("COLON");
@@ -27,7 +28,7 @@ public class VariableDeclaration extends ParserRule {
           var.setValue(optionalInit.getValue());
         }
       } else {
-        throw new SemanticTypeException(typeId.getLineNumber());
+        generateException();
       }
     } else {
       for (String id : idList.getIds()) {

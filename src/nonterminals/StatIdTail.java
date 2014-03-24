@@ -11,13 +11,12 @@ import java.util.List;
 public class StatIdTail extends ParserRule {
   private Type type;
   private String id;
-  private int lineNumber;
   private StatIdTailTail statIdTailTail;
   private Expression expression;
 
   @Override
   public void parse() {
-    lineNumber = getLineNumber();
+    storeLineNumber();
     if (peekTypeMatches("ID")) {
       statIdTailTail = new StatIdTailTail();
       id = matchIdAndGetValue();
@@ -35,11 +34,11 @@ public class StatIdTail extends ParserRule {
       if (getFunction(id) != null) {
         type = getFunction(id).getReturnType();
         if (type != null && !type.isOfSameType(statIdTailTail.getType()))
-          throw new SemanticTypeException(statIdTailTail.getLineNumber());
+          generateException();
         List<Argument> args = getFunction(id).getArguments();
         for (int i = 0; i < statIdTailTail.getParameters().size(); i++) {
           if (args != null && !statIdTailTail.getParameters().get(i).getType().isOfSameType(args.get(i).getType()))
-            throw new SemanticTypeException(statIdTailTail.getLineNumber());
+            generateException();
         }
       } else {
         if (super.getVariable(id) != null)

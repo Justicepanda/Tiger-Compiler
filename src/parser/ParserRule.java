@@ -12,6 +12,8 @@ public abstract class ParserRule
 	private static SymbolTable symbolTable = new SymbolTable();
 	private static SimpleTree tree = new SimpleTree();
 
+  private int lineNumber;
+
   public static void setScanner(Scanner scanner) {
     ParserRule.scanner = scanner;
   }
@@ -25,8 +27,7 @@ public abstract class ParserRule
 		tree.add(expected);
 		TokenTuple actual = scanner.popToken();
 		if (!actual.getType().equals(expected))
-			throw new TerminalException(actual, new TokenTuple(expected,
-					expected));
+			throw new TerminalException(actual, new TokenTuple(expected, expected));
 		System.out.print(actual.getType() + " ");
 	}
 
@@ -34,6 +35,14 @@ public abstract class ParserRule
 	{
 		return scanner.peekToken().getType().equals(toMatch);
 	}
+
+  protected boolean rulesMatchType(ParserRule... rules) {
+    Type type = rules[0].getType();
+    for (ParserRule rule: rules)
+      if (!rule.getType().isOfSameType(type))
+        return false;
+    return true;
+  }
 
 	protected String peekTokenValue()
 	{
@@ -62,10 +71,6 @@ public abstract class ParserRule
 	public static String print() {
 		return tree.print() + symbolTable.print();
 	}
-
-  public int getLineNumber() {
-    return scanner.getLineNum();
-  }
 
   protected Type getTypeOfVariable(String id) {
     return symbolTable.getVariable(id).getType();
@@ -97,5 +102,13 @@ public abstract class ParserRule
 
   protected Type getType(String id) {
     return SymbolTable.getType(id);
+  }
+
+  protected void storeLineNumber() {
+    lineNumber = scanner.getLineNum();
+  }
+
+  protected void generateException() {
+    throw new SemanticTypeException(lineNumber);
   }
 }

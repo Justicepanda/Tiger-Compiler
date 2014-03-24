@@ -8,7 +8,6 @@ public class AndOrTerm2 extends ParserRule {
   private AndOrOp andOrOp;
   private EqualityTerm equalityTerm;
   private AndOrTerm2 andOrTerm2;
-  private int lineNumber;
 
   @Override
   public void parse() {
@@ -16,7 +15,7 @@ public class AndOrTerm2 extends ParserRule {
       andOrOp = new AndOrOp();
       equalityTerm = new EqualityTerm();
       andOrTerm2 = new AndOrTerm2();
-      lineNumber = getLineNumber();
+      storeLineNumber();
       matchNonTerminal(andOrOp);
       matchNonTerminal(equalityTerm);
       matchNonTerminal(andOrTerm2);
@@ -33,10 +32,10 @@ public class AndOrTerm2 extends ParserRule {
     if (andOrTerm2 != null && andOrTerm2.getType() != null && equalityTerm != null && equalityTerm.getType() != null) {
       if (equalityTerm.getType().isOfSameType(andOrTerm2.getType()))
         return equalityTerm.getType();
-      throw new SemanticTypeException(lineNumber);
-    } else if (equalityTerm != null && equalityTerm.getType() != null && andOrTerm2.getType() == null)
+      generateException();
+    } else if (equalityTerm != null && equalityTerm.getType() != null)
       return equalityTerm.getType();
-    else if (andOrTerm2 != null && andOrTerm2.getType() != null && equalityTerm.getType() == null)
+    else if (andOrTerm2 != null && andOrTerm2.getType() != null)
       return andOrTerm2.getType();
 
     return null;

@@ -8,16 +8,27 @@ class TypeId extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("INT")) {
-      type = new Type("int", "int");
-      matchTerminal("INT");
-    } else if (peekTypeMatches("STRING")) {
-      type = new Type("string", "string");
-      matchTerminal("STRING");
-    } else {
-      String id = matchIdAndGetValue();
-      type = getType(id);
-    }
+    if (peekTypeMatches("INT"))
+      matchInt();
+    else if (peekTypeMatches("STRING"))
+      matchString();
+    else
+      matchId();
+  }
+
+  private void matchInt() {
+    type = Type.INT_TYPE;
+    matchTerminal("INT");
+  }
+
+  private void matchString() {
+    type = Type.STRING_TYPE;
+    matchTerminal("STRING");
+  }
+
+  private void matchId() {
+    String id = matchIdAndGetValue();
+    type = getType(id);
   }
 
   @Override

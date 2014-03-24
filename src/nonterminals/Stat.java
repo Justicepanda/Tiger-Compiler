@@ -82,26 +82,26 @@ public class Stat extends ParserRule {
 
   private void matchLeadingId() {
     statId = new StatId();
+    storeLineNumber();
     String id = matchIdAndGetValue();
     matchNonTerminal(statId);
     matchTerminal("SEMI");
 
     if (statId.isFunction()) {
       if (super.getFunction(id) != null) {
-        //TODO remove - System.out.println("Found function! " + id + lineNumber);
         if (statId.getParameters() != null) {
           List<Argument> args = getFunction(id).getArguments();
           for (int i = 0; i < statId.getParameters().size(); i++) {
             if (args != null && statId.getParameters().get(i) != null &&
                     !statId.getParameters().get(i).getType().isOfSameType(args.get(i).getType())) {
-              throw new SemanticTypeException(statId.getLineNumber());
+              generateException();
             }
           }
         }
       }
     } else {
       if (!getTypeOfVariable(id).isOfSameType(statId.getType())) {
-        throw new SemanticTypeException(statId.getLineNumber());
+        generateException();
       }
     }
   }
