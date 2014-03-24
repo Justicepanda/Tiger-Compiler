@@ -8,13 +8,14 @@ public class OptionalInit extends ParserRule {
 
   public OptionalInit(Scanner scanner) {
     super(scanner);
+    constant = new Constant(scanner);
   }
 
   @Override
   public void parse() {
     if (peekTypeMatches("ASSIGN")) {
       matchTerminal("ASSIGN");
-      constant = new Constant(scanner);
+
       matchNonTerminal(constant);
     }
   }

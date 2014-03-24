@@ -1,7 +1,7 @@
 package symboltable;
 
 public class Argument extends Entry {
-  private final Type type;
+  private Type type;
 
   public Argument(Type type, String name) {
     super(name);
@@ -10,6 +10,8 @@ public class Argument extends Entry {
 
   @Override
   public String toString() {
+    if (type == null)
+      type = new Type("nil", "nil");
     return type.getName() + ": " + getName();
   }
 }

@@ -14,13 +14,13 @@ public class ParamList extends ParserRule {
 
   public ParamList(Scanner scanner) {
     super(scanner);
+    paramListTail = new ParamListTail(scanner);
+    param = new Param(scanner);
   }
 
   @Override
   public void parse() {
     if (peekTypeMatches("ID")) {
-      paramListTail = new ParamListTail(scanner);
-      param = new Param(scanner);
       matchNonTerminal(param);
       matchNonTerminal(paramListTail);
     }

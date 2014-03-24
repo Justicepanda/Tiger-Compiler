@@ -33,7 +33,7 @@ public class Scanner {
    * Finds the next token in the scanned String and returns it. If
    * a lexical error is found, a LexicalException is thrown.
    */
-  public TokenTuple getNextToken() {
+  public TokenTuple popToken() {
     if (stored == null)
       return getToken();
     else {
@@ -41,6 +41,12 @@ public class Scanner {
       stored = null;
       return temp;
     }
+  }
+
+  public TokenTuple peekToken() {
+    if (stored == null)
+      stored = getToken();
+    return stored;
   }
 
   private TokenTuple getToken() {
@@ -94,10 +100,5 @@ public class Scanner {
 
   public String getLineInfo() {
     return handler.getLineInfo();
-  }
-
-  public TokenTuple peek() {
-    stored = getNextToken();
-    return stored;
   }
 }

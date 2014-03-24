@@ -10,7 +10,15 @@ class StatSequence extends ParserRule {
 
   @Override
   public void parse() {
-
+    if (peekTypeMatches("RETURN") ||
+            peekTypeMatches("ID") ||
+            peekTypeMatches("IF") ||
+            peekTypeMatches("WHILE") ||
+            peekTypeMatches("FOR") ||
+            peekTypeMatches("BREAK")) {
+      matchNonTerminal(new Stat(scanner));
+      matchNonTerminal(new StatSequence(scanner));
+    }
   }
 
   @Override

@@ -10,13 +10,13 @@ public class ReturnType extends ParserRule {
 
   public ReturnType(Scanner scanner) {
     super(scanner);
+    typeId = new TypeId(scanner);
   }
 
   @Override
   public void parse() {
     if (peekTypeMatches("COLON")) {
       matchTerminal("COLON");
-      typeId = new TypeId(scanner);
       matchNonTerminal(typeId);
     }
   }

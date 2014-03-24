@@ -20,18 +20,18 @@ public abstract class ParserRule {
 
   protected void matchTerminal(String expected) {
     tree.add(expected);
-    TokenTuple actual = scanner.getNextToken();
+    TokenTuple actual = scanner.popToken();
     if (!actual.getType().equals(expected))
       throw new TerminalException(actual, new TokenTuple(expected, expected));
     System.out.print(actual.getType() + " ");
   }
 
   protected boolean peekTypeMatches(String toMatch) {
-    return scanner.peek().getType().equals(toMatch);
+    return scanner.peekToken().getType().equals(toMatch);
   }
 
   protected String peekTokenValue() {
-    return scanner.peek().getToken();
+    return scanner.peekToken().getToken();
   }
 
   protected void matchNonTerminal(ParserRule expected) {

@@ -22,6 +22,10 @@ public class Factor extends ParserRule
             peekTypeMatches("NIL")) {
       matchNonTerminal(new Constant(scanner));
     }
+    else if (peekTypeMatches("MINUS")) {
+      matchTerminal("MINUS");
+      matchNonTerminal(new Factor(scanner));
+    }
     else {
       matchTerminal("ID");
       matchNonTerminal(new LValue(scanner));

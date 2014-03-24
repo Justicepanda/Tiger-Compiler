@@ -90,7 +90,7 @@ public class Compiler {
   TokenTuple scan() {
     TokenTuple token = null;
     try {
-      token = scanner.getNextToken();
+      token = scanner.popToken();
     } catch (LexicalException e) {
       handleScannerError(e);
     }

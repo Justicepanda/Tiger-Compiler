@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Function extends Entry {
   private final List<Argument> arguments;
-  private final Type returnType;
+  private Type returnType;
 
   public Function(String name, List<Argument> arguments, Type returnType) {
     super(name);
@@ -14,6 +14,8 @@ public class Function extends Entry {
 
   @Override
   public String toString() {
+    if (returnType == null)
+      returnType = new Type("nil", "nil");
     return "Function: " + getName() +
             ", Return Type: " + returnType.getName() +
             ", Arguments: " + arguments +

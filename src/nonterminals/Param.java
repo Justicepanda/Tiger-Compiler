@@ -11,6 +11,7 @@ public class Param extends ParserRule {
 
   public Param(Scanner scanner) {
     super(scanner);
+    typeId = new TypeId(scanner);
   }
 
   @Override
@@ -18,7 +19,6 @@ public class Param extends ParserRule {
     id = peekTokenValue();
     matchTerminal("ID");
     matchTerminal("COLON");
-    typeId = new TypeId(scanner);
     matchNonTerminal(typeId);
   }
 
