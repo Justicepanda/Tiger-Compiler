@@ -135,7 +135,6 @@ let
                                 return board[win_cond[i*3]-1];
                         endif;
                 enddo;
-                return -1;
         end;
 
 

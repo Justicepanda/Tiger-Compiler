@@ -5,23 +5,31 @@ import scanner.Scanner;
 
 public class TigerParser 
 {
+  private boolean debug;
 	private final Scanner scanner;
+  private TigerProgram program;
 
-	public TigerParser(Scanner scanner) 
+  public TigerParser(Scanner scanner)
 	{
-		this.scanner = scanner;
+    program = new TigerProgram();
+    this.scanner = scanner;
 	}
 
 	public void parse()
 	{
-		TigerProgram program = new TigerProgram();
     ParserRule.setScanner(scanner);
 		ParserRule.reset();
 		program.parse();
-    System.out.println(print());
+    if (debug)
+      print();
 	}
 	
 	public String print() {
 		return ParserRule.print();
 	}
+
+  public void setDebug() {
+    this.debug = true;
+    program.setDebug();
+  }
 }

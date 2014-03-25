@@ -20,6 +20,7 @@ public class Constant extends ParserRule {
       matchString();
     else
       matchNil();
+    type.setConstant(true);
   }
 
   private void matchInt() {

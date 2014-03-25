@@ -3,6 +3,10 @@ package nonterminals;
 import parser.ParserRule;
 import symboltable.Type;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 class StatSequence extends ParserRule {
   private Stat stat;
   private StatSequence statSequence;
@@ -31,5 +35,25 @@ class StatSequence extends ParserRule {
   @Override
   public Type getType() {
     return null;
+  }
+
+  public List<Expression> getReturnExpressions() {
+    List<Stat> stats = getStatements();
+    List<Expression> returnExprs = new ArrayList<Expression>();
+    for (Stat stat: stats)
+      if (stat.isReturnStatement())
+        returnExprs.add(stat.getExpression());
+    return returnExprs;
+  }
+
+  public List<Stat> getStatements() {
+    if (statSequence == null)
+      return new ArrayList<Stat>();
+    List<Stat> listSoFar = statSequence.getStatements();
+    if (listSoFar == null)
+      listSoFar = new ArrayList<Stat>();
+    listSoFar.add(stat);
+    Collections.reverse(listSoFar);
+    return listSoFar;
   }
 }

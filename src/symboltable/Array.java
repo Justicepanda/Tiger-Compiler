@@ -3,13 +3,13 @@ package symboltable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Array extends Entry {
+public class Array extends Variable {
   private final Type type;
   private final List<Integer> dimensions;
   private List<String> values;
 
   public Array(Type type, String name, List<Integer> dimensions) {
-    super(name);
+    super(type, name);
     this.type = type;
     this.dimensions = dimensions;
     initList(dimensions);
@@ -21,7 +21,7 @@ public class Array extends Entry {
       size *= dimension;
     values = new ArrayList<String>();
     for (int i = 0; i < size; i++)
-      values.add(null);
+      values.add("nil");
   }
 
   public void setValue(String value) {
@@ -29,13 +29,12 @@ public class Array extends Entry {
       values.set(i, value);
   }
 
-
   @Override
   public String toString() {
     return "Array: " + getName() +
             ", Type: " + type.getName() +
             ", Scope: " + getScope() +
-            ", CurrentValue: " + values;
+            ", Initial Value: " + values;
   }
 
   //Unused

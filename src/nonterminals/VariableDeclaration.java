@@ -1,6 +1,7 @@
 package nonterminals;
 
 import parser.ParserRule;
+import symboltable.Array;
 import symboltable.Type;
 import symboltable.Variable;
 
@@ -19,19 +20,34 @@ public class VariableDeclaration extends ParserRule {
     matchNonTerminal(optionalInit);
     matchTerminal("SEMI");
 
-    if (optionalInit.getType() != null) {
-      if (optionalInit.getType().isOfSameType(typeId.getType())) {
-        for (String id : idList.getIds()) {
-          Variable var = new Variable(typeId.getType(), id);
-          super.addVariable(var);
-          var.setValue(optionalInit.getValue());
-        }
+    Type type = getType(typeId.getType().getName());
+
+    for (String id : idList.getIds()) {
+      if (!optionalInit.getType().isExactlyOfType(Type.NIL_TYPE)) {
+        if (optionalInit.getType().isOfSameType(type)) {
+          if (type.isArray()) {
+            type.setConstant(false);
+            Array array = new Array(type, id, type.getDimensions());
+            array.setValue(optionalInit.getValue());
+            super.addArray(array);
+          } else {
+            type.setConstant(false);
+            Variable var = new Variable(type, id);
+            var.setValue(optionalInit.getValue());
+            super.addVariable(var);
+          }
+        } else
+          generateException();
       } else {
-        generateException();
-      }
-    } else {
-      for (String id : idList.getIds()) {
-        addVariable(typeId.getType(), id);
+        if (type.isArray()) {
+          type.setConstant(false);
+          Array array = new Array(type, id, type.getDimensions());
+          super.addArray(array);
+        } else {
+          type.setConstant(false);
+          Variable var = new Variable(type, id);
+          super.addVariable(var);
+        }
       }
     }
   }

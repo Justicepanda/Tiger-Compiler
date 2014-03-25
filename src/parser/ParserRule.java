@@ -1,8 +1,6 @@
 package parser;
 
 import compiler.TokenTuple;
-import nonterminals.AddTerm2;
-import nonterminals.MultTerm;
 import scanner.Scanner;
 import symboltable.*;
 
@@ -10,9 +8,14 @@ import java.util.List;
 
 public abstract class ParserRule 
 {
+  private static boolean isDebug;
 	private static Scanner scanner;
 	private static SymbolTable symbolTable = new SymbolTable();
 	private static SimpleTree tree = new SimpleTree();
+
+  public void setDebug() {
+    this.isDebug = true;
+  }
 
   private int lineNumber;
 
@@ -30,7 +33,8 @@ public abstract class ParserRule
 		TokenTuple actual = scanner.popToken();
 		if (!actual.getType().equals(expected))
 			throw new TerminalException(actual, new TokenTuple(expected, expected));
-		System.out.print(actual.getType() + " ");
+    if (isDebug)
+		  System.out.print(actual.getType() + " ");
 	}
 
 	protected boolean peekTypeMatches(String toMatch) 
@@ -67,7 +71,7 @@ public abstract class ParserRule
 	}
 
   protected Type getTypeOfVariable(String id) {
-    return symbolTable.getVariable(id).getType();
+    return getVariable(id).getType();
   }
 
   protected void addFunction(String id, List<Argument> arguments, Type type) {
@@ -87,15 +91,29 @@ public abstract class ParserRule
   }
 
   protected Variable getVariable(String id) {
-    return symbolTable.getVariable(id);
+    Variable var = symbolTable.getVariable(id);
+    if (var == null)
+      var = symbolTable.getArray(id);
+    if (var == null)
+      throw new NoSuchIdentifierException(id);
+    return var;
   }
 
   protected void addType(String id, Type type) {
-    symbolTable.addType(new Type(id, type.getActualType()));
+    Type toAdd = new Type(id, type.getActualType());
+    toAdd.setAsArray(type.getDimensions());
+    symbolTable.addType(toAdd);
+  }
+
+  public void addArray(Type type, String id, List<Integer> dimensions) {
+    symbolTable.addArray(new Array(type, id, dimensions));
   }
 
   protected Type getType(String id) {
-    return SymbolTable.getType(id);
+    Type t = SymbolTable.getType(id);
+    if (t == null)
+      throw new NoSuchTypeException(id);
+    return t;
   }
 
   protected void storeLineNumber() {
@@ -106,7 +124,17 @@ public abstract class ParserRule
     throw new SemanticTypeException(lineNumber);
   }
 
-  private boolean rulesMatchType(ParserRule... rules) {
+  protected Type decideType(ParserRule... rules) {
+    if (rules[0] == null)
+      return Type.NIL_TYPE;
+    if (rulesMatchType(rules))
+      return agreedUponType(rules);
+    else
+      generateException();
+    return null;
+  }
+
+  protected boolean rulesMatchType(ParserRule... rules) {
     Type type = rules[0].getType();
     for (ParserRule rule: rules)
       if (!rule.getType().isOfSameType(type))
@@ -116,18 +144,12 @@ public abstract class ParserRule
 
   private Type agreedUponType(ParserRule... rules) {
     for (ParserRule rule: rules)
-      if (!rule.getType().isOfSameType(Type.NIL_TYPE))
+      if (!rule.getType().isExactlyOfType(Type.NIL_TYPE))
         return rule.getType();
     return Type.NIL_TYPE;
   }
 
-  protected Type decideType(ParserRule... rules) {
-    if (rules[0] == null)
-      return Type.NIL_TYPE;
-    if (rulesMatchType(rules))
-      return agreedUponType(rules);
-    else
-      generateException();
-    return null;
+  public void addArray(Array array) {
+    symbolTable.addArray(array);
   }
 }

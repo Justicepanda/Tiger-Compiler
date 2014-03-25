@@ -52,7 +52,7 @@ public class Factor extends ParserRule {
     lValue = new LValue();
     String id = matchIdAndGetValue();
     matchNonTerminal(lValue);
-    if (lValue.getType() == null)
+    if (lValue.getType().isOfSameType(Type.NIL_TYPE))
       type = getTypeOfVariable(id);
     else
       type = lValue.getType();

@@ -7,6 +7,7 @@ public class Variable extends Entry {
   public Variable(Type type, String name) {
     super(name);
     this.type = type;
+    value = "nil";
   }
 
   public Type getType() {
@@ -22,6 +23,6 @@ public class Variable extends Entry {
     return "Variable: " + getName() +
             ", Type: " + type.getName() +
             ", Scope: " + getScope() +
-            ", CurrentValue: " + value;
+            ", Initial Value: " + value;
   }
 }

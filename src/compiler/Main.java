@@ -33,8 +33,6 @@ class Main
 
 		initCompiler();
 		compiler.compile(filename);
-		if (debugFlag)
-			System.out.println(compiler.printDebug());
 	}
 
 	private static void parseArgs(String[] args) 
@@ -58,6 +56,8 @@ class Main
 		Scanner scanner = new Scanner(
 				(TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
 		TigerParser parser = new TigerParser(scanner);
+    if (debugFlag)
+      parser.setDebug();
 		compiler = new Compiler(scanner, parser);
 	}
 }

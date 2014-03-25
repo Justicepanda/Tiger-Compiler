@@ -21,6 +21,10 @@ public class EqualityTerm extends ParserRule {
 
   @Override
   public Type getType() {
-    return decideType(addTerm, equalityTerm2);
+    Type t = decideType(addTerm, equalityTerm2);
+    if (equalityTerm2.wasExpanded())
+      return Type.INT_TYPE;
+    else
+      return t;
   }
 }

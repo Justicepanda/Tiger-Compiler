@@ -12,6 +12,7 @@ class TypeDeclaration extends ParserRule {
     matchTerminal("EQ");
     matchNonTerminal(type);
     matchTerminal("SEMI");
+    symboltable.Type t = type.getType();
     addType(id, type.getType());
   }
 

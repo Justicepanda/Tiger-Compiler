@@ -1,7 +1,11 @@
 package symboltable;
 
+import java.util.List;
+
 public class Type extends Entry {
   private final String actualType;
+  private boolean isConstant;
+  private List<Integer> dimensions;
 
   public static final Type STRING_TYPE = new Type("string", "string");
   public static final Type INT_TYPE = new Type("int", "int");
@@ -26,7 +30,33 @@ public class Type extends Entry {
   public boolean isOfSameType(Type t) {
     if (t == null)
       return true;
-    return t.actualType.equals("nil") || actualType.equals("nil") || actualType.equals(t.actualType);
+    if ((t.isConstant || isConstant) && !t.actualType.equals("nil") && !actualType.equals("nil")) {
+      String tbaseType = t.actualType;
+      String baseType = actualType;
+      if (dimensions != null) {
+        baseType = actualType.split("\\[")[0];
+      }
+      if (t.dimensions != null)
+        tbaseType = t.actualType.split("\\[")[0];
+      return tbaseType.equals(baseType);
+    }
+    return t.actualType.equals("nil") || actualType.equals("nil") || getName().equals(t.getName());
+  }
+
+  public boolean isExactlyOfType(Type t) {
+    return t.getName().equals(getName());
+  }
+
+  public void setConstant(boolean isConstant) {
+    this.isConstant = isConstant;
+  }
+
+  public void setAsArray(List<Integer> dimensions) {
+    this.dimensions = dimensions;
+  }
+
+  public boolean isArray() {
+    return dimensions != null;
   }
 
   @Override
@@ -34,5 +64,9 @@ public class Type extends Entry {
     return "Type: " + getName() +
             ", Scope: " + getScope() +
             ", ActualType: " + actualType;
+  }
+
+  public List<Integer> getDimensions() {
+    return dimensions;
   }
 }

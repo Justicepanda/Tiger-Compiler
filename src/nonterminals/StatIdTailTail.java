@@ -20,6 +20,7 @@ public class StatIdTailTail extends ParserRule {
       matchTerminal("LPAREN");
       matchNonTerminal(expressionList);
       matchTerminal("RPAREN");
+      type = Type.NIL_TYPE;
     } else {
       andOrTermTail = new AndOrTermTail();
       matchNonTerminal(andOrTermTail);

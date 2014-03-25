@@ -17,26 +17,23 @@ public class SymbolTable
 	}
 
 	private static Map<SymbolType, Map<String, List<Entry>>> table;
-	private final int scope;
+	private int scope;
 
-	public SymbolTable() 
-	{
+	public SymbolTable()  {
 		scope = 1;
 		table = new HashMap<SymbolType, Map<String, List<Entry>>>();
 		initTableSections();
 		addDefaults();
 	}
 
-	private void initTableSections() 
-	{
+	private void initTableSections()  {
 		table.put(SymbolType.TYPE, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.VARIABLE, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.ARRAY, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
 	}
 
-	private void addDefaults()
-	{
+	private void addDefaults() {
 		addType(INT_TYPE);
 		addType(STRING_TYPE);
 
@@ -68,32 +65,27 @@ public class SymbolTable
     addFunction(new Function("exit", i_arg, null));
 	}
 
-	public static Type getType(String id)
-{
-		return (Type) table.get(SymbolType.TYPE).get(id).get(0);
-	}
-
-	public void addType(Type entry) 
+	public void addType(Type entry)
 	{
 		addEntry(SymbolType.TYPE, entry);
 	}
 
-	public void addVariable(Entry entry) 
+	public void addVariable(Entry entry)
 	{
 		addEntry(SymbolType.VARIABLE, entry);
 	}
 
-	public void addArray(Entry entry) 
+	public void addArray(Entry entry)
 	{
 		addEntry(SymbolType.ARRAY, entry);
 	}
 
-	public void addFunction(Function entry) 
+	public void addFunction(Function entry)
 	{
 		addEntry(SymbolType.FUNCTION, entry);
 	}
 
-	private void addEntry(SymbolType label, Entry entry) 
+	private void addEntry(SymbolType label, Entry entry)
 	{
 		entry.setScope(scope);
 		Map<String, List<Entry>> symbolSection = table.get(label);
@@ -102,7 +94,7 @@ public class SymbolTable
 		symbolSection.get(entry.getName()).add(entry);
 	}
 
-	public String print() 
+	public String print()
 	{
 		String res = "";
 		for (SymbolType type : SymbolType.values())
@@ -111,6 +103,14 @@ public class SymbolTable
 					res += entry + "\n";
 		return res;
 	}
+
+  public static Type getType(String id)
+  {
+    if(table.get(SymbolType.TYPE).get(id) != null)
+      return (Type) table.get(SymbolType.TYPE).get(id).get(0);
+    return null;
+
+  }
 
 	public Function getFunction(String functionId) 
 	{

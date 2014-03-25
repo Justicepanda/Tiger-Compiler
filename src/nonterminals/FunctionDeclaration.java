@@ -1,8 +1,10 @@
 package nonterminals;
 
 import parser.ParserRule;
+import parser.SemanticTypeException;
 import scanner.Scanner;
 import symboltable.Function;
+import symboltable.SymbolTable;
 import symboltable.Type;
 
 public class FunctionDeclaration extends ParserRule {
@@ -12,6 +14,7 @@ public class FunctionDeclaration extends ParserRule {
 
   @Override
   public void parse() {
+    storeLineNumber();
     matchTerminal("FUNC");
     String id = matchIdAndGetValue();
     matchTerminal("LPAREN");
@@ -20,10 +23,24 @@ public class FunctionDeclaration extends ParserRule {
     matchNonTerminal(returnType);
     matchTerminal("BEGIN");
     matchNonTerminal(statSequence);
+
+    semanticCheck();
+
     matchTerminal("END");
     matchTerminal("SEMI");
 
     addFunction(id, paramList.getArguments(), returnType.getType());
+  }
+
+  private void semanticCheck() {
+    if (statSequence == null)
+      return;
+    if (returnType.getType().isExactlyOfType(Type.NIL_TYPE) && !statSequence.getReturnExpressions().isEmpty())
+      generateException();
+
+    for (Expression returnExpr: statSequence.getReturnExpressions())
+      if (!rulesMatchType(returnExpr, returnType))
+        generateException();
   }
 
   @Override

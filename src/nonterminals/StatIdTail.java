@@ -1,5 +1,6 @@
 package nonterminals;
 
+import parser.NoSuchIdentifierException;
 import parser.ParserRule;
 import parser.SemanticTypeException;
 import symboltable.Argument;
@@ -30,7 +31,10 @@ public class StatIdTail extends ParserRule {
   }
 
   private void semanticCheck() {
-    if (statIdTailTail.getType() == null && statIdTailTail.getParameters() != null) {
+    if (getFunction(id) == null && getVariable(id) == null)
+      throw new NoSuchIdentifierException(id);
+
+    if (statIdTailTail.getType().isOfSameType(Type.NIL_TYPE) && statIdTailTail.getParameters() != null) {
       if (getFunction(id) != null) {
         type = getFunction(id).getReturnType();
         if (type != null && !type.isOfSameType(statIdTailTail.getType()))
@@ -40,9 +44,10 @@ public class StatIdTail extends ParserRule {
           if (args != null && !statIdTailTail.getParameters().get(i).getType().isOfSameType(args.get(i).getType()))
             generateException();
         }
-      } else {
-        if (super.getVariable(id) != null)
-          type = getVariable(id).getType();
+      } else if (getVariable(id) != null) {
+        type = getVariable(id).getType();
+        if (!type.isOfSameType(statIdTailTail.getType()))
+          generateException();
       }
     } else {
       type = statIdTailTail.getType();

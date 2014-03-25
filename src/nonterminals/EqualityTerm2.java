@@ -7,10 +7,12 @@ public class EqualityTerm2 extends ParserRule {
   private AddTerm addTerm;
   private EqualityTerm2 equalityTerm2;
   private EqualityOp equalityOp;
+  private boolean wasExpanded;
 
   @Override
   public void parse() {
     if (isEqualityTerm()) {
+      wasExpanded = true;
       storeLineNumber();
       equalityOp = new EqualityOp();
       addTerm = new AddTerm();
@@ -35,5 +37,9 @@ public class EqualityTerm2 extends ParserRule {
   @Override
   public Type getType() {
     return decideType(addTerm, equalityTerm2);
+  }
+
+  public boolean wasExpanded() {
+    return wasExpanded;
   }
 }

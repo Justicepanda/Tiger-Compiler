@@ -1,5 +1,6 @@
 package nonterminals;
 
+import parser.NoSuchIdentifierException;
 import parser.ParserRule;
 import parser.SemanticTypeException;
 import symboltable.Argument;
@@ -13,9 +14,11 @@ public class Stat extends ParserRule {
   private Expression expression;
   private StatSequence statSequence;
   private StatTail statTail;
+  private boolean isReturnStatement;
 
   @Override
   public void parse() {
+    storeLineNumber();
     if (peekTypeMatches("RETURN"))
       matchReturn();
     else if (peekTypeMatches("ID"))
@@ -38,12 +41,10 @@ public class Stat extends ParserRule {
   private void matchFor() {
     expression = new Expression();
     matchTerminal("FOR");
-    String id = matchIdAndGetValue();
+    matchTerminal("ID");
     matchTerminal("ASSIGN");
     matchNonTerminal(expression);
-    super.addVariable(expression.getType(), id);
     matchTerminal("TO");
-    //TODO semantic checking to ensure type matches here
     matchNonTerminal(new Expression());
     matchTerminal("DO");
     matchNonTerminal(new StatSequence());
@@ -56,6 +57,8 @@ public class Stat extends ParserRule {
     statSequence = new StatSequence();
     matchTerminal("WHILE");
     matchNonTerminal(expression);
+    if (!(expression.getType().isExactlyOfType(Type.INT_TYPE)))
+      generateException();
     matchTerminal("DO");
     matchNonTerminal(statSequence);
     matchTerminal("ENDDO");
@@ -68,12 +71,15 @@ public class Stat extends ParserRule {
     statTail = new StatTail();
     matchTerminal("IF");
     matchNonTerminal(expression);
+    if (!(expression.getType().isExactlyOfType(Type.INT_TYPE)))
+      generateException();
     matchTerminal("THEN");
     matchNonTerminal(statSequence);
     matchNonTerminal(statTail);
   }
 
   private void matchReturn() {
+    isReturnStatement = true;
     expression = new Expression();
     matchTerminal("RETURN");
     matchNonTerminal(expression);
@@ -82,10 +88,12 @@ public class Stat extends ParserRule {
 
   private void matchLeadingId() {
     statId = new StatId();
-    storeLineNumber();
     String id = matchIdAndGetValue();
     matchNonTerminal(statId);
     matchTerminal("SEMI");
+
+    if (getFunction(id) == null && getVariable(id) == null)
+      throw new NoSuchIdentifierException(id);
 
     if (statId.isFunction()) {
       if (super.getFunction(id) != null) {
@@ -106,6 +114,10 @@ public class Stat extends ParserRule {
     }
   }
 
+  public boolean isReturnStatement() {
+    return isReturnStatement;
+  }
+
   @Override
   public String getLabel() {
     return "<stat>";
@@ -113,7 +125,10 @@ public class Stat extends ParserRule {
 
   @Override
   public Type getType() {
-    return Type.NIL_TYPE;
+    return null;
   }
 
+  public Expression getExpression() {
+    return expression;
+  }
 }
