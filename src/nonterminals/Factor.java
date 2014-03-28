@@ -64,7 +64,7 @@ public class Factor extends ParserRule {
   }
 
   @Override
-  public Type getType() {
+  protected Type getType() {
     return type;
   }
 }

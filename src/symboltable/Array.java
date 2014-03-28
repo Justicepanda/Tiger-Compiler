@@ -5,13 +5,11 @@ import java.util.List;
 
 public class Array extends Variable {
   private final Type type;
-  private final List<Integer> dimensions;
   private List<String> values;
 
   public Array(Type type, String name, List<Integer> dimensions) {
     super(type, name);
     this.type = type;
-    this.dimensions = dimensions;
     initList(dimensions);
   }
 

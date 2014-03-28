@@ -1,10 +1,6 @@
 package nonterminals;
 
 import parser.ParserRule;
-import parser.SemanticTypeException;
-import scanner.Scanner;
-import symboltable.Function;
-import symboltable.SymbolTable;
 import symboltable.Type;
 
 public class FunctionDeclaration extends ParserRule {
@@ -33,8 +29,6 @@ public class FunctionDeclaration extends ParserRule {
   }
 
   private void semanticCheck() {
-    if (statSequence == null)
-      return;
     if (returnType.getType().isExactlyOfType(Type.NIL_TYPE) && !statSequence.getReturnExpressions().isEmpty())
       generateException();
 

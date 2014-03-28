@@ -7,13 +7,13 @@ import scanner.TokenDfaBuilder;
 import utilities.NormalFileScraper;
 
 public class TigerParserTests {
-  private TigerParser parser;
+  private Parser parser;
   private Scanner scanner;
 
   @Before
   public void setUp() {
-    scanner = new Scanner((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-    parser = new TigerParser(scanner);
+    scanner = new Scanner("TokenDFA.csv");
+    parser = new Parser(scanner);
   }
 
   @Test

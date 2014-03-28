@@ -6,7 +6,6 @@ import symboltable.Type;
 public class AndOrTermTail extends ParserRule {
   private final EqualityTermTail equalityTermTail = new EqualityTermTail();
   private final AndOrTerm2 andOrTerm2 = new AndOrTerm2();
-  private Type type;
 
   @Override
   public void parse() {
@@ -22,7 +21,6 @@ public class AndOrTermTail extends ParserRule {
 
   @Override
   public Type getType() {
-    this.type = decideType(equalityTermTail, andOrTerm2);
     return decideType(equalityTermTail, andOrTerm2);
   }
 }

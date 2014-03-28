@@ -1,8 +1,6 @@
 package nonterminals;
 
 import parser.ParserRule;
-import scanner.Scanner;
-import symboltable.Argument;
 import symboltable.Type;
 
 import java.util.ArrayList;

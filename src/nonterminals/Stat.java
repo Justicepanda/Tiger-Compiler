@@ -2,11 +2,9 @@ package nonterminals;
 
 import parser.NoSuchIdentifierException;
 import parser.ParserRule;
-import parser.SemanticTypeException;
 import symboltable.Argument;
 import symboltable.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Stat extends ParserRule {

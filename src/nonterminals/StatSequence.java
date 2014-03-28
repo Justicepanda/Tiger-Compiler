@@ -46,7 +46,7 @@ class StatSequence extends ParserRule {
     return returnExprs;
   }
 
-  public List<Stat> getStatements() {
+  List<Stat> getStatements() {
     if (statSequence == null)
       return new ArrayList<Stat>();
     List<Stat> listSoFar = statSequence.getStatements();

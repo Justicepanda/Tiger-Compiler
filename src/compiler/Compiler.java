@@ -1,17 +1,16 @@
 package compiler;
 
-import parser.TigerParser;
+import parser.Parser;
 import utilities.NormalFileScraper;
 import scanner.Scanner;
 
 public class Compiler 
 {
 	private final Scanner scanner;
-	private final TigerParser parser;
+	private final Parser parser;
 	private static boolean errorEncountered;
 
-	Compiler(Scanner scanner, TigerParser parser) 
-	{
+	Compiler(Scanner scanner, Parser parser) {
 		this.scanner = scanner;
 		this.parser = parser;
 	}

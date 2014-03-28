@@ -7,7 +7,6 @@ public class AddTerm2 extends ParserRule {
   private MultTerm multTerm;
   private AddTerm2 addTerm2;
   private AddOp addOp;
-  private Type type;
 
   @Override
   public void parse() {
@@ -28,7 +27,6 @@ public class AddTerm2 extends ParserRule {
   }
 
   public Type getType() {
-    this.type = decideType(multTerm, addTerm2);
     return decideType(multTerm, addTerm2);
   }
 }

@@ -1,17 +1,18 @@
 package compiler;
 
+import parser.Parser;
 import scanner.TokenDfa;
 import scanner.TokenDfaBuilder;
 import scanner.Scanner;
-import parser.TigerParser;
 
 class Main 
 {
 	private static boolean debugFlag;
 	private static String filename;
 	private static Compiler compiler;
+  private static Parser parser;
 
-	/**
+  /**
 	 * Compiles a file found in the command arguments. If '-d' is given as an
 	 * argument then the compiler will print out tokens found in the compiled
 	 * file.
@@ -33,6 +34,7 @@ class Main
 
 		initCompiler();
 		compiler.compile(filename);
+    System.out.println(parser.getPrintOut());
 	}
 
 	private static void parseArgs(String[] args) 
@@ -53,11 +55,9 @@ class Main
 
 	private static void initCompiler() 
 	{
-		Scanner scanner = new Scanner(
-				(TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
-		TigerParser parser = new TigerParser(scanner);
-    if (debugFlag)
-      parser.setDebug();
+		Scanner scanner = new Scanner("TokenDFA.csv");
+    parser = new Parser(scanner);
+
 		compiler = new Compiler(scanner, parser);
 	}
 }

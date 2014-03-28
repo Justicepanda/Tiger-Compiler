@@ -6,45 +6,32 @@ import symboltable.*;
 
 import java.util.List;
 
-public abstract class ParserRule 
-{
-  private static boolean isDebug;
-	private static Scanner scanner;
-	private static SymbolTable symbolTable = new SymbolTable();
-	private static SimpleTree tree = new SimpleTree();
+public abstract class ParserRule {
+  private static Parser parser;
 
-  public void setDebug() {
-    this.isDebug = true;
+  public static void setParser(Parser parser) {
+    ParserRule.parser = parser;
   }
 
   private int lineNumber;
 
-  public static void setScanner(Scanner scanner) {
-    ParserRule.scanner = scanner;
-  }
-
-	public static void reset() {
-		symbolTable = new SymbolTable();
-		tree = new SimpleTree();
-	}
-
 	protected void matchTerminal(String expected) {
-		tree.add(expected);
-		TokenTuple actual = scanner.popToken();
+    parser.addToTree(expected);
+		TokenTuple actual = parser.popToken();
 		if (!actual.getType().equals(expected))
-			throw new TerminalException(actual, new TokenTuple(expected, expected));
-    if (isDebug)
-		  System.out.print(actual.getType() + " ");
+			throw new ParserException(actual, new TokenTuple(expected, expected));
+    else
+      parser.addToPrintOut(expected + " ");
 	}
 
-	protected boolean peekTypeMatches(String toMatch) 
+	protected boolean peekTypeMatches(String toMatch)
 	{
-		return scanner.peekToken().getType().equals(toMatch);
+		return parser.peekToken().getType().equals(toMatch);
 	}
 
 	protected String peekTokenValue()
 	{
-		return scanner.peekToken().getToken();
+		return parser.peekToken().getToken();
 	}
 
   protected String matchIdAndGetValue() {
@@ -54,46 +41,38 @@ public abstract class ParserRule
   }
 
 	protected void matchNonTerminal(ParserRule expected) {
-		tree.add(expected.getLabel());
-		tree.moveDown();
+    parser.addToTree(expected.getLabel());
+    parser.moveTreeDown();
 		expected.parse();
-		tree.moveUp();
+    parser.moveTreeUp();
 	}
 
 	protected abstract void parse();
 
 	protected abstract String getLabel();
 
-	public abstract Type getType();
-
-	public static String print() {
-		return tree.print() + symbolTable.print();
-	}
+	protected abstract Type getType();
 
   protected Type getTypeOfVariable(String id) {
     return getVariable(id).getType();
   }
 
   protected void addFunction(String id, List<Argument> arguments, Type type) {
-    symbolTable.addFunction(new Function(id, arguments, type));
+    parser.addFunction(new Function(id, arguments, type));
   }
 
   protected Function getFunction(String id) {
-    return symbolTable.getFunction(id);
-  }
-
-  protected void addVariable(Type type, String id) {
-    symbolTable.addVariable(new Variable(type, id));
+    return parser.getFunction(id);
   }
 
   protected void addVariable(Variable var) {
-    symbolTable.addVariable(var);
+    parser.addVariable(var);
   }
 
   protected Variable getVariable(String id) {
-    Variable var = symbolTable.getVariable(id);
+    Variable var = parser.getVariable(id);
     if (var == null)
-      var = symbolTable.getArray(id);
+      var = parser.getArray(id);
     if (var == null)
       throw new NoSuchIdentifierException(id);
     return var;
@@ -102,11 +81,7 @@ public abstract class ParserRule
   protected void addType(String id, Type type) {
     Type toAdd = new Type(id, type.getActualType());
     toAdd.setAsArray(type.getDimensions());
-    symbolTable.addType(toAdd);
-  }
-
-  public void addArray(Type type, String id, List<Integer> dimensions) {
-    symbolTable.addArray(new Array(type, id, dimensions));
+    parser.addType(toAdd);
   }
 
   protected Type getType(String id) {
@@ -117,7 +92,7 @@ public abstract class ParserRule
   }
 
   protected void storeLineNumber() {
-    lineNumber = scanner.getLineNum();
+    lineNumber = parser.getLineNum();
   }
 
   protected void generateException() {
@@ -149,7 +124,7 @@ public abstract class ParserRule
     return Type.NIL_TYPE;
   }
 
-  public void addArray(Array array) {
-    symbolTable.addArray(array);
+  protected void addArray(Array array) {
+    parser.addArray(array);
   }
 }

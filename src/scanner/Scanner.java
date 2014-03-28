@@ -14,6 +14,10 @@ public class Scanner
 		this.dfa = dfa;
 	}
 
+  public Scanner(String filename) {
+    this.dfa = ((TokenDfa) new TokenDfaBuilder().buildFrom(filename));
+  }
+
 	public void reset() {
 		dfa.reset();
 	}
@@ -21,11 +25,6 @@ public class Scanner
 	public void scan(String[] toScan) 
 	{
 		handler = new LinesHandler(toScan);
-	}
-
-	public boolean hasMoreTokens() 
-	{
-		return handler.hasChars();
 	}
 
 	private void removeSpaces() 

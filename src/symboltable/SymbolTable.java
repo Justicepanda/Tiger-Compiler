@@ -17,7 +17,7 @@ public class SymbolTable
 	}
 
 	private static Map<SymbolType, Map<String, List<Entry>>> table;
-	private int scope;
+	private final int scope;
 
 	public SymbolTable()  {
 		scope = 1;

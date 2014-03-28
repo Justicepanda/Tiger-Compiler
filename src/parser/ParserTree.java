@@ -3,13 +3,11 @@ package parser;
 import java.util.ArrayList;
 import java.util.List;
 
-class SimpleTree
-{
+class ParserTree {
 	private final SimpleNode parentNode;
 	private SimpleNode currentNode;
 
-	public SimpleTree()
-	{
+	public ParserTree() {
 		parentNode = new SimpleNode(null, "$");
 		parentNode.addChild("<tiger-program>");
 		currentNode = parentNode;
@@ -36,21 +34,18 @@ class SimpleTree
 		return parentNode.print("");
 	}
 
-	private class SimpleNode 
-	{
+	private class SimpleNode {
 		private final String label;
 		private final SimpleNode parent;
 		private final List<SimpleNode> children;
 
-		SimpleNode(SimpleNode parent, String label) 
-		{
+		SimpleNode(SimpleNode parent, String label) {
 			this.parent = parent;
 			this.label = label;
 			children = new ArrayList<SimpleNode>();
 		}
 
-		SimpleNode getLastChild() 
-		{
+		SimpleNode getLastChild() {
 			return children.get(children.size() - 1);
 		}
 
@@ -64,8 +59,7 @@ class SimpleTree
 			children.add(new SimpleNode(this, label));
 		}
 
-		public String print(String prepend) 
-		{
+		public String print(String prepend)	{
 			String res = "";
 			res += prepend + label + "\n";
 			for (SimpleNode n : children)

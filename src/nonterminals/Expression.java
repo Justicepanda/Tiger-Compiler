@@ -7,7 +7,6 @@ public class Expression extends ParserRule {
   private Type type;
   private Expression expression;
   private AndOrTerm andOrTerm;
-  private Integer value;
 
   @Override
   public void parse() {
@@ -34,6 +33,6 @@ public class Expression extends ParserRule {
   }
 
   public Integer getValue() {
-    return value;
+    return null;
   }
 }
