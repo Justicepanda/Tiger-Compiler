@@ -13,13 +13,16 @@ public class ParamListTail extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("COMMA")) {
-      param = new Param();
-      paramListTail = new ParamListTail();
-      matchTerminal("COMMA");
-      matchNonTerminal(param);
-      matchNonTerminal(paramListTail);
-    }
+    if (peekTypeMatches("COMMA"))
+      matchList();
+  }
+
+  private void matchList() {
+    param = new Param();
+    paramListTail = new ParamListTail();
+    matchTerminal("COMMA");
+    matchNonTerminal(param);
+    matchNonTerminal(paramListTail);
   }
 
   @Override

@@ -10,12 +10,15 @@ class VariableDeclarationList extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("VAR")) {
-      variableDeclaration = new VariableDeclaration();
-      variableDeclarationList = new VariableDeclarationList();
-      matchNonTerminal(variableDeclaration);
-      matchNonTerminal(variableDeclarationList);
-    }
+    if (peekTypeMatches("VAR"))
+      matchDeclaration();
+  }
+
+  private void matchDeclaration() {
+    variableDeclaration = new VariableDeclaration();
+    variableDeclarationList = new VariableDeclarationList();
+    matchNonTerminal(variableDeclaration);
+    matchNonTerminal(variableDeclarationList);
   }
 
   @Override

@@ -16,40 +16,84 @@ public class StatIdTail extends ParserRule {
   @Override
   public void parse() {
     storeLineNumber();
-    if (peekTypeMatches("ID")) {
-      statIdTailTail = new StatIdTailTail();
-      id = matchIdAndGetValue();
-      matchNonTerminal(statIdTailTail);
-      semanticCheck();
-    } else {
-      expression = new Expression();
-      matchNonTerminal(expression);
-      type = expression.getType();
-    }
+    if (peekTypeMatches("ID"))
+      matchTail();
+    else
+      matchExpression();
+  }
+
+  private void matchTail() {
+    statIdTailTail = new StatIdTailTail();
+    id = matchIdAndGetValue();
+    matchNonTerminal(statIdTailTail);
+    semanticCheck();
+  }
+
+  private void matchExpression() {
+    expression = new Expression();
+    matchNonTerminal(expression);
+    type = expression.getType();
   }
 
   private void semanticCheck() {
-    if (getFunction(id) == null && getVariable(id) == null)
+    if (noSuchIdentifier())
       throw new NoSuchIdentifierException(id);
-
-    if (statIdTailTail.getType().isOfSameType(Type.NIL_TYPE) && statIdTailTail.getParameters() != null) {
-      if (getFunction(id) != null) {
-        type = getFunction(id).getReturnType();
-        if (type != null && !type.isOfSameType(statIdTailTail.getType()))
-          generateException();
-        List<Argument> args = getFunction(id).getArguments();
-        for (int i = 0; i < statIdTailTail.getParameters().size(); i++) {
-          if (args != null && !statIdTailTail.getParameters().get(i).getType().isOfSameType(args.get(i).getType()))
-            generateException();
-        }
-      } else if (getVariable(id) != null) {
-        type = getVariable(id).getType();
-        if (!type.isOfSameType(statIdTailTail.getType()))
-          generateException();
-      }
-    } else {
+    if (ifTailHasNoType())
+      acquireAndCheckType();
+    else
       type = statIdTailTail.getType();
+  }
+
+  private boolean noSuchIdentifier() {
+    return getFunction(id) == null && getVariable(id) == null;
+  }
+
+  private boolean ifTailHasNoType() {
+    return statIdTailTail.getType().isOfSameType(Type.NIL_TYPE);
+  }
+
+  private void acquireAndCheckType() {
+    if (isFunction()) {
+      checkTypeOfFunction();
+      checkTypesOfArguments();
+    } else if (isVariable()) {
+      checkTypeOfVariable();
     }
+  }
+
+  private boolean isFunction() {
+    return getFunction(id) != null;
+  }
+
+  private void checkTypeOfFunction() {
+    type = getFunction(id).getReturnType();
+    if (typeExistsAndMismatches())
+      generateException();
+  }
+
+  private void checkTypeOfVariable() {
+    type = getVariable(id).getType();
+    if (!type.isOfSameType(statIdTailTail.getType()))
+      generateException();
+  }
+
+  private boolean isVariable() {
+    return getVariable(id) != null;
+  }
+
+  private boolean typeExistsAndMismatches() {
+    return type != null && !type.isOfSameType(statIdTailTail.getType());
+  }
+
+  private void checkTypesOfArguments() {
+    List<Argument> args = getFunction(id).getArguments();
+    for (int i = 0; i < statIdTailTail.getParameters().size(); i++)
+      if (argumentExistsAndMisMatches(args, i))
+        generateException();
+  }
+
+  private boolean argumentExistsAndMisMatches(List<Argument> args, int i) {
+    return args != null && !statIdTailTail.getParameters().get(i).getType().isOfSameType(args.get(i).getType());
   }
 
   @Override

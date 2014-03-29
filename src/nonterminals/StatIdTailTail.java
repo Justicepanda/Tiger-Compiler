@@ -13,17 +13,24 @@ public class StatIdTailTail extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("LPAREN")) {
-      expressionList = new ExpressionList();
-      matchTerminal("LPAREN");
-      matchNonTerminal(expressionList);
-      matchTerminal("RPAREN");
-      type = Type.NIL_TYPE;
-    } else {
-      andOrTermTail = new AndOrTermTail();
-      matchNonTerminal(andOrTermTail);
-      type = andOrTermTail.getType();
-    }
+    if (peekTypeMatches("LPAREN"))
+      matchList();
+    else
+      matchTail();
+  }
+
+  private void matchTail() {
+    andOrTermTail = new AndOrTermTail();
+    matchNonTerminal(andOrTermTail);
+    type = andOrTermTail.getType();
+  }
+
+  private void matchList() {
+    expressionList = new ExpressionList();
+    matchTerminal("LPAREN");
+    matchNonTerminal(expressionList);
+    matchTerminal("RPAREN");
+    type = Type.NIL_TYPE;
   }
 
   @Override

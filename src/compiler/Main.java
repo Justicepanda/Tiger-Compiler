@@ -1,8 +1,6 @@
 package compiler;
 
 import parser.Parser;
-import scanner.TokenDfa;
-import scanner.TokenDfaBuilder;
 import scanner.Scanner;
 
 class Main 

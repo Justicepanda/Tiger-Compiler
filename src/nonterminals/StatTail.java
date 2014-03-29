@@ -9,16 +9,22 @@ public class StatTail extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("ENDIF")) {
-      matchTerminal("ENDIF");
-      matchTerminal("SEMI");
-    } else {
-      statSequence = new StatSequence();
-      matchTerminal("ELSE");
-      matchNonTerminal(statSequence);
-      matchTerminal("ENDIF");
-      matchTerminal("SEMI");
-    }
+    if (peekTypeMatches("ENDIF"))
+      matchEndif();
+    else
+      matchElse();
+  }
+
+  private void matchElse() {
+    statSequence = new StatSequence();
+    matchTerminal("ELSE");
+    matchNonTerminal(statSequence);
+    matchEndif();
+  }
+
+  private void matchEndif() {
+    matchTerminal("ENDIF");
+    matchTerminal("SEMI");
   }
 
   @Override

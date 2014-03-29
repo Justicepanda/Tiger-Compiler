@@ -18,6 +18,8 @@ public class Parser {
 
 	public void parse() {
 		new TigerProgram().parse();
+    printOut += tree.print();
+    printOut += table.print();
     System.out.println(printOut);
   }
 

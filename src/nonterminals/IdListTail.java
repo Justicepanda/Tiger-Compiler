@@ -12,12 +12,15 @@ public class IdListTail extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("COMMA")) {
-      idListTail = new IdListTail();
-      matchTerminal("COMMA");
-      id = matchIdAndGetValue();
-      matchNonTerminal(idListTail);
-    }
+    if (peekTypeMatches("COMMA"))
+      matchList();
+  }
+
+  private void matchList() {
+    idListTail = new IdListTail();
+    matchTerminal("COMMA");
+    id = matchIdAndGetValue();
+    matchNonTerminal(idListTail);
   }
 
   @Override

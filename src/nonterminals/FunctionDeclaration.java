@@ -11,6 +11,12 @@ public class FunctionDeclaration extends ParserRule {
   @Override
   public void parse() {
     storeLineNumber();
+    String id = matchFunction();
+    semanticCheck();
+    addFunction(id, paramList.getArguments(), returnType.getType());
+  }
+
+  private String matchFunction() {
     matchTerminal("FUNC");
     String id = matchIdAndGetValue();
     matchTerminal("LPAREN");
@@ -19,22 +25,23 @@ public class FunctionDeclaration extends ParserRule {
     matchNonTerminal(returnType);
     matchTerminal("BEGIN");
     matchNonTerminal(statSequence);
-
-    semanticCheck();
-
     matchTerminal("END");
     matchTerminal("SEMI");
-
-    addFunction(id, paramList.getArguments(), returnType.getType());
+    return id;
   }
 
   private void semanticCheck() {
-    if (returnType.getType().isExactlyOfType(Type.NIL_TYPE) && !statSequence.getReturnExpressions().isEmpty())
+    if (noReturnFunctionWithReturnStatements())
       generateException();
 
     for (Expression returnExpr: statSequence.getReturnExpressions())
       if (!rulesMatchType(returnExpr, returnType))
         generateException();
+  }
+
+  private boolean noReturnFunctionWithReturnStatements() {
+    return returnType.getType().isExactlyOfType(Type.NIL_TYPE) &&
+            !statSequence.getReturnExpressions().isEmpty();
   }
 
   @Override

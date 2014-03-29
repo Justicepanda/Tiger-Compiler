@@ -26,15 +26,15 @@ public class StringSplitter {
       currChar++;
       if (toSplit.charAt(currChar) == splitAbout)
         return nextIteration(split);
-      else if (nextTwoCharsAre('\\', splitAbout) || nextTwoCharsAre('\\', '\\'))
+      else if (isEscapedValue(splitAbout) || isEscapedValue('\\'))
         removeCurrChar();
     }
     split.add(toSplit);
     return split;
   }
 
-  boolean nextTwoCharsAre(char first, char second) {
-    return toSplit.charAt(currChar) == first && toSplit.charAt(currChar+1) == second;
+  boolean isEscapedValue(char value) {
+    return toSplit.charAt(currChar) == '\\' && toSplit.charAt(currChar+1) == value;
   }
 
   private void removeCurrChar() {

@@ -13,12 +13,15 @@ class StatSequence extends ParserRule {
 
   @Override
   public void parse() {
-    if (isStatement()) {
-      stat = new Stat();
-      statSequence = new StatSequence();
-      matchNonTerminal(stat);
-      matchNonTerminal(statSequence);
-    }
+    if (isStatement())
+      matchStatement();
+  }
+
+  private void matchStatement() {
+    stat = new Stat();
+    statSequence = new StatSequence();
+    matchNonTerminal(stat);
+    matchNonTerminal(statSequence);
   }
 
   private boolean isStatement() {

@@ -1,12 +1,12 @@
 package utilities;
 
-class SvReader {
+class CsvReader {
   private final StringSplitter ss;
   private String[] lines;
   private int currLine;
 
-  public SvReader(char toSplit) {
-    ss = new StringSplitter(toSplit);
+  public CsvReader() {
+    ss = new StringSplitter(',');
     currLine = 1;
   }
 

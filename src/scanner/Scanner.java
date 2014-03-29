@@ -9,11 +9,6 @@ public class Scanner
 	private LinesHandler handler;
 	private TokenTuple stored;
 
-	public Scanner(TokenDfa dfa) 
-	{
-		this.dfa = dfa;
-	}
-
   public Scanner(String filename) {
     this.dfa = ((TokenDfa) new TokenDfaBuilder().buildFrom(filename));
   }
@@ -60,7 +55,6 @@ public class Scanner
 	private TokenTuple getToken() 
 	{
 		TokenTuple token = findToken();
-		token.setLocationInfo(getLineInfo());
 		prepareToFindNextToken();
 		if (isComment(token))
 			return getToken();

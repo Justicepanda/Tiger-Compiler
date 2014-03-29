@@ -11,15 +11,18 @@ public class MultTerm2 extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("MULT") || peekTypeMatches("DIV")) {
-      multOp = new MultOp();
-      factor = new Factor();
-      multTerm2 = new MultTerm2();
-      storeLineNumber();
-      matchNonTerminal(multOp);
-      matchNonTerminal(factor);
-      matchNonTerminal(multTerm2);
-    }
+    if (peekTypeMatches("MULT") || peekTypeMatches("DIV"))
+      matchMultOp();
+  }
+
+  private void matchMultOp() {
+    multOp = new MultOp();
+    factor = new Factor();
+    multTerm2 = new MultTerm2();
+    storeLineNumber();
+    matchNonTerminal(multOp);
+    matchNonTerminal(factor);
+    matchNonTerminal(multTerm2);
   }
 
   @Override

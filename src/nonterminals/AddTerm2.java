@@ -10,15 +10,18 @@ public class AddTerm2 extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("PLUS") || peekTypeMatches("MINUS")) {
-      addOp = new AddOp();
-      multTerm = new MultTerm();
-      addTerm2 = new AddTerm2();
-      storeLineNumber();
-      matchNonTerminal(addOp);
-      matchNonTerminal(multTerm);
-      matchNonTerminal(addTerm2);
-    }
+    if (peekTypeMatches("PLUS") || peekTypeMatches("MINUS"))
+      matchOperator();
+  }
+
+  private void matchOperator() {
+    addOp = new AddOp();
+    multTerm = new MultTerm();
+    addTerm2 = new AddTerm2();
+    storeLineNumber();
+    matchNonTerminal(addOp);
+    matchNonTerminal(multTerm);
+    matchNonTerminal(addTerm2);
   }
 
   @Override

@@ -12,13 +12,16 @@ public class ExpressionListTail extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("COMMA")) {
-      expr = new Expression();
-      expressionListTail = new ExpressionListTail();
-      matchTerminal("COMMA");
-      matchNonTerminal(expr);
-      matchNonTerminal(expressionListTail);
-    }
+    if (peekTypeMatches("COMMA"))
+      matchList();
+  }
+
+  private void matchList() {
+    expr = new Expression();
+    expressionListTail = new ExpressionListTail();
+    matchTerminal("COMMA");
+    matchNonTerminal(expr);
+    matchNonTerminal(expressionListTail);
   }
 
   @Override

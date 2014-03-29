@@ -10,15 +10,18 @@ public class AndOrTerm2 extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("AND") || peekTypeMatches("OR")) {
-      andOrOp = new AndOrOp();
-      equalityTerm = new EqualityTerm();
-      andOrTerm2 = new AndOrTerm2();
-      storeLineNumber();
-      matchNonTerminal(andOrOp);
-      matchNonTerminal(equalityTerm);
-      matchNonTerminal(andOrTerm2);
-    }
+    if (peekTypeMatches("AND") || peekTypeMatches("OR"))
+      matchOperator();
+  }
+
+  private void matchOperator() {
+    andOrOp = new AndOrOp();
+    equalityTerm = new EqualityTerm();
+    andOrTerm2 = new AndOrTerm2();
+    storeLineNumber();
+    matchNonTerminal(andOrOp);
+    matchNonTerminal(equalityTerm);
+    matchNonTerminal(andOrTerm2);
   }
 
   @Override

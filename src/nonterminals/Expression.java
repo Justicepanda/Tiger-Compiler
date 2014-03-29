@@ -10,16 +10,23 @@ public class Expression extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("MINUS")) {
-      expression = new Expression();
-      matchTerminal("MINUS");
-      matchNonTerminal(expression);
-      type = expression.getType();
-    } else {
-      andOrTerm = new AndOrTerm();
-      matchNonTerminal(andOrTerm);
-      type = andOrTerm.getType();
-    }
+    if (peekTypeMatches("MINUS"))
+      matchMinus();
+    else
+      matchAndOr();
+   }
+
+  private void matchMinus() {
+    expression = new Expression();
+    matchTerminal("MINUS");
+    matchNonTerminal(expression);
+    type = expression.getType();
+  }
+
+  private void matchAndOr() {
+    andOrTerm = new AndOrTerm();
+    matchNonTerminal(andOrTerm);
+    type = andOrTerm.getType();
   }
 
   @Override
@@ -30,9 +37,5 @@ public class Expression extends ParserRule {
   @Override
   public Type getType() {
     return type;
-  }
-
-  public Integer getValue() {
-    return null;
   }
 }

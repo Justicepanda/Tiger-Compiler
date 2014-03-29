@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DfaBuilder {
-  private final SvReader reader;
+  private final CsvReader reader;
   private String[] header;
 
   protected DfaBuilder() {
-    reader = new SvReader(',');
+    reader = new CsvReader();
   }
 
   public Dfa buildFrom(String filename) {

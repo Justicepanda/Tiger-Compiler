@@ -89,27 +89,33 @@ public class Stat extends ParserRule {
     String id = matchIdAndGetValue();
     matchNonTerminal(statId);
     matchTerminal("SEMI");
+    semanticCheck(id);
+  }
 
+  private void semanticCheck(String id) {
     if (getFunction(id) == null && getVariable(id) == null)
       throw new NoSuchIdentifierException(id);
+    if (statId.isFunction())
+      checkArgumentsIfExist(id);
+    else if (!getTypeOfVariable(id).isOfSameType(statId.getType()))
+      generateException();
+  }
 
-    if (statId.isFunction()) {
-      if (super.getFunction(id) != null) {
-        if (statId.getParameters() != null) {
-          List<Argument> args = getFunction(id).getArguments();
-          for (int i = 0; i < statId.getParameters().size(); i++) {
-            if (args != null && statId.getParameters().get(i) != null &&
-                    !statId.getParameters().get(i).getType().isOfSameType(args.get(i).getType())) {
-              generateException();
-            }
-          }
-        }
-      }
-    } else {
-      if (!getTypeOfVariable(id).isOfSameType(statId.getType())) {
+  private void checkArgumentsIfExist(String id) {
+    if (super.getFunction(id) != null && statId.getParameters() != null)
+      checkArguments(id);
+  }
+
+  private void checkArguments(String id) {
+    List<Argument> args = getFunction(id).getArguments();
+    for (int i = 0; i < statId.getParameters().size(); i++)
+      if (argDoesNotMatchType(args, i))
         generateException();
-      }
-    }
+  }
+
+  private boolean argDoesNotMatchType(List<Argument> args, int i) {
+    return args != null && statId.getParameters().get(i) != null &&
+            !statId.getParameters().get(i).getType().isOfSameType(args.get(i).getType());
   }
 
   public boolean isReturnStatement() {

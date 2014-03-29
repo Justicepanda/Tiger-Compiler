@@ -14,12 +14,15 @@ public class ParamList extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("ID")) {
-      param = new Param();
-      paramListTail = new ParamListTail();
-      matchNonTerminal(param);
-      matchNonTerminal(paramListTail);
-    }
+    if (peekTypeMatches("ID"))
+      matchParam();
+  }
+
+  private void matchParam() {
+    param = new Param();
+    paramListTail = new ParamListTail();
+    matchNonTerminal(param);
+    matchNonTerminal(paramListTail);
   }
 
   @Override

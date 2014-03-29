@@ -11,16 +11,19 @@ public class EqualityTerm2 extends ParserRule {
 
   @Override
   public void parse() {
-    if (isEqualityTerm()) {
-      wasExpanded = true;
-      storeLineNumber();
-      equalityOp = new EqualityOp();
-      addTerm = new AddTerm();
-      equalityTerm2 = new EqualityTerm2();
-      matchNonTerminal(equalityOp);
-      matchNonTerminal(addTerm);
-      matchNonTerminal(equalityTerm2);
-    }
+    if (isEqualityTerm())
+      matchOperator();
+  }
+
+  private void matchOperator() {
+    wasExpanded = true;
+    storeLineNumber();
+    equalityOp = new EqualityOp();
+    addTerm = new AddTerm();
+    equalityTerm2 = new EqualityTerm2();
+    matchNonTerminal(equalityOp);
+    matchNonTerminal(addTerm);
+    matchNonTerminal(equalityTerm2);
   }
 
   private boolean isEqualityTerm() {

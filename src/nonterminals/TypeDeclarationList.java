@@ -9,12 +9,15 @@ class TypeDeclarationList extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("TYPE")) {
-      typeDeclaration = new TypeDeclaration();
-      typeDeclarationList = new TypeDeclarationList();
-      matchNonTerminal(typeDeclaration);
-      matchNonTerminal(typeDeclarationList);
-    }
+    if (peekTypeMatches("TYPE"))
+      matchDeclaration();
+  }
+
+  private void matchDeclaration() {
+    typeDeclaration = new TypeDeclaration();
+    typeDeclarationList = new TypeDeclarationList();
+    matchNonTerminal(typeDeclaration);
+    matchNonTerminal(typeDeclarationList);
   }
 
   @Override

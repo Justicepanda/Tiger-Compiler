@@ -9,14 +9,17 @@ public class OptionalInit extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("ASSIGN")) {
-      constant = new Constant();
-      matchTerminal("ASSIGN");
-      matchNonTerminal(constant);
-      type = constant.getType();
-    }
+    if (peekTypeMatches("ASSIGN"))
+      matchConstant();
     else
       type = Type.NIL_TYPE;
+  }
+
+  private void matchConstant() {
+    constant = new Constant();
+    matchTerminal("ASSIGN");
+    matchNonTerminal(constant);
+    type = constant.getType();
   }
 
   @Override

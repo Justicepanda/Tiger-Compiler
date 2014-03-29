@@ -1,7 +1,6 @@
 package parser;
 
 import compiler.TokenTuple;
-import scanner.Scanner;
 import symboltable.*;
 
 import java.util.List;
@@ -70,11 +69,16 @@ public abstract class ParserRule {
   }
 
   protected Variable getVariable(String id) {
+    Variable var = retrieveVariable(id);
+    if (var == null)
+      throw new NoSuchIdentifierException(id);
+    return var;
+  }
+
+  private Variable retrieveVariable(String id) {
     Variable var = parser.getVariable(id);
     if (var == null)
       var = parser.getArray(id);
-    if (var == null)
-      throw new NoSuchIdentifierException(id);
     return var;
   }
 

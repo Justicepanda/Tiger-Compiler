@@ -2,8 +2,6 @@ import org.junit.Before;
 import org.junit.Test;
 import parser.*;
 import scanner.Scanner;
-import scanner.TokenDfa;
-import scanner.TokenDfaBuilder;
 import utilities.NormalFileScraper;
 
 public class TigerParserTests {

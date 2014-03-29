@@ -8,11 +8,14 @@ public class ReturnType extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("COLON")) {
-      typeId = new TypeId();
-      matchTerminal("COLON");
-      matchNonTerminal(typeId);
-    }
+    if (peekTypeMatches("COLON"))
+      matchReturnType();
+  }
+
+  private void matchReturnType() {
+    typeId = new TypeId();
+    matchTerminal("COLON");
+    matchNonTerminal(typeId);
   }
 
   @Override

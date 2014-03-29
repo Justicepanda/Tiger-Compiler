@@ -13,19 +13,26 @@ public class StatId extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("LPAREN")) {
-      expressionList = new ExpressionList();
-      matchTerminal("LPAREN");
-      matchNonTerminal(expressionList);
-      matchTerminal("RPAREN");
-    } else {
-      lValue = new LValue();
-      this.statIdTail = new StatIdTail();
-      matchNonTerminal(lValue);
-      matchTerminal("ASSIGN");
-      matchNonTerminal(statIdTail);
-      type = statIdTail.getType();
-    }
+    if (peekTypeMatches("LPAREN"))
+      matchExpressionList();
+    else
+      matchAssignment();
+  }
+
+  private void matchExpressionList() {
+    expressionList = new ExpressionList();
+    matchTerminal("LPAREN");
+    matchNonTerminal(expressionList);
+    matchTerminal("RPAREN");
+  }
+
+  private void matchAssignment() {
+    lValue = new LValue();
+    this.statIdTail = new StatIdTail();
+    matchNonTerminal(lValue);
+    matchTerminal("ASSIGN");
+    matchNonTerminal(statIdTail);
+    type = statIdTail.getType();
   }
 
   @Override

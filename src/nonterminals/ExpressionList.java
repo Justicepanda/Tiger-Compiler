@@ -13,12 +13,15 @@ public class ExpressionList extends ParserRule {
 
   @Override
   public void parse() {
-    if (hasAppropriateFirstTerminal()) {
-      expression = new Expression();
-      expressionListTail = new ExpressionListTail();
-      matchNonTerminal(expression);
-      matchNonTerminal(expressionListTail);
-    }
+    if (hasAppropriateFirstTerminal())
+      matchExpression();
+  }
+
+  private void matchExpression() {
+    expression = new Expression();
+    expressionListTail = new ExpressionListTail();
+    matchNonTerminal(expression);
+    matchNonTerminal(expressionListTail);
   }
 
   private boolean hasAppropriateFirstTerminal() {

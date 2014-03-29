@@ -11,27 +11,45 @@ class Type extends ParserRule {
 
   @Override
   public void parse() {
-    if (peekTypeMatches("ARRAY")) {
-      typeId = new TypeId();
-      matchTerminal("ARRAY");
-      matchTerminal("LBRACK");
-      String dimension = peekTokenValue();
-      matchTerminal("INTLIT");
-      matchTerminal("RBRACK");
-      matchTerminal("OF");
-      matchNonTerminal(typeId);
-      type = new symboltable.Type(
-              typeId.getType().getName(),
-              typeId.getType().getActualType() + "[" + dimension + "]");
+    if (peekTypeMatches("ARRAY"))
+      matchArrayType();
+    else
+      matchOtherType();
+  }
 
-      List<Integer> dimensionsSoFar = getDimensionsSoFar();
-      dimensionsSoFar.add(Integer.valueOf(dimension));
-      type.setAsArray(dimensionsSoFar);
-    } else {
-      typeId = new TypeId();
-      matchNonTerminal(typeId);
-      type = typeId.getType();
-    }
+  private void matchOtherType() {
+    typeId = new TypeId();
+    matchNonTerminal(typeId);
+    type = typeId.getType();
+  }
+
+  private void matchArrayType() {
+    typeId = new TypeId();
+    matchTerminal("ARRAY");
+    matchTerminal("LBRACK");
+    String dimension = peekTokenValue();
+    matchTerminal("INTLIT");
+    matchTerminal("RBRACK");
+    matchTerminal("OF");
+    matchNonTerminal(typeId);
+    getTypeOfArray(dimension);
+  }
+
+  private void getTypeOfArray(String dimension) {
+    obtainType(dimension);
+    addDimensionsToType(dimension);
+  }
+
+  private void obtainType(String dimension) {
+    type = new symboltable.Type(
+            typeId.getType().getName(),
+            typeId.getType().getActualType() + "[" + dimension + "]");
+  }
+
+  private void addDimensionsToType(String dimension) {
+    List<Integer> dimensionsSoFar = getDimensionsSoFar();
+    dimensionsSoFar.add(Integer.valueOf(dimension));
+    type.setAsArray(dimensionsSoFar);
   }
 
   private List<Integer> getDimensionsSoFar() {
