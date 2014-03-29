@@ -3,7 +3,7 @@ import org.junit.Before;
 import parser.Parser;
 import scanner.Scanner;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class CodeGenerationTests {
   private Scanner scanner;
@@ -42,7 +42,8 @@ public class CodeGenerationTests {
     assertEquals(
             "sub, 5, 3, t1\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -102,6 +103,33 @@ public class CodeGenerationTests {
     assertEquals(
             "or, 5, 3, t1\n" +
                     "assign, a, t1, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void simpleFunctionCall() {
+    String[] arr = {"let " +
+            "in " +
+            "print(\"\");" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "call, print, \"\"\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void functionCallWithReturn() {
+    String[] arr = {"let " +
+            "var a : string;" +
+            "in " +
+            "a := get_char();" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "callr, a, get_char\n",
             parser.getGeneratedCode());
   }
 }

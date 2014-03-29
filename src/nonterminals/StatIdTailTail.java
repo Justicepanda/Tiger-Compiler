@@ -10,6 +10,7 @@ public class StatIdTailTail extends ParserRule {
   private ExpressionList expressionList;
   private Type type;
   private AndOrTermTail andOrTermTail;
+  private boolean function;
 
   @Override
   public void parse() {
@@ -26,6 +27,7 @@ public class StatIdTailTail extends ParserRule {
   }
 
   private void matchList() {
+    function = true;
     expressionList = new ExpressionList();
     matchTerminal("LPAREN");
     matchNonTerminal(expressionList);
@@ -54,4 +56,7 @@ public class StatIdTailTail extends ParserRule {
     return expressionList.getExpressions();
   }
 
+  public boolean isFunction() {
+    return function;
+  }
 }

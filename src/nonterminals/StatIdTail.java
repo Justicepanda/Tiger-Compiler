@@ -65,6 +65,10 @@ public class StatIdTail extends ParserRule {
     return getFunction(id) != null;
   }
 
+  public boolean isReturnedFunction() {
+    return statIdTailTail != null && statIdTailTail.isFunction();
+  }
+
   private void checkTypeOfFunction() {
     type = getFunction(id).getReturnType();
     if (typeExistsAndMismatches())
@@ -108,6 +112,17 @@ public class StatIdTail extends ParserRule {
 
   @Override
   protected String generateCode() {
-    return expression.generateCode();
+    if (expression != null)
+      return expression.generateCode();
+    else
+      return statIdTailTail.generateCode();
+  }
+
+  public List<Expression> getParameters() {
+    return statIdTailTail.getParameters();
+  }
+
+  public String getFunctionId() {
+    return id;
   }
 }

@@ -136,14 +136,20 @@ public class Stat extends ParserRule {
   @Override
   protected String generateCode() {
     String statIdId = statId.generateCode();
-    if (statId.isFunction()) {
-
-    }
-    else {
+    if (statId.isFunction())
+      emit("call, " + id + printParameters());
+    else if (statId.isReturnedFunction())
+      emit("callr, " + id + ", " + statId.getFunctionId() + printParameters());
+    else
       emit("assign, " + id + ", " + statIdId + ", ");
-    }
-
     return null;
+  }
+
+  private String printParameters() {
+    if (statId.hasParameters())
+      return ", " + statId.printParameters();
+    else
+      return "";
   }
 
   public Expression getExpression() {

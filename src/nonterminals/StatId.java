@@ -47,14 +47,41 @@ public class StatId extends ParserRule {
 
   @Override
   protected String generateCode() {
-    return statIdTail.generateCode();
+    if (statIdTail == null) {
+      return expressionList.generateCode();
+    }
+    else {
+      return statIdTail.generateCode();
+    }
   }
 
   public boolean isFunction() {
     return expressionList != null;
   }
 
+  public boolean isReturnedFunction() {
+    return statIdTail.isReturnedFunction();
+  }
+
   public List<Expression> getParameters() {
-    return expressionList.getExpressions();
+    if (expressionList != null)
+      return expressionList.getExpressions();
+    else
+      return statIdTail.getParameters();
+  }
+
+  public String printParameters() {
+    String res = "";
+    for (Expression expression: getParameters())
+      res += expression.generateCode();
+    return res;
+  }
+
+  public String getFunctionId() {
+    return statIdTail.getFunctionId();
+  }
+
+  public boolean hasParameters() {
+    return !getParameters().isEmpty();
   }
 }
