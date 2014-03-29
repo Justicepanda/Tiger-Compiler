@@ -9,8 +9,8 @@ public class Scanner
 	private LinesHandler handler;
 	private TokenTuple stored;
 
-  public Scanner(String filename) {
-    this.dfa = ((TokenDfa) new TokenDfaBuilder().buildFrom(filename));
+  public Scanner() {
+    this.dfa = ((TokenDfa) new TokenDfaBuilder().buildFrom("TokenDFA.csv"));
   }
 
 	public void reset() {
@@ -108,11 +108,6 @@ public class Scanner
 	{
 		dfa.changeState(c);
 		handler.moveForward();
-	}
-
-	String getLineInfo()
-	{
-		return handler.getLineInfo();
 	}
 
 	public int getLineNum() 

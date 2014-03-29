@@ -23,7 +23,7 @@ public abstract class ParserRule {
     return generatedCode;
   }
 
-  public static void emit(String line) {
+  protected static void emit(String line) {
     generatedCode += line + "\n";
   }
 
@@ -147,7 +147,7 @@ public abstract class ParserRule {
     parser.addArray(array);
   }
 
-  public String newTemp() {
+  protected String newTemp() {
     return "t1";
   }
 }

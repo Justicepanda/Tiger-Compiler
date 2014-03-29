@@ -53,7 +53,7 @@ class Main
 
 	private static void initCompiler() 
 	{
-		Scanner scanner = new Scanner("TokenDFA.csv");
+		Scanner scanner = new Scanner();
     parser = new Parser(scanner);
 
 		compiler = new Compiler(scanner, parser);

@@ -11,7 +11,7 @@ public class CodeGenerationTests {
 
   @Before
   public void setUp() {
-    scanner = new Scanner("TokenDFA.csv");
+    scanner = new Scanner();
     parser = new Parser(scanner);
   }
 
