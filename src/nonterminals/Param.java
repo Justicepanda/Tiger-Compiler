@@ -28,4 +28,9 @@ public class Param extends ParserRule {
   public Type getType() {
     return typeId.getType();
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

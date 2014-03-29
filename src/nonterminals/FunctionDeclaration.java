@@ -53,4 +53,9 @@ public class FunctionDeclaration extends ParserRule {
   public Type getType() {
     return returnType.getType();
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

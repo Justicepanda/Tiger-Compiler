@@ -23,4 +23,9 @@ public class AndOrTermTail extends ParserRule {
   public Type getType() {
     return decideType(equalityTermTail, andOrTerm2);
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

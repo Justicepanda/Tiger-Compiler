@@ -7,11 +7,19 @@ public class AddTerm2 extends ParserRule {
   private MultTerm multTerm;
   private AddTerm2 addTerm2;
   private AddOp addOp;
+  private boolean isExpanded;
+  private String op;
 
   @Override
   public void parse() {
-    if (peekTypeMatches("PLUS") || peekTypeMatches("MINUS"))
+    if (peekTypeMatches("PLUS") || peekTypeMatches("MINUS")) {
+      if (peekTypeMatches("PLUS"))
+        op = "add";
+      else
+        op = "sub";
+      isExpanded = true;
       matchOperator();
+    }
   }
 
   private void matchOperator() {
@@ -31,5 +39,18 @@ public class AddTerm2 extends ParserRule {
 
   public Type getType() {
     return decideType(multTerm, addTerm2);
+  }
+
+  @Override
+  protected String generateCode() {
+    return multTerm.generateCode();
+  }
+
+  public boolean isExpanded() {
+    return isExpanded;
+  }
+
+  public String getOp() {
+    return op;
   }
 }

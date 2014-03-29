@@ -45,6 +45,11 @@ public class StatId extends ParserRule {
     return type;
   }
 
+  @Override
+  protected String generateCode() {
+    return statIdTail.generateCode();
+  }
+
   public boolean isFunction() {
     return expressionList != null;
   }

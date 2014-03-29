@@ -51,4 +51,10 @@ public class Constant extends ParserRule {
   public Type getType() {
     return type;
   }
+
+  @Override
+  protected String generateCode() {
+    return value;
+
+  }
 }

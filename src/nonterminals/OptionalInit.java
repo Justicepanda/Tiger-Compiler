@@ -37,4 +37,9 @@ public class OptionalInit extends ParserRule {
   public Type getType() {
     return type;
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

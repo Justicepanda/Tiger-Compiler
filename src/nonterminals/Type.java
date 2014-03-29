@@ -68,4 +68,9 @@ class Type extends ParserRule {
   public symboltable.Type getType() {
     return type;
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

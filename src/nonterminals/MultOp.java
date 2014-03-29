@@ -23,4 +23,9 @@ public class MultOp extends ParserRule {
     return null;
   }
 
+  @Override
+  protected String generateCode() {
+    return null;
+  }
+
 }

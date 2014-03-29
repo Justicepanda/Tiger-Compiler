@@ -40,6 +40,16 @@ class StatSequence extends ParserRule {
     return null;
   }
 
+  @Override
+  protected String generateCode() {
+    if (stat == null)
+      return null;
+    statSequence.generateCode();
+    stat.generateCode();
+    return null;
+
+  }
+
   public List<Expression> getReturnExpressions() {
     List<Stat> stats = getStatements();
     List<Expression> returnExprs = new ArrayList<Expression>();

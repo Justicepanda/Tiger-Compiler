@@ -43,6 +43,11 @@ public class StatIdTailTail extends ParserRule {
     return type;
   }
 
+  @Override
+  protected String generateCode() {
+    return null;
+  }
+
   public List<Expression> getParameters() {
     if (expressionList == null)
       return new ArrayList<Expression>();

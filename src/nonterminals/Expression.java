@@ -38,4 +38,9 @@ public class Expression extends ParserRule {
   public Type getType() {
     return type;
   }
+
+  @Override
+  protected String generateCode() {
+    return andOrTerm.generateCode();
+  }
 }

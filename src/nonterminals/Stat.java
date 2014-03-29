@@ -13,6 +13,7 @@ public class Stat extends ParserRule {
   private StatSequence statSequence;
   private StatTail statTail;
   private boolean isReturnStatement;
+  private String id;
 
   @Override
   public void parse() {
@@ -86,7 +87,7 @@ public class Stat extends ParserRule {
 
   private void matchLeadingId() {
     statId = new StatId();
-    String id = matchIdAndGetValue();
+    id = matchIdAndGetValue();
     matchNonTerminal(statId);
     matchTerminal("SEMI");
     semanticCheck(id);
@@ -129,6 +130,19 @@ public class Stat extends ParserRule {
 
   @Override
   public Type getType() {
+    return null;
+  }
+
+  @Override
+  protected String generateCode() {
+    String statIdId = statId.generateCode();
+    if (statId.isFunction()) {
+
+    }
+    else {
+      emit("assign, " + id + ", " + statIdId + ", ");
+    }
+
     return null;
   }
 

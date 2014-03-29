@@ -22,4 +22,9 @@ public class MultTermTail extends ParserRule {
   public Type getType() {
     return multTerm2.getType();
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

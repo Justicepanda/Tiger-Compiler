@@ -28,4 +28,9 @@ public class ReturnType extends ParserRule {
       return Type.NIL_TYPE;
     return typeId.getType();
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

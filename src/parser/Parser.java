@@ -12,15 +12,17 @@ public class Parser {
   private String printOut = "";
 
   public Parser(Scanner scanner) {
+    ParserRule.reset();
     ParserRule.setParser(this);
     this.scanner = scanner;
 	}
 
 	public void parse() {
-		new TigerProgram().parse();
+    TigerProgram tigerProgram = new TigerProgram();
+    tigerProgram.parse();
     printOut += tree.print();
     printOut += table.print();
-    System.out.println(printOut);
+    tigerProgram.generateCode();
   }
 
   public void addToPrintOut(String toAdd) {
@@ -81,5 +83,9 @@ public class Parser {
 
   public TokenTuple popToken() {
     return scanner.popToken();
+  }
+
+  public String getGeneratedCode() {
+    return ParserRule.getGeneratedCode();
   }
 }

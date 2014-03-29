@@ -23,4 +23,18 @@ public class AddTerm extends ParserRule {
   public Type getType() {
     return decideType(multTerm, addTerm2);
   }
+
+  @Override
+  protected String generateCode() {
+    if (addTerm2.isExpanded()) {
+      String op = addTerm2.getOp();
+      String a = multTerm.generateCode();
+      String b = addTerm2.generateCode();
+      String temp = newTemp();
+      emit(op + ", " + a + ", " + b + ", " + temp);
+      return temp;
+    }
+    else
+      return multTerm.generateCode();
+  }
 }

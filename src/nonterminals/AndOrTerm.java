@@ -23,4 +23,19 @@ public class AndOrTerm extends ParserRule {
   public Type getType() {
     return decideType(equalityTerm, andOrTerm2);
   }
+
+  @Override
+  protected String generateCode() {
+    if (andOrTerm2.isExpanded()) {
+      String op = andOrTerm2.getOp();
+      String a = equalityTerm.generateCode();
+      String b = andOrTerm2.generateCode();
+      String temp = newTemp();
+      emit(op + ", " + a + ", " + b + ", " + temp);
+      return temp;
+    }
+    else {
+      return equalityTerm.generateCode();
+    }
+  }
 }

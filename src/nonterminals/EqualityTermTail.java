@@ -23,4 +23,9 @@ public class EqualityTermTail extends ParserRule {
   public Type getType() {
     return decideType(addTermTail, equalityTerm2);
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

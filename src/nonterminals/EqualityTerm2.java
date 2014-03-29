@@ -42,6 +42,11 @@ public class EqualityTerm2 extends ParserRule {
     return decideType(addTerm, equalityTerm2);
   }
 
+  @Override
+  protected String generateCode() {
+    return null;
+  }
+
   public boolean wasExpanded() {
     return wasExpanded;
   }

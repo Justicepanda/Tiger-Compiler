@@ -31,4 +31,10 @@ public class LValue extends ParserRule {
   public Type getType() {
     return Type.NIL_TYPE;
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+
+  }
 }

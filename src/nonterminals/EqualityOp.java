@@ -29,4 +29,9 @@ public class EqualityOp extends ParserRule {
   public Type getType() {
     return null;
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

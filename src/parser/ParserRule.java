@@ -7,6 +7,11 @@ import java.util.List;
 
 public abstract class ParserRule {
   private static Parser parser;
+  private static String generatedCode;
+
+  public static void reset() {
+    generatedCode = "";
+  }
 
   public static void setParser(Parser parser) {
     ParserRule.parser = parser;
@@ -14,7 +19,15 @@ public abstract class ParserRule {
 
   private int lineNumber;
 
-	protected void matchTerminal(String expected) {
+  public static String getGeneratedCode() {
+    return generatedCode;
+  }
+
+  public static void emit(String line) {
+    generatedCode += line + "\n";
+  }
+
+  protected void matchTerminal(String expected) {
     parser.addToTree(expected);
 		TokenTuple actual = parser.popToken();
 		if (!actual.getType().equals(expected))
@@ -51,6 +64,8 @@ public abstract class ParserRule {
 	protected abstract String getLabel();
 
 	protected abstract Type getType();
+
+  protected abstract String generateCode();
 
   protected Type getTypeOfVariable(String id) {
     return getVariable(id).getType();
@@ -130,5 +145,9 @@ public abstract class ParserRule {
 
   protected void addArray(Array array) {
     parser.addArray(array);
+  }
+
+  public String newTemp() {
+    return "t1";
   }
 }

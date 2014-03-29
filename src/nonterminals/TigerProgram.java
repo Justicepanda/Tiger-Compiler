@@ -26,4 +26,11 @@ public class TigerProgram extends ParserRule {
   public Type getType() {
     return null;
   }
+
+  @Override
+  public String generateCode() {
+    declarationSegment.generateCode();
+    statSequence.generateCode();
+    return null;
+  }
 }

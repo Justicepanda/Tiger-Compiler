@@ -106,4 +106,8 @@ public class StatIdTail extends ParserRule {
     return type;
   }
 
+  @Override
+  protected String generateCode() {
+    return expression.generateCode();
+  }
 }

@@ -37,4 +37,9 @@ public class StatTail extends ParserRule {
     return null;
   }
 
+  @Override
+  protected String generateCode() {
+    return null;
+  }
+
 }

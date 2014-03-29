@@ -7,12 +7,20 @@ public class MultTerm2 extends ParserRule {
   private Factor factor;
   private MultTerm2 multTerm2;
   private MultOp multOp;
+  private boolean expanded;
+  private String op;
 
 
   @Override
   public void parse() {
-    if (peekTypeMatches("MULT") || peekTypeMatches("DIV"))
+    if (peekTypeMatches("MULT") || peekTypeMatches("DIV")) {
+      expanded = true;
+      if (peekTypeMatches("MULT"))
+        op = "mult";
+      else
+        op = "div";
       matchMultOp();
+    }
   }
 
   private void matchMultOp() {
@@ -33,5 +41,18 @@ public class MultTerm2 extends ParserRule {
   @Override
   public Type getType() {
     return decideType(factor, multTerm2);
+  }
+
+  @Override
+  protected String generateCode() {
+    return factor.generateCode();
+  }
+
+  public boolean isExpanded() {
+    return expanded;
+  }
+
+  public String getOp() {
+    return op;
   }
 }

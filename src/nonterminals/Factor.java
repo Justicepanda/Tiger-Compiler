@@ -67,4 +67,9 @@ public class Factor extends ParserRule {
   protected Type getType() {
     return type;
   }
+
+  @Override
+  protected String generateCode() {
+    return constant.generateCode();
+  }
 }

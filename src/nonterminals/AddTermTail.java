@@ -23,4 +23,9 @@ public class AddTermTail extends ParserRule {
   public Type getType() {
     return decideType(multTermTail, addTerm2);
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

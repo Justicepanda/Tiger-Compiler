@@ -24,4 +24,9 @@ class TypeDeclaration extends ParserRule {
   public symboltable.Type getType() {
     return type.getType();
   }
+
+  @Override
+  protected String generateCode() {
+    return null;
+  }
 }

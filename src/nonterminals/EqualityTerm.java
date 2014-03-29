@@ -27,4 +27,10 @@ public class EqualityTerm extends ParserRule {
     else
       return t;
   }
+
+  @Override
+  protected String generateCode() {
+    return addTerm.generateCode();
+
+  }
 }
