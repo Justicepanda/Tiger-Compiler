@@ -33,6 +33,10 @@ class FunctionDeclarationList extends ParserRule {
 
   @Override
   protected String generateCode() {
+    if (functionDeclaration != null) {
+      functionDeclaration.generateCode();
+      functionDeclarationList.generateCode();
+    }
     return null;
   }
 }

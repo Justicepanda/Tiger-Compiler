@@ -25,8 +25,9 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "add, 5, 3, t1\n" +
-            "assign, a, t1, \n",
+            "main:\n" +
+                    "add, t1, 5, 3\n" +
+                    "assign, a, t1, \n",
             parser.getGeneratedCode());
   }
 
@@ -40,7 +41,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "sub, 5, 3, t1\n" +
+            "main:\n" +
+                    "sub, t1, 5, 3\n" +
                     "assign, a, t1, \n",
             parser.getGeneratedCode()
     );
@@ -56,7 +58,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "mult, 5, 3, t1\n" +
+            "main:\n" +
+                    "mult, t1, 5, 3\n" +
                     "assign, a, t1, \n",
             parser.getGeneratedCode());
   }
@@ -71,7 +74,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "div, 5, 3, t1\n" +
+            "main:\n" +
+                    "div, t1, 5, 3\n" +
                     "assign, a, t1, \n",
             parser.getGeneratedCode());
   }
@@ -86,7 +90,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "and, 5, 3, t1\n" +
+            "main:\n" +
+                    "and, t1, 5, 3\n" +
                     "assign, a, t1, \n",
             parser.getGeneratedCode());
   }
@@ -101,7 +106,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "or, 5, 3, t1\n" +
+            "main:\n" +
+                    "or, t1, 5, 3\n" +
                     "assign, a, t1, \n",
             parser.getGeneratedCode());
   }
@@ -115,7 +121,8 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "call, print, \"\"\n",
+            "main:\n" +
+                    "call, print, \"\"\n",
             parser.getGeneratedCode());
   }
 
@@ -129,7 +136,22 @@ public class CodeGenerationTests {
     scanner.scan(arr);
     parser.parse();
     assertEquals(
-            "callr, a, get_char\n",
+            "main:\n" +
+                    "callr, a, get_char\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void functionDeclaration() {
+    String[] arr = {"let " +
+            "function a() begin end;" +
+            "in " +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "a:\n" +
+                    "main:\n",
             parser.getGeneratedCode());
   }
 }

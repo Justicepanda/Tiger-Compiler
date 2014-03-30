@@ -31,7 +31,7 @@ public class AndOrTerm extends ParserRule {
       String a = equalityTerm.generateCode();
       String b = andOrTerm2.generateCode();
       String temp = newTemp();
-      emit(op + ", " + a + ", " + b + ", " + temp);
+      emit(op + ", " + temp + ", " + a + ", " + b);
       return temp;
     }
     else {

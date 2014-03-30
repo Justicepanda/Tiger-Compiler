@@ -7,18 +7,19 @@ public class FunctionDeclaration extends ParserRule {
   private final ParamList paramList = new ParamList();
   private final ReturnType returnType = new ReturnType();
   private final StatSequence statSequence  = new StatSequence();
+  private String id;
 
   @Override
   public void parse() {
     storeLineNumber();
-    String id = matchFunction();
+    matchFunction();
     semanticCheck();
     addFunction(id, paramList.getArguments(), returnType.getType());
   }
 
-  private String matchFunction() {
+  private void matchFunction() {
     matchTerminal("FUNC");
-    String id = matchIdAndGetValue();
+    id = matchIdAndGetValue();
     matchTerminal("LPAREN");
     matchNonTerminal(paramList);
     matchTerminal("RPAREN");
@@ -27,7 +28,6 @@ public class FunctionDeclaration extends ParserRule {
     matchNonTerminal(statSequence);
     matchTerminal("END");
     matchTerminal("SEMI");
-    return id;
   }
 
   private void semanticCheck() {
@@ -56,6 +56,7 @@ public class FunctionDeclaration extends ParserRule {
 
   @Override
   protected String generateCode() {
+    emit(id + ":");
     return null;
   }
 }

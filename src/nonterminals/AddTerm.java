@@ -31,7 +31,7 @@ public class AddTerm extends ParserRule {
       String a = multTerm.generateCode();
       String b = addTerm2.generateCode();
       String temp = newTemp();
-      emit(op + ", " + a + ", " + b + ", " + temp);
+      emit(op + ", " + temp + ", " + a + ", " + b);
       return temp;
     }
     else
