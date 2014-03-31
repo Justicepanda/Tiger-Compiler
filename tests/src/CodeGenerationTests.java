@@ -248,4 +248,26 @@ public class CodeGenerationTests {
                     "after_if1:\n",
             parser.getGeneratedCode());
   }
+  
+  @Test
+  public void ifWhileStatement() {
+	  String[] arr = {"let " + 
+			  "var i : int := 5;" + 
+			  "in " +
+			  "while i > 0 "
+			  + "do " +
+			  "print("\"\");" +
+			  "enddo" + 
+			  "end" };
+	  scanner.scan(arr);
+	  parser.parse();
+	  assertEquals("assign, i, 5, \n" + 
+	   "main:\n" +
+	   "start_loop1:\n" + 
+	   "brgeq, i, 5, after_while1\n" + 
+	   "call, print, \"\"\n" + 
+	   "goto, start_while1, ,\n"
+	   "after_while1:\n",
+	   parser.getGeneratedCode());
+  }
 }
