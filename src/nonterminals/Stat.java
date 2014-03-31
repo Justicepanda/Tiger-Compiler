@@ -21,7 +21,6 @@ public class Stat extends ParserRule {
   private boolean isIfStatement;
   private boolean isBreakStatement;
   private Stack<String> endLabelStack;
-  private static String lastLoopEndLabel = "";
   
   @Override
   public void parse() {
@@ -187,7 +186,6 @@ public class Stat extends ParserRule {
       String startWhile = newLabel("start_while");
       String afterWhile = newLabel("after_while");
       endLabelStack.add(afterWhile);
-      lastLoopEndLabel = afterWhile;
       emit(startWhile + ":");
       if (expression.hasEqualityOperation()) {
         emit(expression.getCodeEqualityOperation() + ", " + afterWhile);
