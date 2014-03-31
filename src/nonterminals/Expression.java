@@ -40,7 +40,7 @@ public class Expression extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return andOrTerm.generateCode();
   }
 

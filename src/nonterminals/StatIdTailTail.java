@@ -46,7 +46,7 @@ public class StatIdTailTail extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 

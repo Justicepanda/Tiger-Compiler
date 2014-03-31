@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class StatSequence extends ParserRule {
+public class StatSequence extends ParserRule {
   private Stat stat;
   private StatSequence statSequence;
 
@@ -41,7 +41,7 @@ class StatSequence extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (stat == null)
       return null;
     stat.generateCode();

@@ -46,7 +46,7 @@ public class ParamListTail extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 }

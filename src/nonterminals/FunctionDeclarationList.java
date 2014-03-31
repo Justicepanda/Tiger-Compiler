@@ -32,7 +32,7 @@ class FunctionDeclarationList extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (functionDeclaration != null) {
       functionDeclaration.generateCode();
       functionDeclarationList.generateCode();

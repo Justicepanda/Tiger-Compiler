@@ -43,7 +43,7 @@ public class EqualityTerm2 extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return addTerm.generateCode();
   }
 

@@ -75,7 +75,7 @@ public class VariableDeclaration extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (optionalInit.getType() != Type.NIL_TYPE) {
       for (String id: idList.getIds()) {
         emit("assign, " + id + ", " + optionalInit.getValue() + ", ");

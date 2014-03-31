@@ -23,7 +23,7 @@ public class AddOp extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 }

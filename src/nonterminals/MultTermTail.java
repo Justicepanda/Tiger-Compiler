@@ -24,7 +24,7 @@ public class MultTermTail extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 }

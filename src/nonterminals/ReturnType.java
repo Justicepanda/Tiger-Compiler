@@ -30,7 +30,7 @@ public class ReturnType extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 }

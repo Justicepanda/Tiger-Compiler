@@ -43,7 +43,7 @@ public class AndOrTerm2 extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (andOrTerm2.isExpanded()) {
       String op = andOrTerm2.getOp();
       String a = equalityTerm.generateCode();

@@ -23,7 +23,7 @@ public class AndOrOp extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     return null;
   }
 }

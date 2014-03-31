@@ -46,7 +46,7 @@ public class StatId extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (statIdTail == null) {
       return expressionList.generateCode();
     }

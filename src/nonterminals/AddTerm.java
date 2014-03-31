@@ -25,7 +25,7 @@ public class AddTerm extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (addTerm2.isExpanded()) {
       String op = addTerm2.getOp();
       String a = multTerm.generateCode();

@@ -61,13 +61,13 @@ public abstract class ParserRule {
     parser.moveTreeUp();
 	}
 
-	protected abstract void parse();
+	public abstract void parse();
 
 	protected abstract String getLabel();
 
 	protected abstract Type getType();
 
-  protected abstract String generateCode();
+  public abstract String generateCode();
 
   protected Type getTypeOfVariable(String id) {
     return getVariable(id).getType();

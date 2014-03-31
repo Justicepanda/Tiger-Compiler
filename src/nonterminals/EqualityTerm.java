@@ -40,7 +40,7 @@ public class EqualityTerm extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (equalityTerm2.isExpanded()) {
       return "";
     }

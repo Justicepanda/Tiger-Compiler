@@ -70,7 +70,7 @@ public class Factor extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (constant != null)
       return constant.generateCode();
     else if (expression != null)

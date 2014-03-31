@@ -111,7 +111,7 @@ public class StatIdTail extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     if (expression != null)
       return expression.generateCode();
     else

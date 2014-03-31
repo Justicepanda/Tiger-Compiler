@@ -27,7 +27,7 @@ class DeclarationSegment extends ParserRule {
   }
 
   @Override
-  protected String generateCode() {
+  public String generateCode() {
     typeDeclarationList.generateCode();
     variableDeclarationList.generateCode();
     functionDeclarationList.generateCode();
