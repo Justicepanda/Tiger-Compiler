@@ -14,10 +14,14 @@ public class Stat extends ParserRule {
   private StatTail statTail;
   private boolean isReturnStatement;
   private boolean isForStatement;
+  private boolean isWhileStatement;
   private String id;
   private Expression expression2;
   private boolean isIfStatement;
-
+  private boolean isBreakStatement;
+  
+  private static String lastEndLabel = "";
+  
   @Override
   public void parse() {
     storeLineNumber();
@@ -36,6 +40,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchBreak() {
+	isBreakStatement = true;
     matchTerminal("BREAK");
     matchTerminal("SEMI");
   }
@@ -58,6 +63,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchWhile() {
+	isWhileStatement = true;
     expression = new Expression();
     statSequence = new StatSequence();
     matchTerminal("WHILE");
@@ -157,18 +163,33 @@ public class Stat extends ParserRule {
     else if (isForStatement) {
       String startLabel = newLabel("start_loop");
       String endLabel = newLabel("end_loop");
+      lastEndLabel = endLabel;
       emit(startLabel + ":");
-      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + endLabel);
+      emit("brgeq, " + id + ", " + expression.generateCode() + ", " + endLabel);
       statSequence.generateCode();
       emit("goto, " + startLabel + ", , ");
       emit(endLabel + ":");
     }
     else if (isIfStatement) {
       String endLabel = newLabel("after_if");
+      lastEndLabel = endLabel;
       emit(expression.getIf() + ", " + endLabel);
       statSequence.generateCode();
       emit(endLabel + ":");
 
+    }
+    else if(isWhileStatement) {
+    	String startwhile = newLabel("start_while");
+    	String endwhile = newLabel("after_while");
+    	lastEndLabel = endwhile;
+    	emit(startwhile + ": ");
+    	emit("brgeq, " + id + ", " + expression.generateCode() + ", " + endwhile);
+    	statSequence.generateCode();
+    	emit("goto, " + startwhile + ", , ");
+    	emit(endwhile + ": ");
+    }
+    else if(isBreakStatement) {
+    	emit("goto, " + lastEndLabel + ", , ");
     }
       return null;
     }
