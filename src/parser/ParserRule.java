@@ -9,15 +9,13 @@ public abstract class ParserRule {
   private static Parser parser;
   private static String generatedCode;
 
-  public static void reset() {
-    generatedCode = "";
-  }
-
   public static void setParser(Parser parser) {
     ParserRule.parser = parser;
   }
 
-  private int lineNumber;
+  public static void reset() {
+    generatedCode = "";
+  }
 
   public static String getGeneratedCode() {
     return generatedCode;
@@ -26,6 +24,8 @@ public abstract class ParserRule {
   protected static void emit(String line) {
     generatedCode += line + "\n";
   }
+
+  private int lineNumber;
 
   protected void matchTerminal(String expected) {
     parser.addToTree(expected);
@@ -149,5 +149,9 @@ public abstract class ParserRule {
 
   protected String newTemp() {
     return "t1";
+  }
+
+  public String newLabel(String labelBase) {
+    return labelBase + 1;
   }
 }

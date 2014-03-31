@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Before;
 import parser.Parser;
@@ -152,6 +153,58 @@ public class CodeGenerationTests {
     assertEquals(
             "a:\n" +
                     "main:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void returnStatement() {
+    String[] arr = {"let " +
+            "function a() : int begin " +
+            "return 0;" +
+            "end;" +
+            "in " +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "a:\n" +
+                    "return, 0, , \n" +
+                    "main:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void inlineVarDeclaration() {
+    String[] arr = {"let " +
+            "var i : int := 0;" +
+            "in " +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "assign, i, 0, \n" +
+                    "main:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void forLoop() {
+    String[] arr = {"let " +
+            "var i : int := 0;" +
+            "in " +
+            "for i := 0 to 100 do " +
+            "print(\"\");" +
+            "enddo;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "assign, i, 0, \n" +
+                    "main:\n" +
+                    "start_loop1:\n" +
+                    "brgeq, i, 100, end_loop1\n" +
+                    "call, print, \"\"\n" +
+                    "goto, start_loop1, , \n",
             parser.getGeneratedCode());
   }
 }

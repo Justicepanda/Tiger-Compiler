@@ -57,6 +57,7 @@ public class FunctionDeclaration extends ParserRule {
   @Override
   protected String generateCode() {
     emit(id + ":");
+    statSequence.generateCode();
     return null;
   }
 }

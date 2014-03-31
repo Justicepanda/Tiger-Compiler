@@ -13,7 +13,9 @@ public class Stat extends ParserRule {
   private StatSequence statSequence;
   private StatTail statTail;
   private boolean isReturnStatement;
+  private boolean isForStatement;
   private String id;
+  private Expression expression2;
 
   @Override
   public void parse() {
@@ -38,15 +40,18 @@ public class Stat extends ParserRule {
   }
 
   private void matchFor() {
+    isForStatement = true;
     expression = new Expression();
+    expression2 = new Expression();
+    statSequence = new StatSequence();
     matchTerminal("FOR");
-    matchTerminal("ID");
+    id = matchIdAndGetValue();
     matchTerminal("ASSIGN");
     matchNonTerminal(expression);
     matchTerminal("TO");
-    matchNonTerminal(new Expression());
+    matchNonTerminal(expression2);
     matchTerminal("DO");
-    matchNonTerminal(new StatSequence());
+    matchNonTerminal(statSequence);
     matchTerminal("ENDDO");
     matchTerminal("SEMI");
   }
@@ -135,15 +140,27 @@ public class Stat extends ParserRule {
 
   @Override
   protected String generateCode() {
-    String statIdId = statId.generateCode();
-    if (statId.isFunction())
-      emit("call, " + id + printParameters());
-    else if (statId.isReturnedFunction())
-      emit("callr, " + id + ", " + statId.getFunctionId() + printParameters());
-    else
-      emit("assign, " + id + ", " + statIdId + ", ");
-    return null;
-  }
+    if (statId != null) {
+      String statIdId = statId.generateCode();
+      if (statId.isFunction())
+        emit("call, " + id + printParameters());
+      else if (statId.isReturnedFunction())
+        emit("callr, " + id + ", " + statId.getFunctionId() + printParameters());
+      else
+        emit("assign, " + id + ", " + statIdId + ", ");
+    }
+    else if (isReturnStatement) {
+      emit("return, " + expression.generateCode() + ", , ");
+    }
+    else if (isForStatement) {
+      String startLabel = newLabel("start_loop");
+      emit(startLabel + ":");
+      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + newLabel("end_loop"));
+      statSequence.generateCode();
+      emit("goto, " + startLabel + ", , ");
+    }
+      return null;
+    }
 
   private String printParameters() {
     if (statId.hasParameters())

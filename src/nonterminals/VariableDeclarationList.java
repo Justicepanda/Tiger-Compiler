@@ -33,6 +33,10 @@ class VariableDeclarationList extends ParserRule {
 
   @Override
   protected String generateCode() {
+    if (variableDeclaration != null) {
+      variableDeclaration.generateCode();
+      variableDeclarationList.generateCode();
+    }
     return null;
   }
 }

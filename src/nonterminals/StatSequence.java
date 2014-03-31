@@ -44,8 +44,8 @@ class StatSequence extends ParserRule {
   protected String generateCode() {
     if (stat == null)
       return null;
-    statSequence.generateCode();
     stat.generateCode();
+    statSequence.generateCode();
     return null;
 
   }
