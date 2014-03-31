@@ -6,6 +6,7 @@ import symboltable.Argument;
 import symboltable.Type;
 
 import java.util.List;
+import java.util.Stack;
 
 public class Stat extends ParserRule {
   private StatId statId;
@@ -19,7 +20,7 @@ public class Stat extends ParserRule {
   private Expression expression2;
   private boolean isIfStatement;
   private boolean isBreakStatement;
-  
+  private Stack<String> endLabelStack;
   private static String lastLoopEndLabel = "";
   
   @Override
@@ -40,7 +41,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchBreak() {
-	  isBreakStatement = true;
+	isBreakStatement = true;
     matchTerminal("BREAK");
     matchTerminal("SEMI");
   }
@@ -163,7 +164,7 @@ public class Stat extends ParserRule {
     else if (isForStatement) {
       String startLabel = newLabel("start_loop");
       String endLabel = newLabel("end_loop");
-      lastLoopEndLabel = endLabel;
+      endLabelStack.add(endLabel);
       emit(startLabel + ":");
       emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + endLabel);
       statSequence.generateCode();
@@ -175,6 +176,7 @@ public class Stat extends ParserRule {
     }
     else if (isIfStatement) {
       String endLabel = newLabel("after_if");
+      endLabelStack.add(endLabel);
       if (expression.hasEqualityOperation())
         emit(expression.getCodeEqualityOperation() + ", " + endLabel);
       statSequence.generateCode();
@@ -182,10 +184,11 @@ public class Stat extends ParserRule {
 
     }
     else if(isWhileStatement) {
-    	String startWhile = newLabel("start_while");
+      String startWhile = newLabel("start_while");
       String afterWhile = newLabel("after_while");
-    	lastLoopEndLabel = afterWhile;
-    	emit(startWhile + ":");
+      endLabelStack.add(afterWhile);
+      lastLoopEndLabel = afterWhile;
+      emit(startWhile + ":");
       if (expression.hasEqualityOperation()) {
         emit(expression.getCodeEqualityOperation() + ", " + afterWhile);
       }
@@ -194,7 +197,7 @@ public class Stat extends ParserRule {
     	emit(afterWhile + ":");
     }
     else if(isBreakStatement) {
-    	emit("goto, " + lastLoopEndLabel + ", , ");
+    	emit("goto, " + endLabelStack.pop() + ", , ");
     }
     return null;
   }
