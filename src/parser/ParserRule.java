@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class ParserRule {
   private static Parser parser;
   private static String generatedCode;
+  private static NameMaker nameMaker;
 
   public static void setParser(Parser parser) {
     ParserRule.parser = parser;
@@ -15,6 +16,7 @@ public abstract class ParserRule {
 
   public static void reset() {
     generatedCode = "";
+    nameMaker = new NameMaker();
   }
 
   public static String getGeneratedCode() {
@@ -148,7 +150,7 @@ public abstract class ParserRule {
   }
 
   protected String newTemp() {
-    return "t1";
+    return nameMaker.newTemp();
   }
 
   public String newLabel(String labelBase) {

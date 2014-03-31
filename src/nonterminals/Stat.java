@@ -20,7 +20,7 @@ public class Stat extends ParserRule {
   private boolean isIfStatement;
   private boolean isBreakStatement;
   
-  private static String lastEndLabel = "";
+  private static String lastLoopEndLabel = "";
   
   @Override
   public void parse() {
@@ -40,7 +40,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchBreak() {
-	isBreakStatement = true;
+	  isBreakStatement = true;
     matchTerminal("BREAK");
     matchTerminal("SEMI");
   }
@@ -63,7 +63,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchWhile() {
-	isWhileStatement = true;
+	  isWhileStatement = true;
     expression = new Expression();
     statSequence = new StatSequence();
     matchTerminal("WHILE");
@@ -162,37 +162,34 @@ public class Stat extends ParserRule {
     }
     else if (isForStatement) {
       String startLabel = newLabel("start_loop");
-      String endLabel = newLabel("end_loop");
-      lastEndLabel = endLabel;
+      lastLoopEndLabel = newLabel("end_loop");
       emit(startLabel + ":");
-      emit("brgeq, " + id + ", " + expression.generateCode() + ", " + endLabel);
+      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + lastLoopEndLabel);
       statSequence.generateCode();
       emit("goto, " + startLabel + ", , ");
-      emit(endLabel + ":");
+      emit(lastLoopEndLabel + ":");
     }
     else if (isIfStatement) {
       String endLabel = newLabel("after_if");
-      lastEndLabel = endLabel;
       emit(expression.getIf() + ", " + endLabel);
       statSequence.generateCode();
       emit(endLabel + ":");
 
     }
     else if(isWhileStatement) {
-    	String startwhile = newLabel("start_while");
-    	String endwhile = newLabel("after_while");
-    	lastEndLabel = endwhile;
-    	emit(startwhile + ": ");
-    	emit("brgeq, " + id + ", " + expression.generateCode() + ", " + endwhile);
+    	String startWhile = newLabel("start_while");
+    	lastLoopEndLabel = newLabel("after_while");
+    	emit(startWhile + ":");
+      emit(expression.getIf() + ", " + lastLoopEndLabel);
     	statSequence.generateCode();
-    	emit("goto, " + startwhile + ", , ");
-    	emit(endwhile + ": ");
+    	emit("goto, " + startWhile + ", , ");
+    	emit(lastLoopEndLabel + ":");
     }
     else if(isBreakStatement) {
-    	emit("goto, " + lastEndLabel + ", , ");
+    	emit("goto, " + lastLoopEndLabel + ", , ");
     }
-      return null;
-    }
+    return null;
+  }
 
   private String printParameters() {
     if (statId.hasParameters())

@@ -45,7 +45,17 @@ public class MultTerm2 extends ParserRule {
 
   @Override
   protected String generateCode() {
-    return factor.generateCode();
+    if (multTerm2.isExpanded()) {
+      String op = multTerm2.getOp();
+      String a = factor.generateCode();
+      String b = multTerm2.generateCode();
+      String temp = newTemp();
+      emit(op + ", " + temp + ", " + a + ", " + b);
+      return temp;
+    }
+    else {
+      return factor.generateCode();
+    }
   }
 
   public boolean isExpanded() {

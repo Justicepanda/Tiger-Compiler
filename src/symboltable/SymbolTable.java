@@ -55,7 +55,7 @@ public class SymbolTable
     addFunction(new Function("print", s_arg, null));
     addFunction(new Function("printi", i_arg, null));
     addFunction(new Function("flush", null, null));
-    addFunction(new Function("get_char", null, STRING_TYPE));
+    addFunction(new Function("getchar", null, STRING_TYPE));
     addFunction(new Function("ord", s_arg, INT_TYPE));
     addFunction(new Function("chr", i_arg, STRING_TYPE));
     addFunction(new Function("size", s_arg, INT_TYPE));

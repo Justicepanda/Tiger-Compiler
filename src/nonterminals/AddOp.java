@@ -3,7 +3,6 @@ package nonterminals;
 import parser.ParserRule;
 import symboltable.Type;
 
-
 public class AddOp extends ParserRule {
   @Override
   public void parse() {

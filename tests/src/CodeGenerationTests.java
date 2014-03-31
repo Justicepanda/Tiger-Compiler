@@ -1,4 +1,3 @@
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Before;
 import parser.Parser;
@@ -33,6 +32,22 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testmultiAdd() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 + 3 + 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "add, t1, 3, 1\n" +
+                    "add, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
+            parser.getGeneratedCode());  }
+
+  @Test
   public void testSimpleSub() {
     String[] arr = {"let " +
             "var a : int;" +
@@ -50,6 +65,25 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testMultiSub() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 - 3 - 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "sub, t1, 3, 1\n" +
+                    "sub, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
+            parser.getGeneratedCode()
+    );
+  }
+
+
+  @Test
   public void testSimpleMult() {
     String[] arr = {"let " +
             "var a : int;" +
@@ -62,6 +96,23 @@ public class CodeGenerationTests {
             "main:\n" +
                     "mult, t1, 5, 3\n" +
                     "assign, a, t1, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void testMultiMult() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 * 3 * 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "mult, t1, 3, 1\n" +
+                    "mult, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
             parser.getGeneratedCode());
   }
 
@@ -82,6 +133,23 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testMultiDiv() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 / 3 / 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "div, t1, 3, 1\n" +
+                    "div, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
   public void testSimpleAnd() {
     String[] arr = {"let " +
             "var a : int;" +
@@ -98,6 +166,23 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testMultiAnd() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 & 3 & 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "and, t1, 3, 1\n" +
+                    "and, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
   public void testSimpleOr() {
     String[] arr = {"let " +
             "var a : int;" +
@@ -110,6 +195,44 @@ public class CodeGenerationTests {
             "main:\n" +
                     "or, t1, 5, 3\n" +
                     "assign, a, t1, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void testMultiOr() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 | 3 | 1;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "or, t1, 3, 1\n" +
+                    "or, t2, 5, t1\n" +
+                    "assign, a, t2, \n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void multiOperation() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 5 * 3 - (3 + 1) & 4 | 7 / 3;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "mult, t1, 5, 3\n" +
+                    "add, t2, 3, 1\n" +
+                    "sub, t3, t1, t2\n" +
+                    "div, t4, 7, 3\n" +
+                    "or, t5, 4, t4\n" +
+                    "and, t6, t3, t5\n" +
+                    "assign, a, t6, \n",
             parser.getGeneratedCode());
   }
 
@@ -132,13 +255,13 @@ public class CodeGenerationTests {
     String[] arr = {"let " +
             "var a : string;" +
             "in " +
-            "a := get_char();" +
+            "a := getchar();" +
             "end"};
     scanner.scan(arr);
     parser.parse();
     assertEquals(
             "main:\n" +
-                    "callr, a, get_char\n",
+                    "callr, a, getchar\n",
             parser.getGeneratedCode());
   }
 
@@ -248,26 +371,49 @@ public class CodeGenerationTests {
                     "after_if1:\n",
             parser.getGeneratedCode());
   }
-  
+
   @Test
-  public void ifWhileStatement() {
-	  String[] arr = {"let " + 
-			  "var i : int := 5;" + 
+  public void whileStatement() {
+	  String[] arr = {"let " +
+			  "var i : int := 5;" +
 			  "in " +
 			  "while i > 0 "
 			  + "do " +
-			  "print("\"\");" +
-			  "enddo" + 
+			  "print(\"\");" +
+			  "enddo;" +
 			  "end" };
 	  scanner.scan(arr);
 	  parser.parse();
-	  assertEquals("assign, i, 5, \n" + 
+	  assertEquals("assign, i, 5, \n" +
 	   "main:\n" +
-	   "start_loop1:\n" + 
-	   "brgeq, i, 5, after_while1\n" + 
-	   "call, print, \"\"\n" + 
-	   "goto, start_while1, ,\n"
+	   "start_while1:\n" +
+	   "brleq, i, 0, after_while1\n" +
+	   "call, print, \"\"\n" +
+	   "goto, start_while1, , \n" +
 	   "after_while1:\n",
 	   parser.getGeneratedCode());
+  }
+
+  @Test
+  public void complexWhileCondition() {
+    String[] arr = {"let " +
+            "var i : int := 5;" +
+            "in " +
+            "while i + 1 > 0 "
+            + "do " +
+            "print(\"\");" +
+            "enddo;" +
+            "end" };
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals("assign, i, 5, \n" +
+                    "main:\n" +
+                    "start_while1:\n" +
+                    "add, t1, i, 1\n" +
+                    "brleq, t1, 0, after_while1\n" +
+                    "call, print, \"\"\n" +
+                    "goto, start_while1, , \n" +
+                    "after_while1:\n",
+            parser.getGeneratedCode());
   }
 }
