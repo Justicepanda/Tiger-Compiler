@@ -44,6 +44,7 @@ public class ForStatement extends Statement {
     emit("assign, " + id + ", " + temp + ", ");
     emit("goto, " + startLabel + ", , ");
     emit(endLabel + ":");
+    removeMostRecentEndLabel();
     return null;
   }
 }

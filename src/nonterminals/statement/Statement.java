@@ -4,15 +4,21 @@ import nonterminals.Expression;
 import parser.ParserRule;
 import symboltable.Type;
 
+import java.util.Stack;
+
 public abstract class Statement extends ParserRule {
-  private static String lastLoopEndLabel = "";
+  private static Stack<String> endLabels = new Stack<String>();
 
   protected static void addEndLoopLabel(String label) {
-    lastLoopEndLabel = label;
+    endLabels.push(label);
   }
 
   protected static String getLastEndLoopLabel() {
-    return lastLoopEndLabel;
+    return endLabels.pop();
+  }
+
+  protected static void removeMostRecentEndLabel() {
+    endLabels.pop();
   }
 
   @Override

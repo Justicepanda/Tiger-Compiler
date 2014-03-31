@@ -38,6 +38,7 @@ public class WhileStatement extends Statement {
     statSequence.generateCode();
     emit("goto, " + startWhile + ", , ");
     emit(afterWhile + ":");
+    removeMostRecentEndLabel();
     return null;
   }
 }
