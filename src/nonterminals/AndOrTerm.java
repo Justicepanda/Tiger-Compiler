@@ -38,4 +38,8 @@ public class AndOrTerm extends ParserRule {
       return equalityTerm.generateCode();
     }
   }
+
+  public String getIf() {
+    return equalityTerm.getCodeOperation();
+  }
 }

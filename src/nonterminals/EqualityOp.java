@@ -4,20 +4,34 @@ import parser.ParserRule;
 import symboltable.Type;
 
 public class EqualityOp extends ParserRule {
+  private String inverseOp;
+
   @Override
   public void parse() {
-    if (peekTypeMatches("NEQ"))
+    if (peekTypeMatches("NEQ")) {
       matchTerminal("NEQ");
-    else if (peekTypeMatches("EQ"))
+      inverseOp = "breq";
+    }
+    else if (peekTypeMatches("EQ")) {
       matchTerminal("EQ");
-    else if (peekTypeMatches("LESSER"))
+      inverseOp = "brneq";
+    }
+    else if (peekTypeMatches("LESSER")) {
       matchTerminal("LESSER");
-    else if (peekTypeMatches("GREATER"))
+      inverseOp = "brgeq";
+    }
+    else if (peekTypeMatches("GREATER")) {
       matchTerminal("GREATER");
-    else if (peekTypeMatches("LESSEREQ"))
+      inverseOp = "brleq";
+    }
+    else if (peekTypeMatches("LESSEREQ")) {
       matchTerminal("LESSEREQ");
-    else
+      inverseOp = "brgt";
+    }
+    else {
       matchTerminal("GREATEREQ");
+      inverseOp = "brlt";
+    }
   }
 
   @Override
@@ -33,5 +47,9 @@ public class EqualityOp extends ParserRule {
   @Override
   protected String generateCode() {
     return null;
+  }
+
+  public String getInverseOp() {
+    return inverseOp;
   }
 }

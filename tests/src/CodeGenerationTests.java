@@ -204,7 +204,48 @@ public class CodeGenerationTests {
                     "start_loop1:\n" +
                     "brgeq, i, 100, end_loop1\n" +
                     "call, print, \"\"\n" +
-                    "goto, start_loop1, , \n",
+                    "goto, start_loop1, , \n" +
+                    "end_loop1:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void ifEqStatement() {
+    String[] arr = {"let " +
+            "var i : int := 0;" +
+            "in " +
+            "if i = 0 then " +
+            "print(\"\");" +
+            "endif;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "assign, i, 0, \n" +
+                    "main:\n" +
+                    "brneq, i, 0, after_if1\n" +
+                    "call, print, \"\"\n" +
+                    "after_if1:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void ifLessStatement() {
+    String[] arr = {"let " +
+            "var i : int := 0;" +
+            "in " +
+            "if i < 0 then " +
+            "print(\"\");" +
+            "endif;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "assign, i, 0, \n" +
+                    "main:\n" +
+                    "brgeq, i, 0, after_if1\n" +
+                    "call, print, \"\"\n" +
+                    "after_if1:\n",
             parser.getGeneratedCode());
   }
 }

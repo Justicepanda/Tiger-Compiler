@@ -16,6 +16,7 @@ public class Stat extends ParserRule {
   private boolean isForStatement;
   private String id;
   private Expression expression2;
+  private boolean isIfStatement;
 
   @Override
   public void parse() {
@@ -70,6 +71,7 @@ public class Stat extends ParserRule {
   }
 
   private void matchIf() {
+    isIfStatement = true;
     expression = new Expression();
     statSequence = new StatSequence();
     statTail = new StatTail();
@@ -154,10 +156,19 @@ public class Stat extends ParserRule {
     }
     else if (isForStatement) {
       String startLabel = newLabel("start_loop");
+      String endLabel = newLabel("end_loop");
       emit(startLabel + ":");
-      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + newLabel("end_loop"));
+      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + endLabel);
       statSequence.generateCode();
       emit("goto, " + startLabel + ", , ");
+      emit(endLabel + ":");
+    }
+    else if (isIfStatement) {
+      String endLabel = newLabel("after_if");
+      emit(expression.getIf() + ", " + endLabel);
+      statSequence.generateCode();
+      emit(endLabel + ":");
+
     }
       return null;
     }

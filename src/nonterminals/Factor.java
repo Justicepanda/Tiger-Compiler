@@ -9,6 +9,7 @@ public class Factor extends ParserRule {
   private Constant constant;
   private Factor factor;
   private LValue lValue;
+  private String id;
 
   @Override
   public void parse() {
@@ -50,7 +51,7 @@ public class Factor extends ParserRule {
 
   private void matchVariable() {
     lValue = new LValue();
-    String id = matchIdAndGetValue();
+    id = matchIdAndGetValue();
     matchNonTerminal(lValue);
     if (lValue.getType().isOfSameType(Type.NIL_TYPE))
       type = getTypeOfVariable(id);
@@ -70,6 +71,10 @@ public class Factor extends ParserRule {
 
   @Override
   protected String generateCode() {
-    return constant.generateCode();
+    if (constant != null)
+      return constant.generateCode();
+    else if (expression != null)
+      return expression.generateCode();
+    return id;
   }
 }

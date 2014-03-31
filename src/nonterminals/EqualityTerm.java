@@ -22,15 +22,30 @@ public class EqualityTerm extends ParserRule {
   @Override
   public Type getType() {
     Type t = decideType(addTerm, equalityTerm2);
-    if (equalityTerm2.wasExpanded())
+    if (equalityTerm2.isExpanded())
       return Type.INT_TYPE;
     else
       return t;
   }
 
+  public boolean isExpanded() {
+    return equalityTerm2.isExpanded();
+  }
+
+  public String getCodeOperation() {
+    String op = equalityTerm2.getOp();
+    String a = addTerm.generateCode();
+    String b = equalityTerm2.generateCode();
+    return op + ", " + a + ", " + b;
+  }
+
   @Override
   protected String generateCode() {
-    return addTerm.generateCode();
-
+    if (equalityTerm2.isExpanded()) {
+      return "";
+    }
+    else {
+      return addTerm.generateCode();
+    }
   }
 }

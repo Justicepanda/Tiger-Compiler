@@ -43,4 +43,8 @@ public class Expression extends ParserRule {
   protected String generateCode() {
     return andOrTerm.generateCode();
   }
+
+  public String getIf() {
+    return andOrTerm.getIf();
+  }
 }

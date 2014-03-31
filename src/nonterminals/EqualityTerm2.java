@@ -44,10 +44,14 @@ public class EqualityTerm2 extends ParserRule {
 
   @Override
   protected String generateCode() {
-    return null;
+    return addTerm.generateCode();
   }
 
-  public boolean wasExpanded() {
+  public boolean isExpanded() {
     return wasExpanded;
+  }
+
+  public String getOp() {
+    return equalityOp.getInverseOp();
   }
 }
