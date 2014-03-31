@@ -197,4 +197,67 @@ public class ControlCodeGenerationTests {
                     "after_while1:\n",
             parser.getGeneratedCode());
   }
+
+  @Test
+  public void breakOutOfLoop() {
+    String[] arr = {"let " +
+            "var i : int := 5;" +
+            "in " +
+            "while i + 1 > 0 "
+            + "do " +
+            "print(\"\");" +
+            "break;" +
+            "enddo;" +
+            "end" };
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals("assign, i, 5, \n" +
+                    "main:\n" +
+                    "start_while1:\n" +
+                    "add, t1, i, 1\n" +
+                    "brleq, t1, 0, after_while1\n" +
+                    "call, print, \"\"\n" +
+                    "goto, after_while1, , \n" +
+                    "goto, start_while1, , \n" +
+                    "after_while1:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void nestedBreakOutOfLoop() {
+    String[] arr = {"let " +
+            "var i, j : int := 5;" +
+            "in " +
+            "while i + 1 > 0 " +
+            "do " +
+            "while j + 1 > 0 " +
+            "do " +
+            "print(\"\");" +
+            "break;" +
+            "enddo;" +
+            "print(\"\");" +
+            "break;" +
+            "enddo;" +
+            "end" };
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals("assign, i, 5, \n" +
+                    "assign, j, 5, \n" +
+                    "main:\n" +
+                    "start_while1:\n" +
+                    "add, t1, i, 1\n" +
+                    "brleq, t1, 0, after_while1\n" +
+                    "start_while2:\n" +
+                    "add, t2, j, 1\n" +
+                    "brleq, t2, 0, after_while2\n" +
+                    "call, print, \"\"\n" +
+                    "goto, after_while2, , \n" +
+                    "goto, start_while2, , \n" +
+                    "after_while2:\n" +
+                    "call, print, \"\"\n" +
+                    "goto, after_while1, , \n" +
+                    "goto, start_while1, , \n" +
+                    "after_while1:\n",
+            parser.getGeneratedCode());
+  }
 }

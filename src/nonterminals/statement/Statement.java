@@ -14,7 +14,7 @@ public abstract class Statement extends ParserRule {
   }
 
   protected static String getLastEndLoopLabel() {
-    return endLabels.pop();
+    return endLabels.peek();
   }
 
   protected static void removeMostRecentEndLabel() {

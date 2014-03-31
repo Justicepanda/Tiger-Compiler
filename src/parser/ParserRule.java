@@ -154,6 +154,6 @@ public abstract class ParserRule {
   }
 
   public String newLabel(String labelBase) {
-    return labelBase + 1;
+    return nameMaker.newLabel(labelBase);
   }
 }
