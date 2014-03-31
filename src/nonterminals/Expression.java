@@ -44,7 +44,11 @@ public class Expression extends ParserRule {
     return andOrTerm.generateCode();
   }
 
-  public String getIf() {
-    return andOrTerm.getIf();
+  public String getCodeEqualityOperation() {
+    return andOrTerm.getCodeEqualityOperation();
+  }
+
+  public boolean hasEqualityOperation() {
+    return andOrTerm.hasEqualityOperation();
   }
 }

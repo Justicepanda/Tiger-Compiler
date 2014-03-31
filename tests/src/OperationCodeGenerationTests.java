@@ -1,11 +1,11 @@
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 import parser.Parser;
 import scanner.Scanner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class CodeGenerationTests {
+public class OperationCodeGenerationTests {
   private Scanner scanner;
   private Parser parser;
 
@@ -28,7 +28,8 @@ public class CodeGenerationTests {
             "main:\n" +
                     "add, t1, 5, 3\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -45,7 +46,9 @@ public class CodeGenerationTests {
                     "add, t1, 3, 1\n" +
                     "add, t2, 5, t1\n" +
                     "assign, a, t2, \n",
-            parser.getGeneratedCode());  }
+            parser.getGeneratedCode()
+    );
+  }
 
   @Test
   public void testSimpleSub() {
@@ -96,7 +99,8 @@ public class CodeGenerationTests {
             "main:\n" +
                     "mult, t1, 5, 3\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -113,7 +117,8 @@ public class CodeGenerationTests {
                     "mult, t1, 3, 1\n" +
                     "mult, t2, 5, t1\n" +
                     "assign, a, t2, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -129,7 +134,8 @@ public class CodeGenerationTests {
             "main:\n" +
                     "div, t1, 5, 3\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -146,7 +152,8 @@ public class CodeGenerationTests {
                     "div, t1, 3, 1\n" +
                     "div, t2, 5, t1\n" +
                     "assign, a, t2, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -162,7 +169,8 @@ public class CodeGenerationTests {
             "main:\n" +
                     "and, t1, 5, 3\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -179,7 +187,8 @@ public class CodeGenerationTests {
                     "and, t1, 3, 1\n" +
                     "and, t2, 5, t1\n" +
                     "assign, a, t2, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -195,7 +204,8 @@ public class CodeGenerationTests {
             "main:\n" +
                     "or, t1, 5, 3\n" +
                     "assign, a, t1, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -212,7 +222,8 @@ public class CodeGenerationTests {
                     "or, t1, 3, 1\n" +
                     "or, t2, 5, t1\n" +
                     "assign, a, t2, \n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 
   @Test
@@ -233,187 +244,7 @@ public class CodeGenerationTests {
                     "or, t5, 4, t4\n" +
                     "and, t6, t3, t5\n" +
                     "assign, a, t6, \n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void simpleFunctionCall() {
-    String[] arr = {"let " +
-            "in " +
-            "print(\"\");" +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "main:\n" +
-                    "call, print, \"\"\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void functionCallWithReturn() {
-    String[] arr = {"let " +
-            "var a : string;" +
-            "in " +
-            "a := getchar();" +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "main:\n" +
-                    "callr, a, getchar\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void functionDeclaration() {
-    String[] arr = {"let " +
-            "function a() begin end;" +
-            "in " +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "a:\n" +
-                    "main:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void returnStatement() {
-    String[] arr = {"let " +
-            "function a() : int begin " +
-            "return 0;" +
-            "end;" +
-            "in " +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "a:\n" +
-                    "return, 0, , \n" +
-                    "main:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void inlineVarDeclaration() {
-    String[] arr = {"let " +
-            "var i : int := 0;" +
-            "in " +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "assign, i, 0, \n" +
-                    "main:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void forLoop() {
-    String[] arr = {"let " +
-            "var i : int := 0;" +
-            "in " +
-            "for i := 0 to 100 do " +
-            "print(\"\");" +
-            "enddo;" +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "assign, i, 0, \n" +
-                    "main:\n" +
-                    "start_loop1:\n" +
-                    "brgeq, i, 100, end_loop1\n" +
-                    "call, print, \"\"\n" +
-                    "goto, start_loop1, , \n" +
-                    "end_loop1:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void ifEqStatement() {
-    String[] arr = {"let " +
-            "var i : int := 0;" +
-            "in " +
-            "if i = 0 then " +
-            "print(\"\");" +
-            "endif;" +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "assign, i, 0, \n" +
-                    "main:\n" +
-                    "brneq, i, 0, after_if1\n" +
-                    "call, print, \"\"\n" +
-                    "after_if1:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void ifLessStatement() {
-    String[] arr = {"let " +
-            "var i : int := 0;" +
-            "in " +
-            "if i < 0 then " +
-            "print(\"\");" +
-            "endif;" +
-            "end"};
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals(
-            "assign, i, 0, \n" +
-                    "main:\n" +
-                    "brgeq, i, 0, after_if1\n" +
-                    "call, print, \"\"\n" +
-                    "after_if1:\n",
-            parser.getGeneratedCode());
-  }
-
-  @Test
-  public void whileStatement() {
-	  String[] arr = {"let " +
-			  "var i : int := 5;" +
-			  "in " +
-			  "while i > 0 "
-			  + "do " +
-			  "print(\"\");" +
-			  "enddo;" +
-			  "end" };
-	  scanner.scan(arr);
-	  parser.parse();
-	  assertEquals("assign, i, 5, \n" +
-	   "main:\n" +
-	   "start_while1:\n" +
-	   "brleq, i, 0, after_while1\n" +
-	   "call, print, \"\"\n" +
-	   "goto, start_while1, , \n" +
-	   "after_while1:\n",
-	   parser.getGeneratedCode());
-  }
-
-  @Test
-  public void complexWhileCondition() {
-    String[] arr = {"let " +
-            "var i : int := 5;" +
-            "in " +
-            "while i + 1 > 0 "
-            + "do " +
-            "print(\"\");" +
-            "enddo;" +
-            "end" };
-    scanner.scan(arr);
-    parser.parse();
-    assertEquals("assign, i, 5, \n" +
-                    "main:\n" +
-                    "start_while1:\n" +
-                    "add, t1, i, 1\n" +
-                    "brleq, t1, 0, after_while1\n" +
-                    "call, print, \"\"\n" +
-                    "goto, start_while1, , \n" +
-                    "after_while1:\n",
-            parser.getGeneratedCode());
+            parser.getGeneratedCode()
+    );
   }
 }

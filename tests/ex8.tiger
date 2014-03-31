@@ -74,7 +74,7 @@ let
 
                 while 1 do
 
-                        location_char := get_char();
+                        location_char := getchar();
                         location := ord(location_char);
                         location := location - ASCII_NUMERIC_OFFSET;
                         

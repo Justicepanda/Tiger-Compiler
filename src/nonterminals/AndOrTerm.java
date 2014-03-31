@@ -39,7 +39,11 @@ public class AndOrTerm extends ParserRule {
     }
   }
 
-  public String getIf() {
+  public String getCodeEqualityOperation() {
     return equalityTerm.getCodeOperation();
+  }
+
+  public boolean hasEqualityOperation() {
+    return equalityTerm.isExpanded();
   }
 }

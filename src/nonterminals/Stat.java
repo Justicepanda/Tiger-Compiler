@@ -162,28 +162,36 @@ public class Stat extends ParserRule {
     }
     else if (isForStatement) {
       String startLabel = newLabel("start_loop");
-      lastLoopEndLabel = newLabel("end_loop");
+      String endLabel = newLabel("end_loop");
+      lastLoopEndLabel = endLabel;
       emit(startLabel + ":");
-      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + lastLoopEndLabel);
+      emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + endLabel);
       statSequence.generateCode();
+      String temp = newTemp();
+      emit("add, " + temp + ", " + id + ", 1");
+      emit("assign, " + id + ", " + temp + ", ");
       emit("goto, " + startLabel + ", , ");
-      emit(lastLoopEndLabel + ":");
+      emit(endLabel + ":");
     }
     else if (isIfStatement) {
       String endLabel = newLabel("after_if");
-      emit(expression.getIf() + ", " + endLabel);
+      if (expression.hasEqualityOperation())
+        emit(expression.getCodeEqualityOperation() + ", " + endLabel);
       statSequence.generateCode();
       emit(endLabel + ":");
 
     }
     else if(isWhileStatement) {
     	String startWhile = newLabel("start_while");
-    	lastLoopEndLabel = newLabel("after_while");
+      String afterWhile = newLabel("after_while");
+    	lastLoopEndLabel = afterWhile;
     	emit(startWhile + ":");
-      emit(expression.getIf() + ", " + lastLoopEndLabel);
+      if (expression.hasEqualityOperation()) {
+        emit(expression.getCodeEqualityOperation() + ", " + afterWhile);
+      }
     	statSequence.generateCode();
     	emit("goto, " + startWhile + ", , ");
-    	emit(lastLoopEndLabel + ":");
+    	emit(afterWhile + ":");
     }
     else if(isBreakStatement) {
     	emit("goto, " + lastLoopEndLabel + ", , ");
