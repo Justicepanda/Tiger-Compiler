@@ -4,7 +4,6 @@ import nonterminals.Expression;
 import nonterminals.StatSequence;
 
 public class ForStatement extends Statement {
-
   private Expression expression;
   private Expression expression2;
   private StatSequence statSequence;
