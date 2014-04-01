@@ -2,6 +2,7 @@ package nonterminals.statement;
 
 import nonterminals.Expression;
 import nonterminals.StatSequence;
+import parser.SemanticTypeException;
 
 public class ForStatement extends Statement {
   private Expression expression;
@@ -29,6 +30,14 @@ public class ForStatement extends Statement {
     matchNonTerminal(statSequence);
     matchTerminal("ENDDO");
     matchTerminal("SEMI");
+    semanticCheck();
+  }
+
+  private void semanticCheck() {
+    if (expression.isConstant() && expression2.isConstant()) {
+      if (expression.getValue() >= expression2.getValue())
+        generateException();
+    }
   }
 
   @Override

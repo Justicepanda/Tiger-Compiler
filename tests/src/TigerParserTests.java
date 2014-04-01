@@ -242,4 +242,29 @@ public class TigerParserTests {
     scanner.scan(arr);
     parser.parse();
   }
+
+  @Test(expected = SemanticTypeException.class)
+  public void forLoopWithBadConstants() {
+    String[] arr = {
+            "let " +
+                    "var i : int := 0;" +
+                    "in " +
+                    "for i := 5+3*4/2-1=10&1 to 0 do " +
+                    "enddo; " +
+                    "end"};
+    scanner.scan(arr);
+    parser.parse();
+  }
+
+  @Test
+  public void negativeFactor() {
+    String[] arr = {
+            "let " +
+                    "var i : int := 0;" +
+                    "in " +
+                    "i := 5 + -5;" +
+                    "end"};
+    scanner.scan(arr);
+    parser.parse();
+  }
 }

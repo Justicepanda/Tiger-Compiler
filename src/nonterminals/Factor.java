@@ -3,6 +3,8 @@ package nonterminals;
 import parser.ParserRule;
 import symboltable.Type;
 
+import java.util.List;
+
 public class Factor extends ParserRule {
   private Type type;
   private Expression expression;
@@ -10,12 +12,13 @@ public class Factor extends ParserRule {
   private Factor factor;
   private LValue lValue;
   private String id;
+  private boolean isConstant;
 
   @Override
   public void parse() {
     if (peekTypeMatches("LPAREN"))
       matchParenthesizedExpression();
-    else if (isConstant())
+    else if (checkConstant())
       matchConstant();
     else if (peekTypeMatches("MINUS"))
       matchNegativeFactor();
@@ -31,9 +34,17 @@ public class Factor extends ParserRule {
     type = expression.getType();
   }
 
-  private boolean isConstant() {
-    return peekTypeMatches("INTLIT") || peekTypeMatches("STRLIT")
-            || peekTypeMatches("NIL");
+  private boolean checkConstant() {
+    if (peekTypeMatches("INTLIT") || peekTypeMatches("STRLIT")
+            || peekTypeMatches("NIL")) {
+      isConstant = true;
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isConstant() {
+    return isConstant;
   }
 
   private void matchConstant() {
@@ -75,6 +86,25 @@ public class Factor extends ParserRule {
       return constant.generateCode();
     else if (expression != null)
       return expression.generateCode();
+    List<Integer> dimensions = getVariable(id).getType().getDimensions();
+    if (dimensions != null)
+      lValue.setDimensions(dimensions);
+    String code = lValue.generateCode();
+    if (code != null) {
+      String newTemp = newTemp();
+      emit("array_load, " + newTemp + ", " + id + ", " + code);
+      return newTemp;
+    }
     return id;
+  }
+
+  public int getValue() {
+    if (expression != null)
+      return expression.getValue();
+    else if (factor != null)
+      return -factor.getValue();
+    else if (constant != null)
+      return constant.getIntegerValue();
+    return 0;
   }
 }

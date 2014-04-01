@@ -23,6 +23,7 @@ public class Parser {
     printOut += tree.print();
     printOut += table.print();
     tigerProgram.generateCode();
+    printOut += ParserRule.getGeneratedCode();
   }
 
   public void addToPrintOut(String toAdd) {

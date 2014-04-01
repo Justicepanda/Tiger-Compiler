@@ -8,7 +8,7 @@ public class AddTerm2 extends ParserRule {
   private AddTerm2 addTerm2;
   private AddOp addOp;
   private boolean isExpanded;
-  private String op;
+  private String op = "";
 
   @Override
   public void parse() {
@@ -62,5 +62,25 @@ public class AddTerm2 extends ParserRule {
 
   public String getOp() {
     return op;
+  }
+
+  public boolean isConstant() {
+    if (isExpanded)
+      return multTerm.isConstant() && addTerm2.isConstant();
+    else
+      return true;
+  }
+
+  public int getValue() {
+    if (isExpanded) {
+      if (addTerm2.getOp().equals("add"))
+        return multTerm.getValue() + addTerm2.getValue();
+      else if (addTerm2.getOp().equals("sub"))
+        return multTerm.getValue() - addTerm2.getValue();
+      else
+        return multTerm.getValue();
+    }
+    else
+      return 0;
   }
 }

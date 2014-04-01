@@ -3,6 +3,7 @@ package symboltable;
 import java.util.List;
 
 public class Type extends Entry {
+  private String name;
   private final String actualType;
   private boolean isConstant;
   private List<Integer> dimensions;
@@ -13,6 +14,7 @@ public class Type extends Entry {
 
   public Type(String name, String actualType) {
     super(name);
+    this.name = name;
     this.actualType = actualType;
   }
 
@@ -55,6 +57,11 @@ public class Type extends Entry {
     this.dimensions = dimensions;
   }
 
+  public void setNotArray() {
+    this.dimensions = null;
+    this.name = actualType;
+  }
+
   public boolean isArray() {
     return dimensions != null;
   }
@@ -68,5 +75,16 @@ public class Type extends Entry {
 
   public List<Integer> getDimensions() {
     return dimensions;
+  }
+
+  public boolean isConstant() {
+    return isConstant;
+  }
+
+  public int getLinearSize() {
+    int res = 1;
+    for (int dim : dimensions)
+      res *= dim;
+    return res;
   }
 }

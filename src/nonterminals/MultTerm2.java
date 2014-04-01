@@ -8,7 +8,7 @@ public class MultTerm2 extends ParserRule {
   private MultTerm2 multTerm2;
   private MultOp multOp;
   private boolean expanded;
-  private String op;
+  private String op = "";
 
 
   @Override
@@ -64,5 +64,23 @@ public class MultTerm2 extends ParserRule {
 
   public String getOp() {
     return op;
+  }
+
+  public boolean isConstant() {
+    if (isExpanded())
+      return factor.isConstant() && multTerm2.isConstant();
+    else
+      return true;
+  }
+
+  public int getValue() {
+    if (isExpanded()) {
+      if (multTerm2.getOp().equals("mult"))
+        return factor.getValue() * multTerm2.getValue();
+      else
+        return factor.getValue() / multTerm2.getValue();
+    }
+    else
+      return 1;
   }
 }

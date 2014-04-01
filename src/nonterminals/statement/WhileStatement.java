@@ -35,6 +35,10 @@ public class WhileStatement extends Statement {
     emit(startWhile + ":");
     if (expression.hasEqualityOperation())
       emit(expression.getCodeEqualityOperation() + ", " + afterWhile);
+    else {
+      String id = expression.generateCode();
+      emit("breq, " + id + ", 0, " + afterWhile);
+    }
     statSequence.generateCode();
     emit("goto, " + startWhile + ", , ");
     emit(afterWhile + ":");

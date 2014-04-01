@@ -32,7 +32,8 @@ class Main
 
 		initCompiler();
 		compiler.compile(filename);
-    System.out.println(parser.getPrintOut());
+    if (debugFlag)
+      System.out.println(parser.getPrintOut());
 	}
 
 	private static void parseArgs(String[] args) 

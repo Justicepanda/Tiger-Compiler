@@ -24,8 +24,21 @@ public class EqualityTermTail extends ParserRule {
     return decideType(addTermTail, equalityTerm2);
   }
 
+  public void setId(String id) {
+    addTermTail.setId(id);
+  }
+
   @Override
   public String generateCode() {
-    return null;
+    if (equalityTerm2.isExpanded()) {
+      return "";
+    }
+    else {
+      return addTermTail.generateCode();
+    }
+  }
+
+  public boolean isArray() {
+    return addTermTail.isArray();
   }
 }

@@ -114,8 +114,17 @@ public class StatIdTail extends ParserRule {
   public String generateCode() {
     if (expression != null)
       return expression.generateCode();
-    else
-      return statIdTailTail.generateCode();
+    else {
+      if (!statIdTailTail.isFunction()) {
+        statIdTailTail.setId(id);
+        String temp = statIdTailTail.generateCode();
+        String newTemp = newTemp();
+        if (statIdTailTail.isArray())
+          emit("array_load, " + newTemp + ", " + id + ", " + temp);
+        return newTemp;
+      }
+      return null;
+    }
   }
 
   public List<Expression> getParameters() {

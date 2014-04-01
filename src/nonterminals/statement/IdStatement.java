@@ -4,6 +4,7 @@ import nonterminals.Expression;
 import nonterminals.StatId;
 import parser.NoSuchIdentifierException;
 import symboltable.Argument;
+import symboltable.Array;
 
 import java.util.List;
 
@@ -41,9 +42,10 @@ public class IdStatement extends Statement {
 
   private void checkArguments(String id) {
     List<Argument> args = getFunction(id).getArguments();
-    for (int i = 0; i < statId.getParameters().size(); i++)
+    for (int i = 0; i < statId.getParameters().size(); i++) {
       if (argDoesNotMatchType(args, i))
         generateException();
+    }
   }
 
   private boolean argDoesNotMatchType(List<Argument> args, int i) {
@@ -58,8 +60,15 @@ public class IdStatement extends Statement {
       emit("call, " + id + printParameters());
     else if (statId.isReturnedFunction())
       emit("callr, " + id + ", " + statId.getFunctionId() + printParameters());
-    else
-      emit("assign, " + id + ", " + statIdId + ", ");
+    else {
+      if (getVariable(id).getType().isArray()) {
+        statId.setDimensions(((Array)getVariable(id)).getDimensions());
+        emit("array_store, " + id + ", " + statId.getLeftArrayIndex() + ", " + statIdId);
+      }
+      else {
+        emit("assign, " + id + ", " + statIdId + ", ");
+      }
+    }
     return null;
   }
 

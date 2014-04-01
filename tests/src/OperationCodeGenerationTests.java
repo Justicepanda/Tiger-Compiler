@@ -247,4 +247,28 @@ public class OperationCodeGenerationTests {
             parser.getGeneratedCode()
     );
   }
+
+  @Test
+  public void lessOperation() {
+    String[] arr = {"let " +
+            "var a : int;" +
+            "in " +
+            "a := 1 < 2;" +
+            "end"};
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals(
+            "main:\n" +
+                    "brgeq, 1, 2, false1\n" +
+                    "breq, 0, 0, true1\n" +
+                    "false1:\n" +
+                    "assign, t1, 0, \n" +
+                    "breq, 0, 0, done1\n" +
+                    "true1:\n" +
+                    "assign, t1, 1, \n" +
+                    "done1:\n" +
+                    "assign, a, t1, \n",
+            parser.getGeneratedCode()
+    );
+  }
 }

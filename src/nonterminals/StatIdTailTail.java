@@ -45,9 +45,17 @@ public class StatIdTailTail extends ParserRule {
     return type;
   }
 
+  public void setId(String id) {
+    if (andOrTermTail != null)
+      andOrTermTail.setId(id);
+  }
+
   @Override
   public String generateCode() {
-    return null;
+    if (andOrTermTail != null)
+      return andOrTermTail.generateCode();
+    else
+      return null;
   }
 
   public List<Expression> getParameters() {
@@ -58,5 +66,9 @@ public class StatIdTailTail extends ParserRule {
 
   public boolean isFunction() {
     return function;
+  }
+
+  public boolean isArray() {
+    return andOrTermTail.isArray();
   }
 }

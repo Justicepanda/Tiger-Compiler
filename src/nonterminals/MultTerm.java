@@ -36,4 +36,17 @@ public class MultTerm extends ParserRule {
     }
     return factor.generateCode();
   }
+
+  public boolean isConstant() {
+    return factor.isConstant() && multTerm2.isConstant();
+  }
+
+  public int getValue() {
+    if (multTerm2.getOp().equals("mult"))
+      return factor.getValue() * multTerm2.getValue();
+    else if (multTerm2.getOp().equals("div"))
+      return factor.getValue() / multTerm2.getValue();
+    else
+      return factor.getValue();
+  }
 }

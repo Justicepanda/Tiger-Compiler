@@ -37,4 +37,17 @@ public class AddTerm extends ParserRule {
     else
       return multTerm.generateCode();
   }
+
+  public boolean isConstant() {
+    return multTerm.isConstant() && addTerm2.isConstant();
+  }
+
+  public int getValue() {
+    if (addTerm2.getOp().equals("add"))
+      return multTerm.getValue() + addTerm2.getValue();
+    else if (addTerm2.getOp().equals("sub"))
+      return multTerm.getValue() - addTerm2.getValue();
+    else
+      return multTerm.getValue();
+  }
 }

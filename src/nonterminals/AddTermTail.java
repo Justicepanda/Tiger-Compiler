@@ -24,8 +24,25 @@ public class AddTermTail extends ParserRule {
     return decideType(multTermTail, addTerm2);
   }
 
+  public void setId(String id) {
+    multTermTail.setId(id);
+  }
+
   @Override
   public String generateCode() {
-    return null;
+    if (addTerm2.isExpanded()) {
+      String op = addTerm2.getOp();
+      String a = multTermTail.generateCode();
+      String b = addTerm2.generateCode();
+      String temp = newTemp();
+      emit(op + ", " + temp + ", " + a + ", " + b);
+      return temp;
+    }
+    else
+      return multTermTail.generateCode();
+  }
+
+  public boolean isArray() {
+    return multTermTail.isArray();
   }
 }

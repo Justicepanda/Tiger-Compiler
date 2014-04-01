@@ -41,7 +41,14 @@ public class Expression extends ParserRule {
 
   @Override
   public String generateCode() {
-    return andOrTerm.generateCode();
+    if (andOrTerm != null)
+      return andOrTerm.generateCode();
+    else {
+      String temp = newTemp();
+      String exTemp = expression.generateCode();
+      emit("sub, " + temp + ", 0, " + exTemp);
+      return temp;
+    }
   }
 
   public String getCodeEqualityOperation() {
@@ -50,5 +57,16 @@ public class Expression extends ParserRule {
 
   public boolean hasEqualityOperation() {
     return andOrTerm.hasEqualityOperation();
+  }
+
+  public boolean isConstant() {
+    return type.isConstant();
+  }
+
+  public int getValue() {
+    if (expression != null)
+      return -expression.getValue();
+    else
+      return andOrTerm.getValue();
   }
 }

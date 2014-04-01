@@ -32,8 +32,8 @@ public class IfStatement extends Statement {
   @Override
   public String generateCode() {
     String endLabel = newLabel("after_if");
-    if (expression.hasEqualityOperation())
-      emit(expression.getCodeEqualityOperation() + ", " + endLabel);
+    String temp = expression.generateCode();
+    emit("breq, " + temp + ", 0, " + endLabel);
     statSequence.generateCode();
     emit(endLabel + ":");
     return null;

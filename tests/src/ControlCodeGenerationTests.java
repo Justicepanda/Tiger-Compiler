@@ -260,4 +260,43 @@ public class ControlCodeGenerationTests {
                     "after_while1:\n",
             parser.getGeneratedCode());
   }
+
+  @Test
+  public void whileLoopWithNumericExpression() {
+    String[] arr = {"let " +
+            "in " +
+            "while 1 + 2 " +
+            "do " +
+            "print(\"\");" +
+            "enddo;" +
+            "end" };
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals("main:\n" +
+                    "start_while1:\n" +
+                    "add, t1, 1, 2\n" +
+                    "breq, t1, 0, after_while1\n" +
+                    "call, print, \"\"\n" +
+                    "goto, start_while1, , \n" +
+                    "after_while1:\n",
+            parser.getGeneratedCode());
+  }
+
+  @Test
+  public void ifStatementWithNumericExpression() {
+    String[] arr = {"let " +
+            "in " +
+            "if 1 + 2 then " +
+            "print(\"\");" +
+            "endif;" +
+            "end" };
+    scanner.scan(arr);
+    parser.parse();
+    assertEquals("main:\n" +
+                    "add, t1, 1, 2\n" +
+                    "breq, t1, 0, after_if1\n" +
+                    "call, print, \"\"\n" +
+                    "after_if1:\n",
+            parser.getGeneratedCode());
+  }
 }

@@ -35,6 +35,10 @@ public class StatId extends ParserRule {
     type = statIdTail.getType();
   }
 
+  public String getLeftArrayIndex() {
+    return lValue.generateCode();
+  }
+
   @Override
   public String getLabel() {
     return "<stat-id>";
@@ -83,5 +87,9 @@ public class StatId extends ParserRule {
 
   public boolean hasParameters() {
     return !getParameters().isEmpty();
+  }
+
+  public void setDimensions(List<Integer> dimensions) {
+    lValue.setDimensions(dimensions);
   }
 }

@@ -24,8 +24,26 @@ public class AndOrTermTail extends ParserRule {
     return decideType(equalityTermTail, andOrTerm2);
   }
 
+  public void setId(String id) {
+    equalityTermTail.setId(id);
+  }
+
   @Override
   public String generateCode() {
-    return null;
+    if (andOrTerm2.isExpanded()) {
+      String op = andOrTerm2.getOp();
+      String a = equalityTermTail.generateCode();
+      String b = andOrTerm2.generateCode();
+      String temp = newTemp();
+      emit(op + ", " + temp + ", " + a + ", " + b);
+      return temp;
+    }
+    else {
+      return equalityTermTail.generateCode();
+    }
+  }
+
+  public boolean isArray() {
+    return equalityTermTail.isArray();
   }
 }

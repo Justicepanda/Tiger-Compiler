@@ -46,4 +46,25 @@ public class AndOrTerm extends ParserRule {
   public boolean hasEqualityOperation() {
     return equalityTerm.isExpanded();
   }
+
+  public boolean isConstant() {
+    return equalityTerm.isConstant() && andOrTerm2.isConstant();
+  }
+
+  public int getValue() {
+    if (andOrTerm2.getOp().equals("and")) {
+      if (equalityTerm.getValue() != 0 && andOrTerm2.getValue() != 0)
+        return 1;
+      else
+        return 0;
+    }
+    else if (andOrTerm2.getOp().equals("or")) {
+      if (equalityTerm.getValue() != 0 || andOrTerm2.getValue() != 0)
+        return 1;
+      else
+        return 0;
+    }
+    else
+      return equalityTerm.getValue();
+  }
 }

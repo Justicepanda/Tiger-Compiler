@@ -1,7 +1,9 @@
 package nonterminals;
 
 import parser.ParserRule;
+import symboltable.Argument;
 import symboltable.Type;
+import symboltable.Variable;
 
 public class FunctionDeclaration extends ParserRule {
   private final ParamList paramList = new ParamList();
@@ -22,6 +24,9 @@ public class FunctionDeclaration extends ParserRule {
     id = matchIdAndGetValue();
     matchTerminal("LPAREN");
     matchNonTerminal(paramList);
+    for (Argument arg: paramList.getArguments()) {
+      addVariable(new Variable(arg.getType(), arg.getName()));
+    }
     matchTerminal("RPAREN");
     matchNonTerminal(returnType);
     matchTerminal("BEGIN");

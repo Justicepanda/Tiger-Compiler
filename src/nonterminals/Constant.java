@@ -55,6 +55,11 @@ public class Constant extends ParserRule {
   @Override
   public String generateCode() {
     return value;
+  }
 
+  public int getIntegerValue() {
+    if (type.isExactlyOfType(INT_TYPE))
+      return Integer.valueOf(value);
+    return 0;
   }
 }

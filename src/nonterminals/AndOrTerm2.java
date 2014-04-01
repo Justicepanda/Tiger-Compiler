@@ -8,7 +8,7 @@ public class AndOrTerm2 extends ParserRule {
   private EqualityTerm equalityTerm;
   private AndOrTerm2 andOrTerm2;
   private boolean expanded;
-  private String op;
+  private String op = "";
 
   @Override
   public void parse() {
@@ -63,5 +63,35 @@ public class AndOrTerm2 extends ParserRule {
 
   public String getOp() {
     return op;
+  }
+
+  public boolean isConstant() {
+    if (isExpanded())
+      return equalityTerm.isConstant() && andOrTerm2.isConstant();
+    else
+      return true;
+  }
+
+  public int getValue() {
+    if (isExpanded()) {
+      if (!andOrTerm2.isExpanded())
+        return equalityTerm.getValue();
+      if (andOrTerm2.getOp().equals("and")) {
+        if (equalityTerm.getValue() != 0 && andOrTerm2.getValue() != 0)
+          return 1;
+        else
+          return 0;
+      }
+      else if (andOrTerm2.getOp().equals("or")) {
+        if (equalityTerm.getValue() != 0 || andOrTerm2.getValue() != 0)
+          return 1;
+        else
+          return 0;
+      }
+      else
+        return equalityTerm.getValue();
+    }
+    else
+      return 1;
   }
 }
