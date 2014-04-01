@@ -61,7 +61,7 @@ public class IdStatement extends Statement {
     else if (statId.isReturnedFunction())
       emit("callr, " + id + ", " + statId.getFunctionId() + printParameters());
     else {
-      if (getVariable(id).getType().isArray()) {
+      if (getVariable(id) instanceof Array) {
         statId.setDimensions(((Array)getVariable(id)).getDimensions());
         emit("array_store, " + id + ", " + statId.getLeftArrayIndex() + ", " + statIdId);
       }

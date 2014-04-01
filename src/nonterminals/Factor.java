@@ -86,14 +86,16 @@ public class Factor extends ParserRule {
       return constant.generateCode();
     else if (expression != null)
       return expression.generateCode();
-    List<Integer> dimensions = getVariable(id).getType().getDimensions();
-    if (dimensions != null)
-      lValue.setDimensions(dimensions);
-    String code = lValue.generateCode();
-    if (code != null) {
-      String newTemp = newTemp();
-      emit("array_load, " + newTemp + ", " + id + ", " + code);
-      return newTemp;
+    if (id != null) {
+      List<Integer> dimensions = getVariable(id).getType().getDimensions();
+      if (dimensions != null)
+        lValue.setDimensions(dimensions);
+      String code = lValue.generateCode();
+      if (code != null) {
+        String newTemp = newTemp();
+        emit("array_load, " + newTemp + ", " + id + ", " + code);
+        return newTemp;
+      }
     }
     return id;
   }

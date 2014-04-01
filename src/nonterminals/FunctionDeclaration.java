@@ -24,8 +24,10 @@ public class FunctionDeclaration extends ParserRule {
     id = matchIdAndGetValue();
     matchTerminal("LPAREN");
     matchNonTerminal(paramList);
-    for (Argument arg: paramList.getArguments()) {
-      addVariable(new Variable(arg.getType(), arg.getName()));
+    if (paramList != null && paramList.getArguments() != null) {
+      for (Argument arg : paramList.getArguments()) {
+        addVariable(new Variable(arg.getType(), arg.getName()));
+      }
     }
     matchTerminal("RPAREN");
     matchNonTerminal(returnType);
