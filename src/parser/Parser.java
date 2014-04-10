@@ -1,12 +1,13 @@
 package parser;
 
+import backend.RegisterAllocator;
 import compiler.TokenTuple;
 import nonterminals.TigerProgram;
 import scanner.Scanner;
 import symboltable.*;
 
 public class Parser {
-	private final Scanner scanner;
+  private final Scanner scanner;
   private final SymbolTable table = new SymbolTable();
   private final ParserTree tree = new ParserTree();
   private String printOut = "";
@@ -20,10 +21,18 @@ public class Parser {
 	public void parse() {
     TigerProgram tigerProgram = new TigerProgram();
     tigerProgram.parse();
+    printOut += "\n\nParse Tree\n";
     printOut += tree.print();
+    printOut += "\n";
+    printOut += "Symbol Table\n";
     printOut += table.print();
+    printOut += "\n";
     tigerProgram.generateCode();
-    printOut += ParserRule.getGeneratedCode();
+    RegisterAllocator ra = new RegisterAllocator(table, ParserRule.getGeneratedCode());
+    printOut += "Intermediate Code\n";
+    printOut += ra.getGeneratedIrCode();
+    printOut += "\n";
+    printOut += "MIPS Code";
   }
 
   public void addToPrintOut(String toAdd) {
