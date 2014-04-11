@@ -16,7 +16,7 @@ public class SymbolTable
 
 	private enum SymbolType
 	{
-		TYPE, VARIABLE, ARRAY, FUNCTION
+		TYPE, VARIABLE, ARRAY, FUNCTION, TEMPORARY
 	}
 
 	private static Map<SymbolType, Map<String, List<Entry>>> table;
@@ -34,6 +34,7 @@ public class SymbolTable
 		table.put(SymbolType.VARIABLE, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.ARRAY, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
+		table.put(SymbolType.TEMPORARY, new HashMap<String, List<Entry>>());
 	}
 
 	private void addDefaults() {
@@ -87,6 +88,11 @@ public class SymbolTable
 	{
 		addEntry(SymbolType.FUNCTION, entry);
 	}
+	
+	public void addTemporary(Temporary entry)
+	{
+		addEntry(SymbolType.TEMPORARY, entry);
+	}
 
 	private void addEntry(SymbolType label, Entry entry)
 	{
@@ -136,6 +142,13 @@ public class SymbolTable
 		return null;
 	}
 	
+	public Array getTemporary(String tempId) 
+	{
+		if(table.get(SymbolType.TEMPORARY).get(tempId) != null)
+			return ((Array)table.get(SymbolType.TEMPORARY).get(tempId).get(0));
+		return null;
+	}
+	
 	public ArrayList<Variable> getVariables()
 	{
 		ArrayList<Variable> vars = new ArrayList<Variable>();
@@ -150,6 +163,22 @@ public class SymbolTable
 			}
 		}
 		return vars;
+	}
+	
+	public ArrayList<Temporary> getTemoraries()
+	{
+		ArrayList<Temporary> temps = new ArrayList<Temporary>();
+		Collection<List<Entry>> entries = table.get(SymbolType.TEMPORARY).values();
+		Iterator iter = entries.iterator();
+		while(iter.hasNext())
+		{
+			Iterator subIter = ((List<Entry>)iter.next()).iterator();
+			while(subIter.hasNext())
+			{
+				temps.add((Temporary)subIter.next());
+			}
+		}
+		return temps;
 	}
 	
 	public ArrayList<Function> getFunctions()

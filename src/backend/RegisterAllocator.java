@@ -16,7 +16,7 @@ public class RegisterAllocator
 	{
 		this.table = table;
 		this.inputIrCode = irCode;
-		this.memory = new DataModel(table.getVariables(), table.getFunctions(), table.getArrays());
+		this.memory = new DataModel(table.getVariables(), table.getFunctions(), table.getArrays(), table.getTemoraries());
 		//This is where you can choose which type of register allocation to use
 		this.outputIrCode = produceNaiveCode();
 	}
@@ -63,42 +63,42 @@ public class RegisterAllocator
 		String[] instrParams = string.split(",");
 		if(isAssignment(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1] + "\n");
-			newLines.add("load r1," + instrParams[2] + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
+			newLines.add("load, r1," + instrParams[2] + "\n");
 			newLines.add("assign, r0, r1" + "\n");
-			newLines.add("store r0," + instrParams[1] + "\n");
+			newLines.add("store, r0," + instrParams[1] + "\n");
 		}
 		else if(isBinaryOp(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1] + "\n");
-			newLines.add("load r1," + instrParams[2] + "\n");
-			newLines.add("load r2," + instrParams[3] + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
+			newLines.add("load, r1," + instrParams[2] + "\n");
+			newLines.add("load, r2," + instrParams[3] + "\n");
 			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
-			newLines.add("store r2," + instrParams[1] + "\n");
+			newLines.add("store, r2," + instrParams[1] + "\n");
 		}
 		else if(isBranch(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1] + "\n");
-			newLines.add("load r1," + instrParams[2] + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
+			newLines.add("load, r1," + instrParams[2] + "\n");
 			newLines.add(instrParams[0] + ", r0, r1, " + instrParams[3] + "\n");
 		}
 		else if(isArrayStore(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1]);
-			newLines.add("load r1," + instrParams[2]);
-			newLines.add("load r2," + instrParams[3]);
+			newLines.add("load, r0," + instrParams[1]);
+			newLines.add("load, r1," + instrParams[2]);
+			newLines.add("load, r2," + instrParams[3]);
 			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
 		}
 		else if(isArrayLoad(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1] + "\n");
-			newLines.add("load r1," + instrParams[2] + "\n");
-			newLines.add("load r2," + instrParams[3] + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
+			newLines.add("load, r1," + instrParams[2] + "\n");
+			newLines.add("load, r2," + instrParams[3] + "\n");
 			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
 		}
 		else if(isReturn(instrParams[0]))
 		{
-			newLines.add("load r0," + instrParams[1] + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
 			newLines.add(instrParams[0] + ", r0" + "\n");
 		}
 		else if(isFunctionCall(instrParams[0]))
@@ -172,5 +172,10 @@ public class RegisterAllocator
 			return true;
 		else
 			return false;
+	}
+	
+	public DataModel getDataModel()
+	{
+		return memory;
 	}
 }

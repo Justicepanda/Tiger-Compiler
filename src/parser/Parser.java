@@ -1,5 +1,6 @@
 package parser;
 
+import backend.MIPSCodeGenerator;
 import backend.RegisterAllocator;
 import compiler.TokenTuple;
 import nonterminals.TigerProgram;
@@ -32,7 +33,9 @@ public class Parser {
     printOut += "Intermediate Code\n";
     printOut += ra.getGeneratedIrCode();
     printOut += "\n";
-    printOut += "MIPS Code";
+    printOut += "MIPS Code\n";
+    MIPSCodeGenerator mips = new MIPSCodeGenerator(ra.getGeneratedIrCode(), ra.getDataModel());
+    printOut += mips.getGeneratedMIPSCode();
   }
 
   public void addToPrintOut(String toAdd) {
@@ -53,6 +56,11 @@ public class Parser {
 
   public void addFunction(Function function) {
     table.addFunction(function);
+  }
+  
+  public SymbolTable getTable()
+  {
+	  return table;
   }
 
   public void addType(Type type) {
