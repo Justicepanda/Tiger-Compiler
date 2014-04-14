@@ -35,6 +35,7 @@ public class IdStatement extends Statement {
       generateException();
   }
 
+
   private void checkArgumentsIfExist(String id) {
     if (super.getFunction(id) != null && statId.getParameters() != null)
       checkArguments(id);
