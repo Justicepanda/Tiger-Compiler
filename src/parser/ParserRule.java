@@ -150,7 +150,9 @@ public abstract class ParserRule {
   }
 
   protected String newTemp() {
-    return nameMaker.newTemp();
+	  String id = nameMaker.newTemp();
+	 parser.getTable().addTemporary(new Temporary(Type.NIL_TYPE, id));
+    return id;
   }
 
   public String newLabel(String labelBase) {

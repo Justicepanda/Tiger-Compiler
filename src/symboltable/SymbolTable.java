@@ -1,9 +1,12 @@
 package symboltable;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import static symboltable.Type.INT_TYPE;
 import static symboltable.Type.STRING_TYPE;
@@ -13,7 +16,7 @@ public class SymbolTable
 
 	private enum SymbolType
 	{
-		TYPE, VARIABLE, ARRAY, FUNCTION
+		TYPE, VARIABLE, ARRAY, FUNCTION, TEMPORARY
 	}
 
 	private static Map<SymbolType, Map<String, List<Entry>>> table;
@@ -31,6 +34,7 @@ public class SymbolTable
 		table.put(SymbolType.VARIABLE, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.ARRAY, new HashMap<String, List<Entry>>());
 		table.put(SymbolType.FUNCTION, new HashMap<String, List<Entry>>());
+		table.put(SymbolType.TEMPORARY, new HashMap<String, List<Entry>>());
 	}
 
 	private void addDefaults() {
@@ -84,6 +88,11 @@ public class SymbolTable
 	{
 		addEntry(SymbolType.FUNCTION, entry);
 	}
+	
+	public void addTemporary(Temporary entry)
+	{
+		addEntry(SymbolType.TEMPORARY, entry);
+	}
 
 	private void addEntry(SymbolType label, Entry entry)
 	{
@@ -131,5 +140,76 @@ public class SymbolTable
 		if(table.get(SymbolType.ARRAY).get(arrayId) != null)
 			return ((Array)table.get(SymbolType.ARRAY).get(arrayId).get(0));
 		return null;
+	}
+	
+	public Array getTemporary(String tempId) 
+	{
+		if(table.get(SymbolType.TEMPORARY).get(tempId) != null)
+			return ((Array)table.get(SymbolType.TEMPORARY).get(tempId).get(0));
+		return null;
+	}
+	
+	public ArrayList<Variable> getVariables()
+	{
+		ArrayList<Variable> vars = new ArrayList<Variable>();
+		Collection<List<Entry>> entries = table.get(SymbolType.VARIABLE).values();
+		Iterator iter = entries.iterator();
+		while(iter.hasNext())
+		{
+			Iterator subIter = ((List<Entry>)iter.next()).iterator();
+			while(subIter.hasNext())
+			{
+				vars.add((Variable)subIter.next());
+			}
+		}
+		return vars;
+	}
+	
+	public ArrayList<Temporary> getTemoraries()
+	{
+		ArrayList<Temporary> temps = new ArrayList<Temporary>();
+		Collection<List<Entry>> entries = table.get(SymbolType.TEMPORARY).values();
+		Iterator iter = entries.iterator();
+		while(iter.hasNext())
+		{
+			Iterator subIter = ((List<Entry>)iter.next()).iterator();
+			while(subIter.hasNext())
+			{
+				temps.add((Temporary)subIter.next());
+			}
+		}
+		return temps;
+	}
+	
+	public ArrayList<Function> getFunctions()
+	{
+		ArrayList<Function> funcs = new ArrayList<Function>();
+		Collection<List<Entry>> entries = table.get(SymbolType.FUNCTION).values();
+		Iterator iter = entries.iterator();
+		while(iter.hasNext())
+		{
+			Iterator subIter = ((List<Entry>)iter.next()).iterator();
+			while(subIter.hasNext())
+			{
+				funcs.add((Function)subIter.next());
+			}
+		}
+		return funcs;
+	}
+	
+	public ArrayList<Array> getArrays()
+	{
+		ArrayList<Array> arrays = new ArrayList<Array>();
+		Collection<List<Entry>> entries = table.get(SymbolType.ARRAY).values();
+		Iterator iter = entries.iterator();
+		while(iter.hasNext())
+		{
+			Iterator subIter = ((List<Entry>)iter.next()).iterator();
+			while(subIter.hasNext())
+			{
+				arrays.add((Array)subIter.next());
+			}
+		}
+		return arrays;
 	}
 }
