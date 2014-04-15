@@ -25,22 +25,6 @@ public class MIPSCodeGenerator
 		newLines.add(".globl main\n");
 		for(int i = 0; i < lines.length; i++)
 		{
-			if(lines[i].contains("main:"))
-			{
-				String[] tempLines = new String[lines.length - i];
-				for(int j = i; j < lines.length; j++)
-				{
-					tempLines[j - i] = lines[j];
-				}
-				lines = tempLines;
-			}
-			else
-			{
-				//Something went wrong... the main label doesn't exist for some reason
-			}
-		}
-		for(int i = 0; i < lines.length; i++)
-		{
 			if(lines[i].contains(":") && !lines[i].substring(lines[i].length() - 1, lines[i].length()).equals(":"))
 			{
 				List<String> tempLines = generateNewCode(lines[i].split(":")[1]);
@@ -108,6 +92,11 @@ public class MIPSCodeGenerator
 			{
 				newLines.add("or " + r0 + ", " + r1 + ", " + r2 + "\n");
 			}
+			else if(instrParams[0].equals("addi"))
+			{
+				r2 = instrParams[3];
+				newLines.add("addi " + r0 + ", " + r1 + ", " + r2 + "\n");
+			}
 		}
 		else if(isBranch(instrParams[0]))
 		{
@@ -141,11 +130,16 @@ public class MIPSCodeGenerator
 		}
 		else if(isArrayStore(instrParams[0]))
 		{
-
+			String r0 = getActualRegister(instrParams[1]);
+			String r2 = getActualRegister(instrParams[3]);
+			newLines.add("sw " + r0 + ", 0(" + r2 + ")\n");
 		}
 		else if(isArrayLoad(instrParams[0]))
 		{
-			
+			String r0 = getActualRegister(instrParams[1]);
+			String r2 = getActualRegister(instrParams[2]);
+			String r3 = getActualRegister(instrParams[3]);
+			newLines.add("lw " + r0 + ", 0(" + r3 + ")\n");
 		}
 		else if(isReturn(instrParams[0]))
 		{
@@ -162,9 +156,7 @@ public class MIPSCodeGenerator
 		else if(isLoad(instrParams[0]))
 		{
 			String r0 = getActualRegister(instrParams[1]);
-			
-			newLines.add("la $t9" + "," + instrParams[2] + "\n");
-			newLines.add("lw " + r0 + ", 0($t9)\n");
+			newLines.add("la " + r0 + "," + instrParams[2] + "\n");
 		}
 		else if(isStore(instrParams[0]))
 		{
@@ -189,28 +181,26 @@ public class MIPSCodeGenerator
 
 	private String getActualRegister(String string) 
 	{
-		if(string.equals("r0"))
+		if(string.replaceAll("\\s", "").equals("r0"))
 			return "$t0";
-		else if(string.replace(" ", "").equals("r1"))
+		else if(string.replaceAll("\\s", "").equals("r1"))
 			return "$t1";
-		else if(string.replace(" ", "").equals("r2"))
+		else if(string.replaceAll("\\s", "").equals("r2"))
 			return "$t2";
-		else if(string.replace(" ", "").equals("r3"))
+		else if(string.replaceAll("\\s", "").equals("r3"))
 			return "$t3";
-		else if(string.replace(" ", "").equals("r4"))
+		else if(string.replaceAll("\\s", "").equals("r4"))
 			return "$t4";
-		else if(string.replace(" ", "").equals("r5"))
+		else if(string.replaceAll("\\s", "").equals("r5"))
 			return "$t5";
-		else if(string.replace(" ", "").equals("r6"))
+		else if(string.replaceAll("\\s", "").equals("r6"))
 			return "$t6";
-		else if(string.replace(" ", "").equals("r7"))
+		else if(string.replaceAll("\\s", "").equals("r7"))
 			return "$t7";
-		else if(string.replace(" ", "").equals("r8"))
+		else if(string.replaceAll("\\s", "").equals("r8"))
 			return "$t8";
-		else if(string.replace(" ", "").equals("r9"))
-			return "$t9";
 		else
-			return "$t0";
+			return string;
 	}
 
 	private boolean isStore(String string) 
@@ -287,7 +277,8 @@ public class MIPSCodeGenerator
 	private boolean isBinaryOp(String string) 
 	{
 		if(string.replace(" ", "").equals("add") || string.replace(" ", "").equals("sub") || string.replace(" ", "").equals("mult") 
-				|| string.replace(" ", "").equals("div") || string.replace(" ", "").equals("and") || string.replace(" ", "").equals("or"))
+				|| string.replace(" ", "").equals("div") || string.replace(" ", "").equals("and") || string.replace(" ", "").equals("or")
+				|| string.replaceAll("\\s", "").equals("addi"))
 			return true;
 		else
 			return false;

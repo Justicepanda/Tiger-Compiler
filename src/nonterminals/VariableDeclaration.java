@@ -77,8 +77,19 @@ public class VariableDeclaration extends ParserRule {
   @Override
   public String generateCode() {
     if (optionalInit.getType() != Type.NIL_TYPE)
-      for (String id : idList.getIds())
-        emit("assign, " + id + ", " + optionalInit.getValue() + ", ");
+    {
+    	if(typeId.getType().isArray())
+    	{
+    		for(String id: idList.getIds())
+    		for(int i = 0; i < typeId.getType().getLinearSize(); i++)
+    			emit("array_store, " + id + ", " + i + ", " + optionalInit.getValue());
+    	}
+    	else
+    	{
+	    	for (String id : idList.getIds())
+				emit("assign, " + id + ", " + optionalInit.getValue() + ", ");
+    	}
+    }
     return null;
   }
 }

@@ -26,6 +26,29 @@ public class RegisterAllocator
 		return outputIrCode;
 	}
 	
+	public String produceCFGCode()
+	{
+		String[] lines = inputIrCode.split("\n");
+		
+		//Build the control flow graph
+		ControlFlowGraph cfg = new ControlFlowGraph();
+		
+		List<String> lineList = new ArrayList<String>();
+		//Put lines into a list
+		for(int i = 0; i < lines.length; i++)
+		{
+			lineList.add(lines[i]);
+		}
+		
+		cfg.createGraph(lineList);
+		
+		String output = "";
+		
+		//Allocate registers intra-block
+		
+		return cfg.print();
+	}
+	
 	public String produceNaiveCode()
 	{
 		String[] lines = inputIrCode.split("\n");
@@ -34,14 +57,14 @@ public class RegisterAllocator
 		{
 			if(lines[i].contains(":") && !lines[i].substring(lines[i].length() - 1, lines[i].length()).equals(":"))
 			{
-				List<String> tempLines = generateNewCode(lines[i].split(":")[1]);
+				List<String> tempLines = generateNaiveCode(lines[i].split(":")[1]);
 				newLines.add(lines[i].split(":")[0]);
 				for(int j = 0; j < tempLines.size(); j++)
 					newLines.add(tempLines.get(j));
 			}
 			else
 			{
-				List<String> tempLines = generateNewCode(lines[i]);
+				List<String> tempLines = generateNaiveCode(lines[i]);
 				for(int j = 0; j < tempLines.size(); j++)
 					newLines.add(tempLines.get(j));
 			}
@@ -56,7 +79,7 @@ public class RegisterAllocator
 		return output;
 	}
 
-	private List<String> generateNewCode(String string) 
+	private List<String> generateNaiveCode(String string) 
 	{
 		List<String> newLines = new ArrayList<String>();
 		//Parse the instruction to find the variables used
@@ -65,36 +88,77 @@ public class RegisterAllocator
 		{
 			newLines.add("load, r0," + instrParams[1] + "\n");
 			newLines.add("load, r1," + instrParams[2] + "\n");
-			newLines.add("assign, r0, r1" + "\n");
+			newLines.add("assign, r0, r1" + ",\n");
 			newLines.add("store, r0," + instrParams[1] + "\n");
 		}
 		else if(isBinaryOp(instrParams[0]))
 		{
+			String r1 = "r1";
+			String r2 = "r2";
 			newLines.add("load, r0," + instrParams[1] + "\n");
-			newLines.add("load, r1," + instrParams[2] + "\n");
-			newLines.add("load, r2," + instrParams[3] + "\n");
-			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
+			if(!isNumeric(instrParams[2]))
+				newLines.add("load, r1," + instrParams[2] + "\n");
+			else
+				r1 = instrParams[2];
+			if(!isNumeric(instrParams[3]))
+				newLines.add("load, r2," + instrParams[3] + "\n");
+			else
+				r2 = instrParams[3];
+			newLines.add(instrParams[0] + ", r0, " + r1 + "," + r2 + "\n");
 			newLines.add("store, r2," + instrParams[1] + "\n");
 		}
 		else if(isBranch(instrParams[0]))
 		{
-			newLines.add("load, r0," + instrParams[1] + "\n");
-			newLines.add("load, r1," + instrParams[2] + "\n");
-			newLines.add(instrParams[0] + ", r0, r1, " + instrParams[3] + "\n");
+			String r0 = "r0";
+			String r1 = "r1";
+			if(!isNumeric(instrParams[1]))
+				newLines.add("load, r0," + instrParams[1] + "\n");
+			else
+				r0 = instrParams[1];
+			if(!isNumeric(instrParams[2]))
+				newLines.add("load, r1," + instrParams[2] + "\n");
+			else
+				r1 = instrParams[2];
+			newLines.add(instrParams[0] + ", " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
 		}
 		else if(isArrayStore(instrParams[0]))
 		{
-			newLines.add("load, r0," + instrParams[1]);
-			newLines.add("load, r1," + instrParams[2]);
-			newLines.add("load, r2," + instrParams[3]);
-			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
+			newLines.add("load, r0," + instrParams[1] + "\n");
+			newLines.add("load, r1," + instrParams[2] + "\n");
+			if(!isNumeric(instrParams[3]))
+			{
+				newLines.add("load, r5, " + instrParams[3]);
+				newLines.add("array_load, r2, r5, 0\n");
+				newLines.add("and, r4, r4, 0\n");
+				newLines.add("addi, r4, r4, 4\n");
+				newLines.add("mult, r4, r4, r2\n");
+				newLines.add("add, r3, r1, r4\n");
+			}
+			else
+			{	
+				newLines.add("and, r3, r3, 0\n");
+				newLines.add("addi, r3, r3, " + Integer.parseInt(instrParams[3].replaceAll("\\s", "")) * 4 + "\n");
+			}
+			newLines.add(instrParams[0] + ", r1, r3, r0\n");
 		}
 		else if(isArrayLoad(instrParams[0]))
 		{
 			newLines.add("load, r0," + instrParams[1] + "\n");
 			newLines.add("load, r1," + instrParams[2] + "\n");
-			newLines.add("load, r2," + instrParams[3] + "\n");
-			newLines.add(instrParams[0] + ", r0, r1, r2" + "\n");
+			if(!isNumeric(instrParams[3]))
+			{
+				newLines.add("load, r2, " + instrParams[3] + "\n");
+				newLines.add("and, r4, r4, 0\n");
+				newLines.add("addi, r4, r4, 4\n");
+				newLines.add("mult, r4, r4, r2\n");
+				newLines.add("add, r3, r1, r4\n");
+			}
+			else
+			{	
+				newLines.add("and, r3, r3, 0\n");
+				newLines.add("addi, r3, r3, " + Integer.parseInt(instrParams[3].replaceAll("\\s", "")) * 4 + "\n");
+			}
+			newLines.add(instrParams[0] + ", r0, r1, r3\n");
 		}
 		else if(isReturn(instrParams[0]))
 		{
@@ -113,6 +177,19 @@ public class RegisterAllocator
 			newLines.add(string  + "\n");
 		
 		return newLines;
+	}
+	
+	private boolean isNumeric(String num)
+	{
+		try
+		{
+			Integer.parseInt(num.replaceAll("\\s", ""));
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
 	}
 
 	private boolean isReturnFunctionCall(String string) {
