@@ -45,14 +45,15 @@ public class ForStatement extends Statement {
     String startLabel = newLabel("start_loop");
     String endLabel = newLabel("end_loop");
     addEndLoopLabel(endLabel);
-    emit(startLabel + ":");
+    emit("assign, " + id + ", " + expression.generateCode());
+    emitLabel(startLabel + ":");
     emit("brgeq, " + id + ", " + expression2.generateCode() + ", " + endLabel);
     statSequence.generateCode();
     String temp = newTemp();
     emit("add, " + temp + ", " + id + ", 1");
     emit("assign, " + id + ", " + temp + ", ");
     emit("goto, " + startLabel + ", , ");
-    emit(endLabel + ":");
+    emitLabel(endLabel + ":");
     removeMostRecentEndLabel();
     return null;
   }

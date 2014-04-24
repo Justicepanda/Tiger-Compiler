@@ -28,7 +28,7 @@ public class MIPSCodeGenerator
 			if(lines[i].contains(":") && !lines[i].substring(lines[i].length() - 1, lines[i].length()).equals(":"))
 			{
 				List<String> tempLines = generateNewCode(lines[i].split(":")[1]);
-				newLines.add(lines[i].split(":")[0]);
+				newLines.add(lines[i].split(":")[0] + ":");
 				for(int j = 0; j < tempLines.size(); j++)
 					newLines.add(tempLines.get(j));
 			}
@@ -60,7 +60,6 @@ public class MIPSCodeGenerator
 			String r0 = getActualRegister(instrParams[1]);
 			String r1 = getActualRegister(instrParams[2]);
 			newLines.add("add " + r0 + ", " + r1 + ", 0\n");
-			
 		}
 		else if(isBinaryOp(instrParams[0]))
 		{
@@ -113,33 +112,42 @@ public class MIPSCodeGenerator
 			}
 			else if(instrParams[0].equals("brlt"))
 			{
-				newLines.add("bge " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
+				newLines.add("ble " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
 			}
 			else if(instrParams[0].equals("brgt"))
 			{
-				newLines.add("ble " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
+				newLines.add("bge " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
 			}
 			else if(instrParams[0].equals("brgeq"))
 			{
-				newLines.add("blt " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
+				newLines.add("bgt " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
 			}
 			else if(instrParams[0].equals("brleq"))
 			{
-				newLines.add("bgt " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
+				newLines.add("blt " + r0 + ", " + r1 + ", " + instrParams[3] + "\n");
 			}
 		}
 		else if(isArrayStore(instrParams[0]))
-		{
-			String r0 = getActualRegister(instrParams[1]);
-			String r2 = getActualRegister(instrParams[3]);
-			newLines.add("sw " + r0 + ", 0(" + r2 + ")\n");
+		{  
+			//a := arr[1]
+			String r0 = getActualRegister(instrParams[1]); //address of arr
+			String r1 = getActualRegister(instrParams[2]); //register with 1 in it
+			String r2 = getActualRegister(instrParams[3]); //value of a
+		    newLines.add("add " + r1 +", " + r1 +", " + r1 + "\n"); //r1 is now 2
+		    newLines.add("add " + r1 +", " + r1 +", " + r1 + "\n"); //r1 is now 4
+		    newLines.add("add " + r1 + ", " + r1 + ", " + r0 + "\n"); //Holds the address of arr[1]
+		    newLines.add("sw "+ r2 +", 0(" + r1 + ")" + "\n");
 		}
 		else if(isArrayLoad(instrParams[0]))
 		{
-			String r0 = getActualRegister(instrParams[1]);
-			String r2 = getActualRegister(instrParams[2]);
-			String r3 = getActualRegister(instrParams[3]);
-			newLines.add("lw " + r0 + ", 0(" + r3 + ")\n");
+			String r0 = getActualRegister(instrParams[1]); //a
+			String r1 = getActualRegister(instrParams[2]); //arr
+			String r2 = getActualRegister(instrParams[3]); //1
+			newLines.add("add " + r2 +", " + r2 +", " + r2 + "\n"); //r2 is now 2
+		    newLines.add("add " + r2 +", " + r2 +", " + r2 + "\n"); //r2 is now 4
+		    newLines.add("add " + r2 + ", " + r2 + ", " + r1 + "\n"); //Holds the address of arr[1]
+		    newLines.add("lw $t9, 0(" + r2 + ")" + "\n"); //load value at arr[1] into t9
+		    newLines.add("sw $t9, 0(" + r0 + ")\n"); //store value in t9 to address of a
 		}
 		else if(isReturn(instrParams[0]))
 		{
@@ -153,10 +161,24 @@ public class MIPSCodeGenerator
 		{
 			//EXTRA CREDIT
 		}
-		else if(isLoad(instrParams[0]))
+		else if(isLoadValue(instrParams[0]))
+		{
+			if(isNumeric(instrParams[2]))
+			{
+				String r0 = getActualRegister(instrParams[1]);
+				newLines.add("li " + r0 + ", 0x" + Integer.toHexString(Integer.parseInt(instrParams[2].replaceAll("\\s", ""))) + "\n");
+			}
+			else
+			{
+				String r0 = getActualRegister(instrParams[1]);
+				newLines.add("la " + r0 + "," + instrParams[2] + "\n");
+				newLines.add("lw " + r0 + ", 0(" + r0 + ")\n");
+			}
+		}
+		else if(isLoadAddress(instrParams[0]))
 		{
 			String r0 = getActualRegister(instrParams[1]);
-			newLines.add("la " + r0 + "," + instrParams[2] + "\n");
+			newLines.add("la " + r0 + ", " + instrParams[2] + "\n");
 		}
 		else if(isStore(instrParams[0]))
 		{
@@ -172,11 +194,30 @@ public class MIPSCodeGenerator
 		return newLines;
 	}
 	
+	private boolean isLoadValue(String string) {
+		if(string.replace(" ", "").equals("loadval"))
+			return true;
+		return false;
+	}
+
 	private boolean isGoTo(String string) 
 	{
 		if(string.replace(" ", "").equals("goto"))
 			return true;
 		return false;
+	}
+	
+	private boolean isNumeric(String num)
+	{
+		try
+		{
+			Integer.parseInt(num.replaceAll("\\s", ""));
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
 	}
 
 	private String getActualRegister(String string) 
@@ -199,6 +240,22 @@ public class MIPSCodeGenerator
 			return "$t7";
 		else if(string.replaceAll("\\s", "").equals("r8"))
 			return "$t8";
+		else if(string.replaceAll("\\s", "").equals("s0"))
+			return "$s0";
+		else if(string.replaceAll("\\s", "").equals("s1"))
+			return "$s1";
+		else if(string.replaceAll("\\s", "").equals("s2"))
+			return "$s2";
+		else if(string.replaceAll("\\s", "").equals("s3"))
+			return "$s3";
+		else if(string.replaceAll("\\s", "").equals("s4"))
+			return "$s4";
+		else if(string.replaceAll("\\s", "").equals("s5"))
+			return "$s5";
+		else if(string.replaceAll("\\s", "").equals("s6"))
+			return "$s6";
+		else if(string.replaceAll("\\s", "").equals("s7"))
+			return "$s7";
 		else
 			return string;
 	}
@@ -210,9 +267,9 @@ public class MIPSCodeGenerator
 		return false;
 	}
 
-	private boolean isLoad(String string) 
+	private boolean isLoadAddress(String string) 
 	{
-		if(string.replace(" ", "").equals("load"))
+		if(string.replace(" ", "").equals("loadaddr"))
 			return true;
 		return false;
 	}

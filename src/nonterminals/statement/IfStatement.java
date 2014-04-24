@@ -35,7 +35,7 @@ public class IfStatement extends Statement {
     String temp = expression.generateCode();
     emit("breq, " + temp + ", 0, " + endLabel);
     statSequence.generateCode();
-    emit(endLabel + ":");
+    emitLabel(endLabel + ":");
     return null;
   }
 }

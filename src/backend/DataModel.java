@@ -40,6 +40,10 @@ public class DataModel
 			else if(var.getType().isOfSameType(Type.STRING_TYPE))
 				dataHeader += var.getName() + " .ascii \"\"\n";
 		}
+		for(Temporary temp: temps)
+		{
+			dataHeader += temp.getName() + ": .word 0\n";
+		}
 		for(Array arr: arrays)
 		{
 			int size = 0;
@@ -48,10 +52,6 @@ public class DataModel
 				size *= arr.getDimensions().get(i);
 			}
 			dataHeader += arr.getName() + ": .space " + size + "\n";
-		}
-		for(Temporary temp: temps)
-		{
-			dataHeader += temp.getName() + ": .word 0\n";
 		}
 		return dataHeader;
 	}

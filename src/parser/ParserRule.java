@@ -26,6 +26,11 @@ public abstract class ParserRule {
   protected static void emit(String line) {
     generatedCode += line + "\n";
   }
+  
+  protected static void emitLabel(String line)
+  {
+	  generatedCode += line;
+  }
 
   private int lineNumber;
 

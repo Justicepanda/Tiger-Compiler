@@ -121,31 +121,31 @@ public class SymbolTable
 
   }
 
-	public Function getFunction(String functionId) 
+	public static Function getFunction(String functionId) 
 	{
 		if(table.get(SymbolType.FUNCTION).get(functionId) != null)
 			return ((Function)table.get(SymbolType.FUNCTION).get(functionId).get(0));
 		return null;
 	}
 	
-	public Variable getVariable(String variableId) 
+	public static Variable getVariable(String variableId) 
 	{
 		if(table.get(SymbolType.VARIABLE).get(variableId) != null)
 			return ((Variable)table.get(SymbolType.VARIABLE).get(variableId).get(0));
 		return null;
 	}
 	
-	public Array getArray(String arrayId) 
+	public static Array getArray(String arrayId) 
 	{
 		if(table.get(SymbolType.ARRAY).get(arrayId) != null)
 			return ((Array)table.get(SymbolType.ARRAY).get(arrayId).get(0));
 		return null;
 	}
 	
-	public Array getTemporary(String tempId) 
+	public static Temporary getTemporary(String tempId) 
 	{
 		if(table.get(SymbolType.TEMPORARY).get(tempId) != null)
-			return ((Array)table.get(SymbolType.TEMPORARY).get(tempId).get(0));
+			return ((Temporary)table.get(SymbolType.TEMPORARY).get(tempId).get(0));
 		return null;
 	}
 	

@@ -120,8 +120,12 @@ public class StatIdTail extends ParserRule {
         String temp = statIdTailTail.generateCode();
         String newTemp = newTemp();
         if (statIdTailTail.isArray())
+        {
           emit("array_load, " + newTemp + ", " + id + ", " + temp);
-        return newTemp;
+          return newTemp;
+        }
+        else
+        	return temp;
       }
       return null;
     }

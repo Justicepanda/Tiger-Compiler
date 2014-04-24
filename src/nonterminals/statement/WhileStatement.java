@@ -32,7 +32,7 @@ public class WhileStatement extends Statement {
     String startWhile = newLabel("start_while");
     String afterWhile = newLabel("after_while");
     addEndLoopLabel(afterWhile);
-    emit(startWhile + ":");
+    emitLabel(startWhile + ":");
     if (expression.hasEqualityOperation())
       emit(expression.getCodeEqualityOperation() + ", " + afterWhile);
     else {
@@ -41,7 +41,7 @@ public class WhileStatement extends Statement {
     }
     statSequence.generateCode();
     emit("goto, " + startWhile + ", , ");
-    emit(afterWhile + ":");
+    emitLabel(afterWhile + ":");
     removeMostRecentEndLabel();
     return null;
   }

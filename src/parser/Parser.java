@@ -32,6 +32,8 @@ public class Parser {
     RegisterAllocator ra = new RegisterAllocator(table, ParserRule.getGeneratedCode());
     printOut += "Intermediate Code\n";
     printOut += ra.getGeneratedIrCode();
+    printOut += "CFG";
+    printOut += ra.printCFG();
     printOut += "\n";
     printOut += "MIPS Code\n";
     MIPSCodeGenerator mips = new MIPSCodeGenerator(ra.getGeneratedIrCode(), ra.getDataModel());

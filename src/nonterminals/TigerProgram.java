@@ -29,7 +29,7 @@ public class TigerProgram extends ParserRule {
 
   @Override
   public String generateCode() {
-	emit("main:");
+	emitLabel("main:");
     declarationSegment.generateCode();
     statSequence.generateCode();
     return null;

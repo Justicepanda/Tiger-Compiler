@@ -9,7 +9,7 @@ public class ControlFlowGraph
 	
 	public ControlFlowGraph()
 	{
-		rootBlock = new BasicBlock();
+		rootBlock = new BasicBlock(0);
 	}
 	
 	public ControlFlowGraph(BasicBlock root)
@@ -32,9 +32,14 @@ public class ControlFlowGraph
 		rootBlock.createGraph(lines);
 	}
 	
+	public String allocateRegisters()
+	{
+		return rootBlock.allocateRegisters();
+	}
+	
 	public String print()
 	{
-		return rootBlock.print(0);
+		return rootBlock.print(2);
 		
 	}
 }
